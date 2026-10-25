@@ -1,0 +1,72 @@
+# Root .gitignore for the SaheliSafar-FYP monorepo
+# (apps/* also keep their own .gitignore files; this covers everything, including backend/)
+
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# environment / secrets
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+*.jks
+*.p8
+*.p12
+*.keystore
+!debug.keystore
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+service-account*.json
+
+# build output
+dist/
+build/
+out/
+web-build/
+.next/
+.vite/
+*.tsbuildinfo
+
+# Expo / React Native
+.expo/
+expo-env.d.ts
+.kotlin/
+*.orig.*
+.metro-health-check*
+apps/passenger-app/ios/
+apps/passenger-app/android/
+apps/driver-app/ios/
+apps/driver-app/android/
+
+# tests / coverage
+coverage/
+.nyc_output/
+
+# logs
+logs/
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+pnpm-debug.log*
+
+# uploads / temp
+uploads/
+tmp/
+temp/
+.cache/
+
+# editors / OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
