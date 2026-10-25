@@ -10,6 +10,9 @@ import DriversPage from "./pages/DriversPage";
 import DriverDetailPage from "./pages/DriverDetailPage";
 import UsersPage from "./pages/UsersPage";
 import SettingsPage from "./pages/SettingsPage";
+import SettingsAccountPage from "./pages/SettingsAccountPage";
+import SettingsSecurityPage from "./pages/SettingsSecurityPage";
+import SettingsAdminPage from "./pages/SettingsAdminPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import VerifyAdminEmailPage from "./pages/VerifyAdminEmailPage";
@@ -29,7 +32,12 @@ const App = () => (
             <Route path="drivers" element={<DriversPage />} />
             <Route path="drivers/:userId" element={<DriverDetailPage />} />
             <Route path="users" element={<UsersPage />} />
-            <Route path="settings" element={<SettingsPage />} />
+            <Route path="settings" element={<SettingsPage />}>
+              <Route index element={<Navigate to="account" replace />} />
+              <Route path="account" element={<SettingsAccountPage />} />
+              <Route path="security" element={<SettingsSecurityPage />} />
+              <Route path="admins" element={<SettingsAdminPage />} />
+            </Route>
           </Route>
         </Route>
 
