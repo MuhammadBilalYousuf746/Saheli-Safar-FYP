@@ -6,7 +6,9 @@ import { useAdminListApi } from "../../../shared/services/admin-list.service";
 import Pagination from "../../../shared/components/Pagination";
 import StatusBadge from "../../../shared/components/StatusBadge";
 import { EmptyState, ErrorState, LoadingState } from "../../../shared/components/States";
-import { capitalize, formatDate, formatPhone } from "../../../shared/utils/format";
+import { capitalize, formatDate } from "../../../shared/utils/format";
+import AdminGreeting from "../../../shared/components/AdminGreeting";
+import { hasFullAdminAccess } from "../../auth/admin-access";
 
 const TABS = [
   { value: "", label: "All" },
@@ -18,7 +20,7 @@ const TABS = [
 const PAGE_SIZE = 20;
 
 const DriversPage = () => {
-  const { request } = useAuth();
+  const { admin, request } = useAuth();
   const api = useAdminListApi(request);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -65,30 +67,33 @@ const DriversPage = () => {
       <header className="page-header">
         <div>
           <h1>Drivers</h1>
+          {!hasFullAdminAccess(admin) && <p className="drivers-greeting"><AdminGreeting /></p>}
           <p className="muted">
-            Review driver documents and approve or reject applications.
+            Manage driver applications and verification records.
           </p>
         </div>
       </header>
 
-      <div className="tabs drivers-tabs" role="tablist">
-        {TABS.map((tab) => (
-          <button
-            key={tab.label}
-            type="button"
-            role="tab"
-            aria-selected={verificationStatus === tab.value}
-            className={`tab${verificationStatus === tab.value ? " active" : ""}`}
-            onClick={() =>
-              updateParams({ verificationStatus: tab.value, page: "" })
-            }
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="drivers-toolbar">
+        <div className="tabs drivers-tabs" role="tablist" aria-label="Verification status">
+          {TABS.map((tab) => (
+            <button
+              key={tab.label}
+              type="button"
+              role="tab"
+              aria-selected={verificationStatus === tab.value}
+              className={`tab${verificationStatus === tab.value ? " active" : ""}`}
+              onClick={() =>
+                updateParams({ verificationStatus: tab.value, page: "" })
+              }
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <section className="card drivers-list-card">
+      <section className="drivers-list-card" aria-label="Driver applications">
         {error ? (
           <ErrorState message={error} onRetry={load} />
         ) : !data ? (
@@ -96,53 +101,48 @@ const DriversPage = () => {
         ) : data.drivers.length === 0 ? (
           <EmptyState
             title="No drivers found"
-            message="Drivers appear here after they submit their profile."
+            message={verificationStatus ? "No applications match this verification status. Choose All to see every application." : "Drivers appear here after they submit their profile."}
           />
         ) : (
           <>
             <div className="table-wrap drivers-table-wrap">
-              <table className="table">
+              <table className="table drivers-table">
                 <thead>
                   <tr>
-                    <th>Driver</th>
-                    <th>Vehicle</th>
-                    <th>Verification</th>
-                    <th>Account</th>
-                    <th>Submitted</th>
-                    <th aria-label="Actions" />
+                    <th scope="col">Driver</th>
+                    <th scope="col">Vehicle</th>
+                    <th scope="col">Verification</th>
+                    <th scope="col">Account</th>
+                    <th scope="col">Submitted</th>
+                    <th scope="col" className="drivers-actions-heading">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.drivers.map((driver) => (
                     <tr key={driver.id}>
-                      <td>
+                      <td className="drivers-name">
                         <strong>{driver.fullName}</strong>
+                      </td>
+                      <td data-label="Vehicle" className="drivers-vehicle">
+                        {driver.vehicle?.make} {driver.vehicle?.model}
                         <span className="cell-sub">
-                          {formatPhone(driver.phone)}
+                          {capitalize(driver.vehicle?.type)}
                         </span>
                       </td>
-                      <td>
-                        {driver.vehicle.make} {driver.vehicle.model}
-                        <span className="cell-sub">
-                          {capitalize(driver.vehicle.type)} ·{" "}
-                          {driver.vehicle.plateNumber}
-                        </span>
-                      </td>
-                      <td>
+                      <td data-label="Verification" className="drivers-verification">
                         <StatusBadge value={driver.verificationStatus} />
                       </td>
-                      <td>
+                      <td data-label="Account" className="drivers-account">
                         <StatusBadge value={driver.status} />
                       </td>
-                      <td>{formatDate(driver.submittedAt)}</td>
+                      <td data-label="Submitted" className="drivers-submitted">{formatDate(driver.submittedAt)}</td>
                       <td className="cell-actions">
                         <Link
                           to={`/drivers/${driver.id}`}
-                          className="btn btn-secondary btn-sm"
+                          className="link drivers-view-link"
+                          aria-label={`View details for ${driver.fullName}`}
                         >
-                          {driver.verificationStatus === "pending"
-                            ? "Review"
-                            : "View"}
+                          View details <span aria-hidden="true">&rarr;</span>
                         </Link>
                       </td>
                     </tr>
