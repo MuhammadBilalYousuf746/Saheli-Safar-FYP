@@ -396,7 +396,7 @@ const SettingsAdminPage = () => {
         <div className="card-header">
           <div>
             <h2 className="card-title">Admin Management</h2>
-            <p className="muted">Manage administrator accounts and access permissions.</p>
+            {admins && <p className="settings-admin-count">{admins.length} {admins.length === 1 ? "administrator" : "administrators"} listed</p>}
           </div>
 
           <button
@@ -430,21 +430,21 @@ const SettingsAdminPage = () => {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Admin</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th>Permission</th>
-                  <th>Created</th>
-                  <th>Actions</th>
+                  <th scope="col">Administrator</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Account status</th>
+                  <th scope="col">Access level</th>
+                  <th scope="col">Created</th>
+                  <th scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {admins.map((item) => (
                   <tr key={item.id}>
-                    <td>
+                    <td className="settings-admin-name">
                       <strong>{item.fullName || "Not provided"}</strong>
                     </td>
-                    <td>
+                    <td className="settings-admin-email" data-label="Email">
                       <span className="admin-email-value">{item.email}</span>
                       <span
                         className={`badge ${
@@ -467,10 +467,10 @@ const SettingsAdminPage = () => {
                         </span>
                       )}
                     </td>
-                    <td>
+                    <td className="settings-admin-status" data-label="Account status">
                       <StatusBadge value={item.status} />
                     </td>
-                    <td>
+                    <td className="settings-admin-access" data-label="Access level">
                       {item.accessLevel === "full" ? (
                         <span className="badge badge-brand">
                           <ShieldCheck size={12} aria-hidden="true" />
@@ -480,7 +480,7 @@ const SettingsAdminPage = () => {
                         <span className="badge badge-neutral">Standard access</span>
                       )}
                     </td>
-                    <td>{formatDate(item.createdAt)}</td>
+                    <td className="settings-admin-created" data-label="Created">{formatDate(item.createdAt)}</td>
                     <td className="cell-actions">
                       <div className="action-row" style={{ justifyContent: "flex-end" }}>
                         <button
