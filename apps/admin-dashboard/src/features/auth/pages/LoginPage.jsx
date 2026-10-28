@@ -1,15 +1,14 @@
-import { useState } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
 import logo from "../../../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
 import { getAdminLoginRedirect } from "../admin-access";
-import ThemeToggle from "../../../shared/components/ThemeToggle";
+import LoginRouteNetwork from "../components/LoginRouteNetwork";
 
 const LoginPage = () => {
-  const { admin, login, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const { admin, login, isAuthenticated, isExplicitLogout, completeLogout } = useAuth();
   const location = useLocation();
 
   const [email, setEmail] = useState("");
@@ -17,10 +16,23 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const submittingRef = useRef(false);
+
+  // Complete explicit logout only once Login has a clean router location.
+  // Auth can clear before BrowserRouter finishes its navigation transition.
+  useEffect(() => {
+    if (isExplicitLogout && !location.state?.from) completeLogout();
+  }, [isExplicitLogout, location.state, completeLogout]);
+
+  if (isExplicitLogout && location.state?.from) {
+    return <Navigate to="/login" replace state={null} />;
+  }
 
   const redirectTo = getAdminLoginRedirect(
     admin,
-    location.state?.from?.pathname
+    location.state?.from
+      ? `${location.state.from.pathname}${location.state.from.search || ""}${location.state.from.hash || ""}`
+      : undefined
   );
 
   if (isAuthenticated) {
@@ -29,25 +41,27 @@ const LoginPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setError("");
     setIsSubmitting(true);
 
     try {
       await login({ email: email.trim(), password });
-      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   };
 
   return (
     <div className="login-page login-page--login">
+      <LoginRouteNetwork />
       <div className="login-card">
         <div className="login-card-toolbar">
           <span className="login-brand-label">SAHELI SAFAR <span>/</span> ADMIN</span>
-          <ThemeToggle />
         </div>
         <img src={logo} alt="Saheli Safar" className="login-logo" />
         <span className="login-eyebrow">ADMINISTRATION PORTAL</span>
@@ -111,8 +125,10 @@ const LoginPage = () => {
             type="submit"
             className="btn btn-primary btn-block"
             disabled={isSubmitting || !email || !password}
+            aria-busy={isSubmitting}
           >
-            {isSubmitting ? "Signing in…" : "Sign in"}
+            {isSubmitting && <span className="spinner login-button-spinner" aria-hidden="true" />}
+            {isSubmitting ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
