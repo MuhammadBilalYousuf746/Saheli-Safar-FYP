@@ -28,42 +28,72 @@
   background-position: center;
   background-size: cover;
   content: "";
-  opacity: 0.32;
+  opacity: 0.56;
   pointer-events: none;
 }
 
-.login-page--login > * {
+.login-page--login .login-card {
   position: relative;
+  z-index: 2;
+  animation: login-card-in 180ms ease-out;
+}
+
+.login-button-spinner {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+  border-top-color: currentColor;
+}
+
+@keyframes login-card-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page--login .login-card { animation: none; }
+}
+
+.login-route-network {
+  position: absolute;
+  inset: 0;
   z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.login-bus-cyan { color: #38aebe; }
+.login-bus-purple { color: #9b75d0; }
+
+.login-bus-trail {
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px currentColor);
+  opacity: 0;
+}
+
+.login-route-bus { opacity: 0; }
+.login-bus-body { fill: currentColor; stroke: #ffffff; stroke-width: 0.8; }
+.login-bus-window { fill: #ffffff; fill-opacity: 0.9; }
+.login-bus-roof { fill: #ffffff; fill-opacity: 0.45; }
+.login-bus-wheels { stroke: #655574; stroke-width: 2; stroke-linecap: round; }
+
+@media (max-width: 600px) {
+  .login-route-network > g:nth-child(n + 7) { display: none; }
 }
 
 .login-page--login .login-card {
   border-color: color-mix(in srgb, var(--primary) 24%, var(--border));
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
   box-shadow:
     0 24px 70px rgba(42, 24, 72, 0.16),
     0 0 0 1px color-mix(in srgb, var(--primary) 7%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-:root[data-theme="dark"] .login-page--login {
-  background:
-    radial-gradient(ellipse at 12% 18%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 34%),
-    radial-gradient(ellipse at 92% 84%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 36%),
-    linear-gradient(135deg, #0b1019, var(--background) 60%, #151020);
-}
-
-:root[data-theme="dark"] .login-page--login::before {
-  opacity: 0.82;
-}
-
-:root[data-theme="dark"] .login-page--login .login-card {
-  border-color: color-mix(in srgb, var(--primary) 27%, var(--border));
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  box-shadow:
-    0 26px 76px rgba(0, 0, 0, 0.42),
-    0 0 36px color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 .login-card {
@@ -96,11 +126,6 @@
 .login-brand-label span {
   margin: 0 3px;
   color: var(--primary);
-}
-
-.login-card-toolbar .theme-toggle {
-  min-height: 34px;
-  padding: 0 9px;
 }
 
 .login-logo {
