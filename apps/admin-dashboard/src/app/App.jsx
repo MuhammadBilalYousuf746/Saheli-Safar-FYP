@@ -31,6 +31,7 @@ const App = () => (
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route index element={<OverviewRoute />} />
+              <Route path="overview" element={<OverviewRoute />} />
               <Route path="drivers" element={<DriversPage />} />
               <Route path="drivers/:userId" element={<DriverDetailPage />} />
               <Route path="users" element={<UsersPage />} />
