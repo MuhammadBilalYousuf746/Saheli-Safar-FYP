@@ -36,7 +36,7 @@ const SettingsPage = () => {
 
       <div className="settings-shell">
         <aside className="settings-nav-panel" aria-label="Settings navigation">
-          <nav className="settings-nav">
+          <nav className="settings-nav" aria-label="Settings sections">
             {navItems.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
