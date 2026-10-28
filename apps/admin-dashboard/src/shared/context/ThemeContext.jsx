@@ -1,44 +1,15 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 
-const STORAGE_KEY = "saheli-admin-theme";
 const ThemeContext = createContext(null);
-
-const getInitialTheme = () => {
-  let savedTheme;
-
-  try {
-    savedTheme = window.localStorage.getItem(STORAGE_KEY);
-  } catch {
-    savedTheme = null;
-  }
-
-  if (savedTheme === "light" || savedTheme === "dark") {
-    return savedTheme;
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-};
+const LIGHT_THEME = { theme: "light" };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(getInitialTheme);
-
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-      return;
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
-  };
+    document.documentElement.dataset.theme = "light";
+  }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={LIGHT_THEME}>
       {children}
     </ThemeContext.Provider>
   );
