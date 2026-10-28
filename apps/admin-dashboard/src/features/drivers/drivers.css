@@ -1,0 +1,127 @@
+.drivers-page {
+  gap: 22px;
+}
+
+.drivers-page .page-header p {
+  max-width: 640px;
+}
+
+.drivers-tabs {
+  max-width: 100%;
+}
+
+.drivers-list-card {
+  overflow: hidden;
+}
+
+.drivers-table-wrap {
+  margin-top: 0;
+}
+
+.drivers-table-wrap .table td:first-child strong {
+  color: var(--text-primary);
+}
+
+.drivers-detail-page {
+  gap: 22px;
+}
+
+.drivers-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  transition: color 140ms ease;
+}
+
+.drivers-back-link:hover {
+  color: var(--primary);
+}
+
+.drivers-detail-page .page-header {
+  align-items: center;
+}
+
+.drivers-detail-page .page-header h1 {
+  margin-bottom: 10px;
+}
+
+.drivers-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.drivers-detail-card {
+  min-width: 0;
+}
+
+.drivers-detail-card .card-title {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--divider);
+}
+
+.drivers-detail-card .details {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.drivers-detail-card .detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-top: 1px solid var(--divider);
+}
+
+.drivers-detail-card .detail:first-child {
+  border-top: 0;
+}
+
+.drivers-detail-card .detail dt {
+  flex: 0 1 44%;
+  color: var(--text-secondary);
+}
+
+.drivers-detail-card .detail dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 550;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.drivers-detail-card > .muted {
+  margin: -4px 0 14px;
+}
+
+@media (max-width: 767px) {
+  .drivers-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .drivers-detail-page .page-header {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .drivers-tabs {
+    width: 100%;
+  }
+
+  .drivers-tabs .tab {
+    flex: 1 0 auto;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .drivers-detail-card .detail {
+    gap: 10px;
+  }
+}
