@@ -101,11 +101,19 @@ export const resendAdminEmailVerificationSchema = z.object({}).strict();
 // GET /api/admin/users
 export const listUsersQuerySchema = z
   .object({
-    role: z.enum(APP_ROLES).optional(),
+    // The directory defaults to passengers; explicit driver queries stay compatible.
+    role: z.enum(APP_ROLES).default("passenger"),
     status: z.enum(USER_STATUSES).optional(),
+    search: z.string().trim().max(100)
+      .regex(/^[^\u0000-\u001f\u007f]*$/, "Search must not contain control characters.")
+      .optional(),
     ...paginationFields,
   })
-  .strict();
+  .strict()
+  .refine(query => !query.search || query.role === "passenger", {
+    message: "Record search is available for passengers only.",
+    path: ["search"],
+  });
 
 // PATCH /api/admin/users/:userId/status
 export const updateUserStatusSchema = z
