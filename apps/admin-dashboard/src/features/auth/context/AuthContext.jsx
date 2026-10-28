@@ -37,12 +37,19 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(readToken);
   const [admin, setAdmin] = useState(null);
   const [isRestoring, setIsRestoring] = useState(Boolean(readToken()));
+  const [isExplicitLogout, setIsExplicitLogout] = useState(false);
+  const [loginWelcome, setLoginWelcome] = useState(null);
+  const consumeLoginWelcome = useCallback(() => setLoginWelcome(null), []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(({ explicit = false } = {}) => {
+    setIsExplicitLogout(explicit);
+    setLoginWelcome(null);
     writeToken(null);
     setToken(null);
     setAdmin(null);
   }, []);
+
+  const completeLogout = useCallback(() => setIsExplicitLogout(false), []);
 
   // Authenticated request. Expired or revoked sessions log out.
   const request = useCallback(
@@ -69,6 +76,7 @@ export const AuthProvider = ({ children }) => {
     writeToken(data.accessToken);
     setToken(data.accessToken);
     setAdmin(data.user);
+    setLoginWelcome({ createdAt: Date.now() });
   }, []);
 
   // Restore the admin session after a page reload.
@@ -101,11 +109,15 @@ export const AuthProvider = ({ children }) => {
       admin,
       isAuthenticated: Boolean(token && admin),
       isRestoring,
+      isExplicitLogout,
+      completeLogout,
+      loginWelcome,
+      consumeLoginWelcome,
       login,
       logout,
       request,
     }),
-    [admin, token, isRestoring, login, logout, request]
+    [admin, token, isRestoring, isExplicitLogout, completeLogout, loginWelcome, consumeLoginWelcome, login, logout, request]
   );
 
   return (
