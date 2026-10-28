@@ -1,21 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  BadgeCheck,
-  Car,
-  Clock,
-  ShieldAlert,
-  UserRound,
-  XCircle,
-} from "lucide-react";
 
 import { useAdminListApi } from "../../../shared/services/admin-list.service";
 import { useAuth } from "../../../features/auth/context/AuthContext";
 import { EmptyState, ErrorState, LoadingState } from "../../../shared/components/States";
-import { formatDate, formatVehicle } from "../../../shared/utils/format";
+import { formatDate } from "../../../shared/utils/format";
+import AdminGreeting from "../../../shared/components/AdminGreeting";
 
 const OverviewPage = () => {
-  const { admin, request } = useAuth();
+  const { request } = useAuth();
   const api = useAdminListApi(request);
 
   const [stats, setStats] = useState(null);
@@ -39,47 +32,41 @@ const OverviewPage = () => {
     load();
   }, [load]);
 
-  const cards = stats && [
+  const metrics = stats && [
     {
       label: "Passengers",
       value: stats.passengers,
-      icon: UserRound,
       tone: "info",
       to: "/users?role=passenger",
     },
     {
       label: "Drivers",
       value: stats.drivers,
-      icon: Car,
       tone: "brand",
       to: "/users?role=driver",
     },
     {
-      label: "Awaiting verification",
+      label: "Pending verifications",
       value: stats.pending,
-      icon: Clock,
       tone: "warning",
       to: "/drivers?verificationStatus=pending",
     },
     {
       label: "Approved drivers",
       value: stats.approved,
-      icon: BadgeCheck,
       tone: "success",
       to: "/drivers?verificationStatus=approved",
     },
     {
       label: "Rejected drivers",
       value: stats.rejected,
-      icon: XCircle,
       tone: "error",
       to: "/drivers?verificationStatus=rejected",
     },
     {
       label: "Suspended accounts",
       value: stats.suspended,
-      icon: ShieldAlert,
-      tone: "neutral",
+      tone: "error",
       to: "/users?status=suspended",
     },
   ];
@@ -88,9 +75,8 @@ const OverviewPage = () => {
     <div className="page overview-page">
       <header className="page-header">
         <div className="overview-heading">
-          <span className="eyebrow">ADMIN OVERVIEW</span>
-          <h1>Welcome back{admin?.fullName ? `, ${admin.fullName}` : ""}</h1>
-          <p className="muted">A clear view of current passenger and driver operations.</p>
+          <h1><AdminGreeting /></h1>
+          <p className="muted">An overview of passenger and driver operations.</p>
         </div>
       </header>
 
@@ -100,54 +86,60 @@ const OverviewPage = () => {
         <LoadingState label="Loading dashboard…" />
       ) : (
         <>
-          <section className="stat-grid overview-stat-grid">
-            {cards.map(({ label, value, icon: Icon, tone, to }) => (
-              <Link key={label} to={to} className="stat-card overview-stat-card">
-                <span className={`stat-icon overview-stat-icon tone-${tone}`}>
-                  <Icon size={20} aria-hidden="true" />
-                </span>
-                <div>
-                  <span className="stat-value overview-stat-value">{value}</span>
-                  <span className="stat-label overview-stat-label">{label}</span>
-                </div>
-              </Link>
-            ))}
+          <section className="overview-metrics" aria-label="Operational statistics">
+            <div className="overview-primary-metrics">
+              {metrics.slice(0, 3).map(({ label, value, to }) => (
+                <Link key={label} to={to} className="overview-primary-metric">
+                  <span className="overview-metric-label">{label}</span>
+                  <span className="overview-metric-value">{value}</span>
+                </Link>
+              ))}
+            </div>
+            <div className="overview-status-metrics">
+              {metrics.slice(3).map(({ label, value, tone, to }) => (
+                <Link key={label} to={to} className="overview-status-metric">
+                  <span className={`overview-status-dot tone-${tone}`} aria-hidden="true" />
+                  <span>{label}</span><strong>{value}</strong>
+                </Link>
+              ))}
+            </div>
           </section>
 
-          <section className="card overview-pending-card">
-            <div className="card-header">
+          <section className="overview-queue" aria-labelledby="overview-queue-title">
+            <div className="overview-queue-header">
               <div>
-                <span className="eyebrow">REVIEW QUEUE</span>
-                <h2>Drivers awaiting verification</h2>
+                <h2 id="overview-queue-title">Drivers awaiting verification</h2>
+                <p>Review pending applications before drivers can get on the road.</p>
               </div>
-              <Link to="/drivers?verificationStatus=pending" className="link">
-                View all
-              </Link>
+              <Link to="/drivers?verificationStatus=pending" className="link">View all</Link>
             </div>
-
             {recentPending.length === 0 ? (
-              <EmptyState
-                title="All caught up"
-                message="There are no drivers waiting for verification."
-              />
+              <div className="overview-queue-empty">
+                <EmptyState title="All caught up" message="No driver applications are awaiting verification." />
+              </div>
             ) : (
-              <ul className="list">
-                {recentPending.map((driver) => (
-                  <li key={driver.id}>
-                    <Link to={`/drivers/${driver.id}`} className="list-item">
-                      <div>
-                        <strong>{driver.fullName}</strong>
-                        <span className="muted small">
-                          {formatVehicle(driver.vehicle)}
-                        </span>
-                      </div>
-                      <span className="muted small">
-                        Submitted {formatDate(driver.submittedAt)}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <table className="overview-queue-table">
+                <thead><tr>
+                  <th scope="col">Driver</th>
+                  <th scope="col">Application date</th>
+                  <th scope="col">Verification status</th>
+                  <th scope="col"><span className="overview-action-label">Action</span></th>
+                </tr></thead>
+                <tbody>
+                  {recentPending.map((driver) => (
+                    <tr key={driver.id}>
+                      <th scope="row">{driver.fullName}</th>
+                      <td data-label="Application date">{formatDate(driver.submittedAt)}</td>
+                      <td data-label="Verification status"><span className="overview-pending-status">Pending</span></td>
+                      <td className="overview-queue-action">
+                        <Link to={`/drivers/${driver.id}`} className="link" aria-label={`View application for ${driver.fullName}`}>
+                          View application <span aria-hidden="true">&rarr;</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </section>
         </>
