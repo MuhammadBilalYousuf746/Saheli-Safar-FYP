@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none" preserveAspectRatio="xMidYMid slice">
   <defs>
     <linearGradient id="road" x1="120" y1="820" x2="1430" y2="120" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#55D9E7" stop-opacity=".42"/>
-      <stop offset=".52" stop-color="#76F1F1" stop-opacity=".82"/>
-      <stop offset="1" stop-color="#A78BFA" stop-opacity=".55"/>
+      <stop stop-color="#00F2FE" stop-opacity=".68"/>
+      <stop offset=".52" stop-color="#57B8D9" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#A855F7" stop-opacity=".72"/>
     </linearGradient>
     <linearGradient id="coast" x1="140" y1="120" x2="890" y2="920" gradientUnits="userSpaceOnUse">
       <stop stop-color="#7AE8EF" stop-opacity=".24"/>
@@ -18,7 +18,7 @@
     </filter>
   </defs>
 
-  <g stroke="#74DDE7" stroke-opacity=".2" stroke-width="1">
+  <g stroke="#859CC3" stroke-opacity=".24" stroke-width="1">
     <path d="M-70 156 238 192 430 132 690 176 886 94 1110 140 1338 62 1670 106"/>
     <path d="m-60 246 246 30 180-45 232 38 172-54 232 28 186-63 493 56"/>
     <path d="m-74 350 252 34 210-67 214 48 180-71 225 52 230-80 420 63"/>
@@ -36,18 +36,18 @@
   </g>
 
   <g stroke="url(#coast)" stroke-width="2">
-    <path d="M-40 614c92-35 153-24 211 9 44 25 64 72 107 93 48 24 99 5 142 30 46 27 57 86 110 112 56 27 117 2 170 29 41 21 55 59 105 85"/>
+    <path data-bus-route="true" d="M-40 614c92-35 153-24 211 9 44 25 64 72 107 93 48 24 99 5 142 30 46 27 57 86 110 112 56 27 117 2 170 29 41 21 55 59 105 85"/>
     <path d="M-55 653c94-37 151-19 195 12 50 36 67 79 119 100 48 20 93 3 133 31 42 29 58 80 111 103 58 26 118 3 164 30 43 25 60 61 108 81"/>
     <path d="M-48 695c83-33 136-14 183 17 51 34 73 79 125 99 46 18 89 6 127 32 41 27 62 75 110 97 58 27 115 5 159 32 42 26 61 59 106 76"/>
     <path d="M127 962c68-46 117-74 183-70 77 5 118 51 185 54 70 3 113-43 186-36 69 7 110 52 174 60"/>
   </g>
 
   <g stroke="#68E5EE" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
-    <path d="m-45 433 185 28 120-42 130 27 138-78 128 40 122-72 134 38 129-75 178 31 134-68 189 24" stroke="url(#road)" stroke-width="3"/>
-    <path d="m-40 526 176-16 132 43 126-26 133 64 128-35 142 61 123-27 145 58 139-22 174 49" stroke="url(#road)" stroke-width="2.5"/>
-    <path d="m311-28 33 157-48 137 74 137-34 140 70 146-41 142 63 197" stroke="#61DDE8" stroke-opacity=".58" stroke-width="2.5"/>
+    <path data-bus-route="true" d="m-45 433 185 28 120-42 130 27 138-78 128 40 122-72 134 38 129-75 178 31 134-68 189 24" stroke="url(#road)" stroke-width="3"/>
+    <path data-bus-route="true" d="m-40 526 176-16 132 43 126-26 133 64 128-35 142 61 123-27 145 58 139-22 174 49" stroke="url(#road)" stroke-width="2.5"/>
+    <path data-bus-route="true" d="m311-28 33 157-48 137 74 137-34 140 70 146-41 142 63 197" stroke="#00F2FE" stroke-opacity=".72" stroke-width="2.5"/>
     <path d="m906-32 58 148-37 140 69 128-32 151 66 134-39 141 72 183" stroke="#71E6EC" stroke-opacity=".58" stroke-width="2.5"/>
-    <path d="m1287-25 43 158-52 141 67 151-37 137 64 160-40 134 61 194" stroke="#A78BFA" stroke-opacity=".55" stroke-width="2.3"/>
+    <path data-bus-route="true" d="m1287-25 43 158-52 141 67 151-37 137 64 160-40 134 61 194" stroke="#A855F7" stroke-opacity=".68" stroke-width="2.3"/>
   </g>
 
   <g stroke="#A78BFA" stroke-linecap="round" stroke-opacity=".5" stroke-width="1.8">
