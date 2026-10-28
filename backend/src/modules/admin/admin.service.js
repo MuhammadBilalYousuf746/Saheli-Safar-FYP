@@ -977,11 +977,25 @@ export const updateDriverVerification = async ({
 // ==========================================
 
 // List passenger and driver accounts. Admin accounts are never listed.
-export const listUsers = async ({ role, status, page, limit }) => {
+export const listUsers = async ({ role, status, search, page, limit }) => {
   const filter = {
-    role: role || { $in: APP_ROLES },
+    role: search ? "passenger" : role || { $in: APP_ROLES },
     ...(status && { status }),
   };
+
+  if (search) {
+    // Treat search as literal text, never as a caller-supplied regular expression.
+    const escape = value => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const digits = search.replace(/\D/g, "");
+    const phoneSearch = /^[+\d\s().-]+$/.test(search) && digits
+      ? digits.replace(/^03/, "923")
+      : search;
+    filter.$or = [
+      { fullName: { $regex: escape(search), $options: "i" } },
+      { email: { $regex: escape(search), $options: "i" } },
+      { phone: { $regex: escape(phoneSearch), $options: "i" } },
+    ];
+  }
 
   const [users, total] = await Promise.all([
     User.find(filter)
