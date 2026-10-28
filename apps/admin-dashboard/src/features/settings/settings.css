@@ -1,0 +1,296 @@
+.settings-page {
+  gap: 24px;
+}
+
+.settings-header {
+  margin-bottom: 2px;
+}
+
+.settings-shell {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.settings-nav-panel {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.settings-nav-link:hover {
+  background: var(--surface-alt);
+  color: var(--primary);
+}
+
+.settings-nav-link.active {
+  border-color: var(--border);
+  background: var(--accent-light);
+  color: var(--primary);
+}
+
+.settings-content,
+.settings-content > * {
+  min-width: 0;
+}
+
+.settings-card .card-header {
+  align-items: flex-start;
+}
+
+.settings-card .card-header .muted {
+  max-width: 620px;
+}
+
+.admin-account-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px 24px;
+  margin: 8px 0 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--surface-alt);
+}
+
+.admin-account-details > div {
+  min-width: 0;
+}
+
+.admin-account-details dt {
+  margin-bottom: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.admin-account-details dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.admin-account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.admin-account-actions > .inline-note {
+  flex-basis: 100%;
+}
+
+.admin-resend-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.admin-resend-link:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.admin-email-value {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.admin-pending-email {
+  display: block;
+  margin-top: 5px;
+  color: var(--warning);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.settings-admin-card {
+  overflow: hidden;
+}
+
+.settings-admin-card .card-header .card-title {
+  margin-bottom: 5px;
+}
+
+.settings-admin-card .card-header p {
+  color: var(--text-secondary);
+}
+
+.settings-admin-card .table-wrap {
+  margin-top: 8px;
+}
+
+.settings-admin-card .cell-actions .action-row {
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+}
+
+.admin-action-trigger {
+  color: var(--text-secondary);
+}
+
+.admin-action-trigger:hover:not(:disabled) {
+  background: var(--surface-alt);
+  color: var(--primary);
+}
+
+.admin-action-dismiss {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  border: 0;
+  background: transparent;
+}
+
+.admin-action-menu {
+  position: fixed;
+  z-index: 71;
+  display: flex;
+  flex-direction: column;
+  width: 190px;
+  max-height: calc(100vh - 16px);
+  max-height: calc(100dvh - 16px);
+  overflow-y: auto;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow);
+}
+
+.admin-action-menu button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-action-menu button:hover,
+.admin-action-menu button:focus-visible {
+  outline: none;
+  background: var(--surface-alt);
+}
+
+.admin-action-menu button:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--orchid);
+}
+
+.admin-action-menu button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-action-menu .admin-action-destructive {
+  color: var(--error);
+}
+
+.settings-admin-card .state-error code {
+  color: var(--text-primary);
+}
+
+.settings-password-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  margin-top: 8px;
+}
+
+.settings-password-form > div,
+.settings-password-form > .form-error {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1023px) {
+  .settings-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-nav-panel {
+    padding: 8px;
+  }
+
+  .settings-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .settings-nav-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .settings-password-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-page {
+    gap: 18px;
+  }
+
+  .settings-nav-panel {
+    margin-right: -4px;
+    margin-left: -4px;
+  }
+
+  .settings-admin-card .card-header {
+    align-items: stretch;
+  }
+
+  .settings-admin-card .card-header > button {
+    width: 100%;
+  }
+
+  .settings-password-form {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-password-form > div,
+  .settings-password-form > .form-error {
+    grid-column: auto;
+  }
+
+  .admin-account-details {
+    grid-template-columns: 1fr;
+    gap: 13px;
+    padding: 15px;
+  }
+}
