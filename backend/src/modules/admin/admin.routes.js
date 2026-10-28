@@ -30,6 +30,7 @@ import {
   verifyAdminEmailChangeController,
   updateOwnAdminEmailController,
   resendOwnAdminEmailVerificationController,
+  getAdminOverviewController,
   listDriversController,
   getDriverController,
   updateDriverVerificationController,
@@ -86,6 +87,12 @@ router.delete(
 );
 
 router.get("/profile/me", getMyProfileController);
+
+router.get(
+  "/overview",
+  requireAdminPermission("manageAdmins"),
+  getAdminOverviewController
+);
 
 router.get("/admins", requireAdminPermission("manageAdmins"), listAdminsController);
 router.post("/admins", requireAdminPermission("manageAdmins"), createAdminController);
