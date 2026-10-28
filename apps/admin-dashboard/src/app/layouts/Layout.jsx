@@ -1,31 +1,47 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   Car,
   Menu,
   LayoutDashboard,
-  LogOut,
   Settings,
   Users,
   X,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { hasFullAdminAccess } from "../../features/auth/admin-access";
-import ThemeToggle from "../../shared/components/ThemeToggle";
-import { initials } from "../../shared/utils/format";
+import DashboardSearch from "./DashboardSearch";
+import TopbarActions from "../../shared/components/TopbarActions";
+import PageEntrance from "../../shared/components/PageEntrance";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Overview", icon: LayoutDashboard, end: true },
+  { to: "/overview", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/drivers", label: "Drivers", icon: Car },
-  { to: "/users", label: "Users", icon: Users },
+  { to: "/users", label: "Passengers", icon: Users },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 const Layout = () => {
-  const { admin, logout } = useAuth();
+  const { admin, logout, loginWelcome, consumeLoginWelcome } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const landing = hasFullAdminAccess(admin) ? ["/", "/overview"] : ["/drivers"];
+    if (loginWelcome && !landing.includes(location.pathname)) consumeLoginWelcome();
+  }, [admin, loginWelcome, consumeLoginWelcome, location.pathname]);
+
+  const handleLogout = () => {
+    logout({ explicit: true });
+    navigate("/login", { replace: true, state: null });
+  };
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  // Layout unmounts on logout: never carry another session's collapsed state.
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDrawerMode, setIsDrawerMode] = useState(() =>
     window.matchMedia("(max-width: 1023px)").matches
   );
@@ -97,7 +113,7 @@ const Layout = () => {
   }, [isMobileOpen]);
 
   return (
-    <div className="layout">
+    <div className={`layout${isCollapsed && !isDrawerMode ? " is-sidebar-collapsed" : ""}`}>
       {isMobileOpen && (
         <button
           type="button"
@@ -114,11 +130,21 @@ const Layout = () => {
         aria-hidden={isDrawerMode && !isMobileOpen ? true : undefined}
       >
         <div className="sidebar-brand">
-          <img src={logo} alt="Saheli Safar" className="sidebar-logo" />
-          <div className="sidebar-brand-text">
-            <strong>Saheli Safar</strong>
-            <span>Admin Panel</span>
-          </div>
+          <button type="button" className="sidebar-brand-toggle"
+            aria-label={isDrawerMode ? "Close navigation menu" : isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={isDrawerMode ? isMobileOpen : !isCollapsed}
+            aria-controls="admin-sidebar"
+            title={isDrawerMode ? "Close navigation" : isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => isDrawerMode ? setIsMobileOpen(false) : setIsCollapsed((collapsed) => !collapsed)}>
+            <img src={logo} alt="" className="sidebar-logo" />
+            <span className="sidebar-brand-text">
+              <strong>Saheli Safar</strong>
+              <span>Admin Panel</span>
+            </span>
+            <span className="sidebar-collapse-hint" aria-hidden="true">
+              {isCollapsed && !isDrawerMode ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
+            </span>
+          </button>
           <button
             ref={closeButtonRef}
             type="button"
@@ -132,7 +158,7 @@ const Layout = () => {
 
         <nav className="sidebar-nav">
           {NAV_ITEMS.filter(
-            ({ to }) => to !== "/" || hasFullAdminAccess(admin)
+            ({ to }) => to !== "/overview" || hasFullAdminAccess(admin)
           ).map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
@@ -151,32 +177,6 @@ const Layout = () => {
           ))}
         </nav>
 
-        <div className="sidebar-footer">
-          <div className="admin-chip">
-            <span
-              className="avatar"
-              role="img"
-              aria-label={`Admin: ${admin?.fullName || "Admin"}`}
-            >
-              {initials(admin?.fullName)}
-            </span>
-            <div className="admin-chip-text">
-              <strong>{admin?.fullName || "Admin"}</strong>
-              <span>{admin?.email}</span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className="btn btn-ghost-dark"
-            aria-label="Logout"
-            title="Logout"
-            onClick={logout}
-          >
-            <LogOut size={16} aria-hidden="true" />
-            <span className="sidebar-label">Logout</span>
-          </button>
-        </div>
       </aside>
 
       <main className="main" inert={isDrawerMode && isMobileOpen}>
@@ -192,13 +192,10 @@ const Layout = () => {
           >
             <Menu size={20} aria-hidden="true" />
           </button>
-          <div className="topbar-brand">
-            <span className="topbar-brand-mark" aria-hidden="true">S</span>
-            <span>Saheli Safar <span className="topbar-divider">/</span> Admin</span>
-          </div>
-          <ThemeToggle />
+          <DashboardSearch admin={admin} />
+          <TopbarActions admin={admin} onLogout={handleLogout} />
         </header>
-        <Outlet />
+        <PageEntrance key={location.pathname}><Outlet /></PageEntrance>
       </main>
     </div>
   );
