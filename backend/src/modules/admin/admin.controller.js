@@ -25,6 +25,7 @@ import {
   verifyAdminEmailChange,
   resendOwnAdminEmailVerification,
   deactivateAdminAccount,
+  getAdminOverview,
   listDrivers,
   getDriver,
   updateDriverVerification,
@@ -181,6 +182,20 @@ export const resendOwnAdminEmailVerificationController = async (
     return res.status(200).json({
       success: true,
       ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/admin/overview
+export const getAdminOverviewController = async (req, res, next) => {
+  try {
+    const overview = await getAdminOverview();
+
+    return res.status(200).json({
+      success: true,
+      ...overview,
     });
   } catch (error) {
     next(error);
