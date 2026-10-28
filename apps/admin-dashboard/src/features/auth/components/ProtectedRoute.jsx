@@ -5,7 +5,7 @@ import { LoadingState } from "../../../shared/components/States";
 
 // Only signed-in admins can open dashboard pages.
 const ProtectedRoute = () => {
-  const { isAuthenticated, isRestoring } = useAuth();
+  const { isAuthenticated, isRestoring, isExplicitLogout } = useAuth();
   const location = useLocation();
 
   if (isRestoring) {
@@ -13,7 +13,7 @@ const ProtectedRoute = () => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+    return <Navigate to="/login" replace state={isExplicitLogout ? null : { from: location }} />;
   }
 
   return <Outlet />;
