@@ -151,6 +151,34 @@ test("forgot password returns the same response for existing and unknown emails"
   assert.deepEqual(responses[0], responses[1]);
 });
 
+test("forgot password reports a generic service failure when email is not configured", async () => {
+  let accountLookupCalled = false;
+  await withModelStubs(
+    {
+      [User.modelName]: {
+        findOne: () => {
+          accountLookupCalled = true;
+          return makeUserQuery(null);
+        },
+      },
+    },
+    async () => {
+      await assert.rejects(
+        () =>
+          requestAdminPasswordReset({
+            email: "admin@example.com",
+            sendEmail: null,
+          }),
+        (error) =>
+          error.statusCode === 503 &&
+          error.message ===
+            "Password reset email service is temporarily unavailable."
+      );
+    }
+  );
+  assert.equal(accountLookupCalled, false);
+});
+
 test("new password reset requests invalidate the previous token and delivery failure stays generic", async () => {
   let deleteCount = 0;
   const createdRecords = [];
