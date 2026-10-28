@@ -121,8 +121,8 @@ const DriverDetailPage = () => {
           </div>
         </div>
 
-        <div className="action-row">
-          {driver.verificationStatus !== "approved" && (
+        <div className="action-row drivers-verification-actions">
+          {driver.verificationStatus === "pending" && (
             <button
               type="button"
               className="btn btn-success"
@@ -132,7 +132,7 @@ const DriverDetailPage = () => {
               Approve
             </button>
           )}
-          {driver.verificationStatus !== "rejected" && (
+          {driver.verificationStatus === "pending" && (
             <button
               type="button"
               className="btn btn-danger"
@@ -151,8 +151,8 @@ const DriverDetailPage = () => {
         </p>
       )}
 
-      <div className="detail-grid drivers-detail-grid">
-        <section className="card drivers-detail-card">
+      <div className="drivers-detail-grid">
+        <section className="drivers-detail-card">
           <h2 className="card-title">Personal information</h2>
           <dl className="details">
             <Detail label="Full name">{driver.fullName}</Detail>
@@ -168,7 +168,7 @@ const DriverDetailPage = () => {
           </dl>
         </section>
 
-        <section className="card drivers-detail-card">
+        <section className="drivers-detail-card">
           <h2 className="card-title">License & vehicle</h2>
           <dl className="details">
             <Detail label="License number" mono>
@@ -186,7 +186,7 @@ const DriverDetailPage = () => {
           </dl>
         </section>
 
-        <section className="card drivers-detail-card">
+        <section className="drivers-detail-card">
           <h2 className="card-title">Verification</h2>
           <dl className="details">
             <Detail label="Status">
@@ -206,7 +206,7 @@ const DriverDetailPage = () => {
           </dl>
         </section>
 
-        <section className="card drivers-detail-card">
+        <section className="drivers-detail-card drivers-access-section">
           <h2 className="card-title">Account access</h2>
           <p className="muted small">
             Suspending an account logs the driver out immediately.
