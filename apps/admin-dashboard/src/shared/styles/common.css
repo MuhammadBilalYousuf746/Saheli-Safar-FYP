@@ -137,16 +137,6 @@
   color: var(--primary);
 }
 
-.btn-ghost-dark {
-  border-color: rgba(255, 255, 255, 0.18);
-  background: transparent;
-  color: var(--text-on-dark);
-}
-
-.btn-ghost-dark:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-}
-
 .form {
   display: flex;
   flex-direction: column;
