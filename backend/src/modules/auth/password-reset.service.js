@@ -39,8 +39,10 @@ export const requestAdminPasswordReset = async ({
   now = new Date(),
 }) => {
   if (typeof sendEmail !== "function") {
-    console.error("Password reset email service is not configured.");
-    return { message: GENERIC_REQUEST_MESSAGE };
+    throw createError(
+      "Password reset email service is temporarily unavailable.",
+      503
+    );
   }
 
   if (!(await consumeAccountRequest(email, now))) {
