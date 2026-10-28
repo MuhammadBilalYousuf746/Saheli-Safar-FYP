@@ -857,6 +857,45 @@ export const deactivateAdminAccount = async ({
 };
 
 // ==========================================
+// ADMIN OVERVIEW
+// ==========================================
+
+export const getAdminOverview = async () => {
+  const [pending, approved, rejected, passengers, drivers, suspended] =
+    await Promise.all([
+      listDrivers({ verificationStatus: "pending", page: 1, limit: 5 }),
+      listDrivers({ verificationStatus: "approved", page: 1, limit: 1 }),
+      listDrivers({ verificationStatus: "rejected", page: 1, limit: 1 }),
+      listUsers({ role: "passenger", page: 1, limit: 1 }),
+      listUsers({ role: "driver", page: 1, limit: 1 }),
+      listUsers({ status: "suspended", page: 1, limit: 1 }),
+    ]);
+
+  return {
+    stats: {
+      pending: pending.pagination.total,
+      approved: approved.pagination.total,
+      rejected: rejected.pagination.total,
+      passengers: passengers.pagination.total,
+      drivers: drivers.pagination.total,
+      suspended: suspended.pagination.total,
+    },
+    recentPending: pending.drivers.map((driver) => ({
+      id: driver.id,
+      fullName: driver.fullName,
+      vehicle: driver.vehicle
+        ? {
+            make: driver.vehicle.make,
+            model: driver.vehicle.model,
+            plateNumber: driver.vehicle.plateNumber,
+          }
+        : null,
+      submittedAt: driver.submittedAt,
+    })),
+  };
+};
+
+// ==========================================
 // DRIVER VERIFICATION
 // ==========================================
 
@@ -902,7 +941,7 @@ export const updateDriverVerification = async ({
   adminId,
 }) => {
   const profile = await DriverProfile.findOneAndUpdate(
-    { user: userId },
+    { user: userId, verificationStatus: "pending" },
     {
       $set: {
         verificationStatus: status,
@@ -918,6 +957,15 @@ export const updateDriverVerification = async ({
   ).populate("user", USER_LIST_FIELDS);
 
   if (!profile) {
+    const driverExists = await DriverProfile.exists({ user: userId });
+
+    if (driverExists) {
+      throw createError(
+        "Driver verification has already been decided.",
+        409
+      );
+    }
+
     throw createError("Driver not found.", 404);
   }
 
