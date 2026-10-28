@@ -112,20 +112,50 @@ const AdminAccountSection = () => {
         <div className="card-header">
           <div>
             <h2 className="card-title">My Account</h2>
-            <p className="muted">
-              Manage your Saheli Safar Admin account and contact email.
-            </p>
+
           </div>
+        </div>
+
+        <div className="admin-account-actions">
+          <div className="admin-profile-summary">
+            <span className="admin-profile-avatar" aria-hidden="true">{Array.from(admin?.fullName?.trim() || "?")[0].toUpperCase()}</span>
+            <div>
+              <strong>{admin?.fullName || "Name not provided"}</strong>
+              <span>{admin?.email || "Email not provided"}</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              setEmail(admin?.email || "");
+              setEmailPassword("");
+              setEmailError("");
+              setEmailDialogOpen(true);
+            }}
+          >
+            <Mail size={16} aria-hidden="true" />
+            Change Email
+          </button>
+          {pendingEmail && (
+            <div className="inline-note">
+              Verification pending for <strong>{pendingEmail}</strong>.
+              <button
+                type="button"
+                className="link admin-resend-link"
+                onClick={resendVerification}
+                disabled={isResending}
+              >
+                {isResending ? "Sending…" : "Resend verification"}
+              </button>
+            </div>
+          )}
         </div>
 
         <dl className="admin-account-details">
           <div>
-            <dt>Full name</dt>
-            <dd>{admin?.fullName || "Not provided"}</dd>
-          </div>
-          <div>
-            <dt>Current email</dt>
-            <dd>{admin?.email || "Not provided"}</dd>
+            <dt>Role</dt>
+            <dd>{admin?.role || "Not provided"}</dd>
           </div>
           <div>
             <dt>Account status</dt>
@@ -153,33 +183,11 @@ const AdminAccountSection = () => {
           <p className="form-error" role="alert">{emailError}</p>
         )}
 
-        <div className="admin-account-actions">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => {
-              setEmail(admin?.email || "");
-              setEmailPassword("");
-              setEmailError("");
-              setEmailDialogOpen(true);
-            }}
-          >
-            <Mail size={16} aria-hidden="true" />
-            Change Email
-          </button>
-          {pendingEmail && (
-            <div className="inline-note">
-              Verification pending for <strong>{pendingEmail}</strong>.
-              <button
-                type="button"
-                className="link admin-resend-link"
-                onClick={resendVerification}
-                disabled={isResending}
-              >
-                {isResending ? "Sending…" : "Resend verification"}
-              </button>
-            </div>
-          )}
+        <div className="admin-account-danger">
+          <div>
+            <h3>Account access</h3>
+            <p>Deactivating your account revokes dashboard access immediately.</p>
+          </div>
           <button
             type="button"
             className="btn btn-danger"
