@@ -1,5 +1,6 @@
+import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/context/AuthContext";
 import { canReviewPassengerVerification } from "../auth/admin-access";
 import "./verification.css";
@@ -21,6 +22,10 @@ function Document({ endpoint, label, onState }) {
 }
 export default function PassengerVerificationPage() {
   const { admin, request } = useAuth(), { userId } = useParams();
+  const location = useLocation();
+  const candidate = location.state?.passengerList;
+  const passengerList = typeof candidate === "string" && /^\/users(?:\?|$)/.test(candidate) ? candidate : "/users";
+  const back = <Link className="passenger-back" to={passengerList} aria-label="Back to Passengers" title="Back to Passengers"><ArrowLeft size={19} aria-hidden="true" /></Link>;
   const allowed = canReviewPassengerVerification(admin);
   const [data, setData] = useState(null), [error, setError] = useState(""), [notice, setNotice] = useState("");
   const [page, setPage] = useState(1), [reason, setReason] = useState(""), [busy, setBusy] = useState(false), [blocked, setBlocked] = useState(false);
@@ -46,15 +51,14 @@ export default function PassengerVerificationPage() {
     } catch (error) { if (version === sequence.current) { setError(`${error.message} Refresh the record before trying again.`); setBlocked(true); } }
     finally { if (version === sequence.current) setBusy(false); }
   };
-  if (!allowed) return <div className="page"><h1>Passenger identity review</h1><p role="alert">Only Full Access Admins explicitly granted verifyPassengers may perform Passenger identity verification.</p><Link to="/users">Back to Passengers</Link></div>;
+  if (!allowed) return <div className="page"><h1>Passenger identity review</h1><p role="alert">Only Full Access Admins explicitly granted verifyPassengers may perform Passenger identity verification.</p>{back}</div>;
   const verification = data?.verification;
   const imagesReady = verification?.documents.length >= 2 && verification.documents.every(doc => documents[doc.key] === "ready");
   return <div className="page verification-page">
-    <Link className="link" to={userId ? "/passenger-verifications" : "/users"}>{userId ? "Back to pending queue" : "Back to Passengers"}</Link>
-    <header className="page-header"><div><h1>Passenger identity review</h1><p className="muted">Manual review of protected CNIC and selfie submissions.</p></div><button className="btn" onClick={load} disabled={busy}>Refresh verification records</button></header>
+    <header className="page-header"><div className="verification-heading">{back}<div><h1>Passenger identity review</h1><p className="muted">Manual review of protected CNIC and selfie submissions.</p></div></div><button className="btn" onClick={load} disabled={busy}>Refresh verification records</button></header>
     {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
     {!data && !error && <p role="status">Loading verification records...</p>}
-    {data && !userId && <section className="card"><h2>Pending Review</h2>{data.submissions.length ? <ul>{data.submissions.map(row => <li key={row.userId}><Link className="link" to={`/passenger-verifications/${row.userId}`}>{row.fullName || "Passenger"}</Link> — {row.email}</li>)}</ul> : <p>No submissions awaiting review on this page.</p>}
+    {data && !userId && <section className="card"><h2>Pending Review</h2>{data.submissions.length ? <ul>{data.submissions.map(row => <li key={row.userId}><Link className="link" to={`/passenger-verifications/${row.userId}`} state={{ passengerList }}>{row.fullName || "Passenger"}</Link> — {row.email}</li>)}</ul> : <p>No submissions awaiting review on this page.</p>}
       <div className="verification-actions"><button className="btn" disabled={page === 1} onClick={() => setPage(p => p - 1)}>Previous page</button><span>Page {page}</span><button className="btn" disabled={!data.hasMore} onClick={() => setPage(p => p + 1)}>Next page</button></div></section>}
     {verification && <>
       <section className="card"><h2>{data.passenger.fullName || "Passenger"}</h2><p>{data.passenger.email}</p><p><strong>Current decision:</strong> {verification.status.replaceAll("_", " ")}</p><p>Revision: {verification.revision}</p>{verification.rejectionReason && <p>Rejection reason: {verification.rejectionReason}</p>}{verification.reverificationReason && <p>Reverification reason: {verification.reverificationReason}</p>}</section>

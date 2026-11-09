@@ -80,11 +80,11 @@ const UsersPage = () => {
       <header className="page-header">
         <div>
           <h1>Passengers</h1>
-          {canReviewPassengerVerification(admin) && <Link className="link" to="/passenger-verifications">Review identity submissions</Link>}
           <p className="muted">
             Manage passenger accounts and review their status.
           </p>
         </div>
+        {canReviewPassengerVerification(admin) && <Link className="btn btn-primary identity-review-cta" to="/passenger-verifications" state={{ passengerList: '/users?' + searchParams.toString() }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z" /><path d="m9 12 2 2 4-4" /></svg>Review Identity Submissions</Link>}
         {Number.isInteger(data?.pagination?.total) && (
           <div className="users-count" role="status">
             <strong>{data.pagination.total.toLocaleString()}</strong>

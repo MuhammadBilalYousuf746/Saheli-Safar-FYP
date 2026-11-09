@@ -1,3 +1,4 @@
+import AdminNotification from "../admin/admin-notification.model.js";
 
 import User from "../auth/user.model.js";
 import DriverProfile from "./driver.model.js";
@@ -26,6 +27,7 @@ export const completeDriverProfile = async ({
   // Validate and normalize profile information.
   const data = completeDriverProfileSchema.parse(input);
 
+  await AdminNotification.init();
   const result = await completeOnboarding({
     userId,
     role: "driver",
@@ -48,6 +50,7 @@ export const completeDriverProfile = async ({
         { session }
       );
 
+      await AdminNotification.updateOne({ _id: 'driver:' + profile._id }, { $setOnInsert: { type: "driver_verification", entity: user._id, readBy: [] } }, { session, upsert: true });
       return profile;
     },
   });

@@ -1,4 +1,4 @@
-.settings-page { max-width: 1140px; margin-left: 0; margin-right: auto; gap: 24px; }
+.settings-page { max-width: 1140px; margin-left: auto; margin-right: auto; gap: 24px; }
 .settings-header { padding-bottom: 0; }
 .settings-header h1 { font-size: clamp(24px, 2.1vw, 29px); }
 .settings-header p { font-size: 13px; }

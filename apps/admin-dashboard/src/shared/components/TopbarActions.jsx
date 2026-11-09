@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bell, ChevronRight, LayoutDashboard, LogOut, ShieldCheck, UserRound, UsersRound } from "lucide-react";
 
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { hasFullAdminAccess } from "../../features/auth/admin-access";
-import { useAdminListApi } from "../services/admin-list.service";
+import { useAdminNotifications } from "../services/admin-notifications";
 
 const TopbarActions = ({ admin, onLogout }) => {
   const { request } = useAuth();
-  const api = useAdminListApi(request);
   const location = useLocation();
+  const navigate = useNavigate();
   const id = useId();
   const containerRef = useRef(null);
   const bellRef = useRef(null);
@@ -23,10 +23,7 @@ const TopbarActions = ({ admin, onLogout }) => {
       return { open: value, presented: value || current.presented };
     });
   }, []);
-  const [count, setCount] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [retry, setRetry] = useState(0);
+  const { notifications, unreadCount: count, loading, error, busy, refresh, mark } = useAdminNotifications(request, open === "notifications");
   const fullAccess = hasFullAdminAccess(admin);
   const displayName = admin?.fullName?.trim() || "Administrator";
   const initial = Array.from(displayName)[0].toUpperCase();
@@ -94,24 +91,6 @@ const TopbarActions = ({ admin, onLogout }) => {
     };
   }, [open]);
 
-  useEffect(() => {
-    if (open !== "notifications") return undefined;
-    let cancelled = false;
-    setLoading(true);
-    setError("");
-    setCount(null);
-    // This list endpoint is authorized for both Full and Standard Access.
-    api.listDrivers({ verificationStatus: "pending", page: 1, limit: 1 })
-      .then((data) => {
-        const total = data.pagination?.total;
-        if (!Number.isInteger(total) || total < 0) throw new Error("Pending verification information is unavailable.");
-        if (!cancelled) setCount(total);
-      })
-      .catch((failure) => { if (!cancelled) setError(failure.message || "Unable to load alerts."); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [open, retry, api]);
-
   const menuKeys = (event) => {
     if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -126,7 +105,7 @@ const TopbarActions = ({ admin, onLogout }) => {
     <div className="topbar-actions" ref={containerRef}
       onBlur={(event) => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) setOpen(null); }}>
       <button ref={bellRef} type="button" className="topbar-bell"
-        aria-label={count > 0 ? `Notifications: ${count} pending driver verifications` : "Notifications"}
+        aria-label={count > 0 ? `Notifications: ${count} unread` : "Notifications"}
         aria-haspopup="dialog" aria-expanded={open === "notifications"} aria-controls={`${id}-notifications`}
         onClick={() => setOpen((current) => current === "notifications" ? null : "notifications")}>
         <Bell size={20} aria-hidden="true" />
@@ -143,14 +122,18 @@ const TopbarActions = ({ admin, onLogout }) => {
           data-closing={!open} inert={!open} aria-hidden={!open ? true : undefined}
           role="dialog" aria-labelledby={`${id}-notifications-title`} tabIndex={-1}>
           <h2 id={`${id}-notifications-title`}>Notifications</h2>
-          {loading || (count === null && !error) ? <p role="status">Loading alerts…</p> : error ? (
-            <div><p role="alert">{error}</p><button className="link" type="button" onClick={() => setRetry((value) => value + 1)}>Try again</button></div>
-          ) : count > 0 ? (
-            <Link className="topbar-notification-link" to="/drivers?verificationStatus=pending" onClick={() => setOpen(null)}>
-              <span><strong>{count} driver {count === 1 ? "application" : "applications"}</strong><span>Awaiting verification</span></span>
-              <ChevronRight size={16} aria-hidden="true" />
-            </Link>
-          ) : <p role="status">You're all caught up!</p>}
+          {count > 0 && <button className="link notification-mark-all" disabled={busy || !notifications.length} onClick={() => mark()}>Mark all as read</button>}
+          {error && <div role="alert"><p>{error}</p><button className="link" onClick={refresh}>Try again</button></div>}
+          {loading ? <p role="status">Loading notifications...</p> : !notifications.length && !error ? <p role="status">You're all caught up.</p> : (
+            <ul className="notification-list">{notifications.map(notification => <li key={notification.id}>
+              <button className={'notification-row' + (notification.read ? '' : ' is-unread')} disabled={busy}
+                onClick={async () => { if (notification.read || await mark(notification)) { setOpen(null); navigate(notification.destination); } }}>
+                <ShieldCheck size={18} aria-hidden="true" />
+                <span><strong>{notification.title}</strong><span>{notification.message}</span><time dateTime={notification.createdAt}>{new Date(notification.createdAt).toLocaleString()}</time><small>{notification.read ? 'Read' : 'Unread'}</small></span>
+                <ChevronRight size={14} aria-hidden="true" />
+              </button>
+            </li>)}</ul>
+          )}
         </section>
       )}
       {presented === "profile" && (

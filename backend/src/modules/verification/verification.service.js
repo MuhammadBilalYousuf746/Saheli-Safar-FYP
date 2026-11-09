@@ -1,3 +1,4 @@
+import AdminNotification from "../admin/admin-notification.model.js";
 import mongoose from "mongoose";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
@@ -25,9 +26,18 @@ export function createMongooseVerificationRepo() {
       if (!profile) throw missing();
       return { profile, user };
     },
-    async swap(id, revision, fields, statuses) {
+    async swap(id, revision, fields, statuses, session) {
       return PassengerProfile.findOneAndUpdate({ user: id, documentsDeletedAt: null, $and: [versionFilter(revision), { $or: [{ verificationStatus: { $in: statuses } }, { verificationStatus: { $exists: false } }] }] },
-        { $set: fields, $inc: { verificationRevision: 1 } }, { returnDocument: "after", runValidators: true, maxTimeMS: 10000, writeConcern: { w: "majority", wtimeout: 10000 } }).select("+verificationAssets");
+        { $set: fields, $inc: { verificationRevision: 1 } }, { ...(session ? { session } : { writeConcern: { w: "majority", wtimeout: 10000 } }), returnDocument: "after", runValidators: true, maxTimeMS: 10000 }).select("+verificationAssets");
+    },
+    async commitSubmission(id, revision, fields, statuses) {
+      await AdminNotification.init();
+      return mongoose.connection.transaction(async session => {
+        const previous = await PassengerProfile.findOne({ user: id }).session(session);
+        const saved = await this.swap(id, revision, fields, statuses, session);
+        if (saved) await AdminNotification.updateOne({ _id: 'identity:' + fields.submissionId }, { $setOnInsert: { type: "passenger_identity", entity: id, resubmission: previous?.verificationStatus === "rejected", readBy: [] } }, { session, upsert: true });
+        return saved;
+      }, { writeConcern: { w: "majority" }, readConcern: { level: "snapshot" }, maxCommitTimeMS: 10000 });
     },
     bySubmission: (id, submissionId) => PassengerProfile.findOne({ user: id, submissionId }).select("+verificationAssets").read("primary").readConcern("majority"),
     createOperation: operation => VerificationOperation.create([operation], { writeConcern: { w: "majority", wtimeout: 10000 } }),
@@ -113,7 +123,7 @@ export function createVerificationService({ repo = createMongooseVerificationRep
         try {
           // Legacy rows may lack the status field; hydration gives not_submitted,
           // but the Mongo predicate must explicitly admit that absence too.
-          saved = await repo.swap(id, revision, { verificationStatus: "pending_review", submissionId: operationId,
+          saved = await (repo.commitSubmission || repo.swap).call(repo, id, revision, { verificationStatus: "pending_review", submissionId: operationId,
             verificationAssets: operation.assets, submittedAt: new Date(), rejectionReason: null, reverificationReason: null, reviewedBy: null, reviewedAt: null }, ["not_submitted", "rejected"]);
         } catch (error) {
           try { saved = await repo.bySubmission(id, operationId); }

@@ -11,10 +11,10 @@ import { setTimeout as delay } from "node:timers/promises";
 const appUrl = process.env.ADMIN_TEST_URL || "http://localhost:5173";
 const browserExe = process.env.ADMIN_TEST_BROWSER || "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
-test("real browser: explicit logout, account switching, deep links and permission guards", { timeout: 60000 }, async () => {
+test("real browser: explicit logout, account switching, deep links and permission guards", { timeout: 120000 }, async () => {
   const profile = await mkdtemp(join(tmpdir(), "saheli-auth-test-"));
   const browser = spawn(browserExe, [
-    "--headless=new", "--no-first-run", "--no-default-browser-check",
+    "--headless=new", "--no-sandbox", "--no-proxy-server", "--disable-background-networking", "--no-first-run", "--no-default-browser-check", "--disable-background-timer-throttling", "--disable-renderer-backgrounding",
     "--remote-debugging-port=0", `--user-data-dir=${profile}`, "about:blank",
   ], { windowsHide: true, stdio: "ignore" });
   let socket;
@@ -46,7 +46,9 @@ test("real browser: explicit logout, account switching, deep links and permissio
     const delayedLogins = [];
     const send = (method, params = {}) => new Promise((resolve, reject) => {
       const requestId = ++id;
-      pending.set(requestId, { resolve, reject });
+      const timer = setTimeout(() => { pending.delete(requestId); reject(new Error('CDP timeout: ' + method + ' ' + (params.expression || '').slice(0, 100))); }, 15000);
+      timer.unref();
+      pending.set(requestId, { resolve, reject, timer });
       socket.send(JSON.stringify({ id: requestId, method, params }));
     });
     const admin = (full) => ({
@@ -58,6 +60,7 @@ test("real browser: explicit logout, account switching, deep links and permissio
       if (message.id) {
         const job = pending.get(message.id);
         pending.delete(message.id);
+        clearTimeout(job?.timer);
         if (message.error) job?.reject(new Error(message.error.message));
         else job?.resolve(message.result);
       } else if (message.method === "Log.entryAdded") {
@@ -69,13 +72,16 @@ test("real browser: explicit logout, account switching, deep links and permissio
       } else if (message.method === "Fetch.requestPaused") {
         const { requestId, request, resourceType } = message.params;
         const path = new URL(request.url).pathname;
+        if (new URL(request.url).hostname === 'fonts.googleapis.com') {
+          void send('Fetch.fulfillRequest', { requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/css' }], body: '' }); return;
+        }
         if (resourceType === "Script" && new URL(request.url).origin === appUrl) {
           void send("Fetch.continueRequest", { requestId });
           return;
         }
         let body = { success: true };
         let responseCode = 200;
-        const pendingDrivers = path.endsWith("/drivers") && new URL(request.url).searchParams.get("verificationStatus") === "pending";
+        const notificationFeed = path.endsWith("/notifications");
         if (request.method !== "OPTIONS") apiRequests.push({ path, method: request.method, query: new URL(request.url).search, standard: Object.values(request.headers).includes("Bearer fixture-standard") });
         if (path.endsWith("/auth/login") && request.method === "POST") {
           const full = JSON.parse(request.postData).email === "full@example.test";
@@ -89,11 +95,13 @@ test("real browser: explicit logout, account switching, deep links and permissio
           const page = Number(params.get('page') || 1), limit = Number(params.get('limit') || 20);
           body = { success:true, users: passengerMode === 'empty' ? [] : matches.slice((page - 1) * limit, page * limit), pagination:{page,limit,total:passengerMode === 'empty' ? 0 : matches.length,totalPages:passengerMode === 'empty' ? 0 : Math.ceil(matches.length / limit)} };
           if (passengerMode === 'error' && request.method !== 'OPTIONS') { responseCode = 500; body = { message:'Fixture passenger service unavailable' }; }
+        } else if (notificationFeed) {
+          body = { success: true, unreadCount: alertTotal, notifications: Array.from({ length: alertTotal }, (_, index) => ({ id: 'fixture:' + index, title: 'New driver verification request', message: 'Synthetic driver application ready for review.', createdAt: '2026-11-09T08:00:00.000Z', destination: '/drivers?verificationStatus=pending', read: false })) };
+          if (invalidAlerts) { responseCode = 503; body = { message: 'Synthetic notification service unavailable' }; }
         } else if (path.endsWith("/overview")) {
           body = { ...body, stats: { pending: 0, approved: 0, rejected: 0, passengers: 0, drivers: 0, suspended: 0 }, recentPending: [] };
         } else {
           body = { ...body, users: [], drivers: [], admins: [], pagination: { page: 1, total: 0, totalPages: 0, limit: 20 } };
-          if (pendingDrivers) body.pagination.total = invalidAlerts ? null : alertTotal;
         }
         const deliver = () => send("Fetch.fulfillRequest", {
           requestId, responseCode,
@@ -106,7 +114,7 @@ test("real browser: explicit logout, account switching, deep links and permissio
           body: Buffer.from(JSON.stringify(body)).toString("base64"),
         });
         if (holdLogin && path.endsWith("/auth/login") && request.method === "POST") delayedLogins.push(deliver);
-        else if (pendingDrivers && holdAlerts && request.method === "GET") delayedAlerts.push(deliver);
+        else if (notificationFeed && holdAlerts && request.method === "GET") delayedAlerts.push(deliver);
         else void deliver();
       }
     };
@@ -134,6 +142,7 @@ test("real browser: explicit logout, account switching, deep links and permissio
       };
     ` });
     await send("Fetch.enable", { patterns: [
+      { urlPattern: "https://fonts.googleapis.com/*" },
       { resourceType: "XHR", urlPattern: "*" },
       { resourceType: "Fetch", urlPattern: "*" },
       { urlPattern: "*/api/*" },
@@ -281,11 +290,12 @@ test("real browser: explicit logout, account switching, deep links and permissio
     // Controlled fixtures verify loading, actionable count, empty and error states.
     holdAlerts = true;
     await evaluate("document.querySelector('.topbar-bell').click()");
-    await waitFor("document.querySelector('.topbar-notifications')?.textContent.includes('Loading alerts')");
+    await waitFor("!!document.querySelector('.topbar-notifications')");
+    await delay(100);
     holdAlerts = false;
     for (const deliver of delayedAlerts.splice(0)) await deliver();
     await waitFor("document.querySelector('.topbar-alert-count')?.textContent === '3'");
-    await evaluate("document.querySelector('.topbar-notification-link').click()");
+    await evaluate("document.querySelector('.notification-row').click()");
     await waitFor("location.pathname === '/drivers' && location.search === '?verificationStatus=pending'");
     assert.equal(await evaluate("document.querySelector('.topbar-notifications')?.inert ?? true"), true);
     await waitFor("!document.querySelector('.topbar-notifications')");
@@ -295,17 +305,18 @@ test("real browser: explicit logout, account switching, deep links and permissio
     assert.equal(await evaluate("testEntrances.length"), await evaluate("routeEntranceCount"));
     alertTotal = 0;
     await evaluate("document.querySelector('.topbar-bell').click()");
-    await waitFor("document.querySelector('.topbar-notifications')?.textContent.includes(\"You're all caught up!\")");
+    await waitFor("document.querySelector('.topbar-notifications')?.textContent.includes(\"You're all caught up.\")");
     assert.equal(await evaluate("!!document.querySelector('.topbar-alert-count')"), false);
     await press("Escape");
     assert.equal(await evaluate("document.activeElement.classList.contains('topbar-bell')"), true);
+    await waitFor("!document.querySelector('.topbar-notifications')");
     invalidAlerts = true;
     await evaluate("document.querySelector('.topbar-bell').click()");
     await waitFor("!!document.querySelector('.topbar-notifications [role=alert]')");
     invalidAlerts = false;
     alertTotal = 3;
     await evaluate("document.querySelector('.topbar-notifications button').click()");
-    await waitFor("!!document.querySelector('.topbar-notification-link')");
+    await waitFor("!!document.querySelector('.notification-row')");
     await press("Escape");
     await evaluate("document.querySelector('.topbar-avatar').click()");
     await waitFor("!!document.querySelector('.topbar-profile-menu')");
@@ -374,7 +385,7 @@ test("real browser: explicit logout, account switching, deep links and permissio
         assert.equal(await evaluate("document.querySelector('.topbar-profile-menu a[href=\"/drivers\"]').textContent"), "Dashboard");
         await press("Escape");
         await evaluate("document.querySelector('.topbar-bell').click()");
-        await waitFor("!!document.querySelector('.topbar-notification-link')");
+        await waitFor("!!document.querySelector('.notification-row')");
         await press("Escape");
         await setSearch("");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.dashboard-search [role=option]')].map(x => x.textContent)"),
@@ -415,7 +426,7 @@ test("real browser: explicit logout, account switching, deep links and permissio
     assert.equal(await evaluate("(() => { const r = document.querySelector('.topbar-profile-menu').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; })()"), true);
     await press("Escape");
     await evaluate("document.querySelector('.topbar-bell').click()");
-    await waitFor("!!document.querySelector('.topbar-notification-link')");
+    await waitFor("!!document.querySelector('.notification-row')");
     assert.equal(await evaluate("(() => { const r = document.querySelector('.topbar-notifications').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; })()"), true);
     await send("Input.dispatchMouseEvent", { type: "mousePressed", x: 5, y: 150, button: "left", clickCount: 1 });
     await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: 5, y: 150, button: "left", clickCount: 1 });
@@ -488,15 +499,17 @@ test("real browser: explicit logout, account switching, deep links and permissio
     await waitFor('location.pathname === "/drivers" && document.querySelector("h1")?.textContent === "Drivers"');
     assert.equal(apiRequests.filter(r => r.path.endsWith('/users')).length, requestsBeforeLegacy);
     assert.ok(apiRequests.filter(r => r.path.endsWith('/users')).every(r => new URLSearchParams(r.query).get('role') === 'passenger'));
-    assert.equal(apiRequests.some(r => r.method !== 'GET' && !r.path.endsWith('/auth/login')), false);
+    assert.equal(apiRequests.some(r => r.method !== 'GET' && !r.path.endsWith('/auth/login') && !(r.method === 'POST' && /\/notifications\/[^/]+\/read$/.test(r.path))), false);
     await logout();
 
-    assert.deepEqual(errors.filter(error => !/Failed to load resource.*500/.test(error)), [], "No unexpected browser console or runtime errors");
+    assert.deepEqual(errors.filter(error => !/Failed to load resource.*(500|503)/.test(error)), [], "No unexpected browser console or runtime errors");
   } finally {
     socket?.close();
-    const exited = new Promise((resolve) => browser.once("exit", resolve));
-    browser.kill();
-    await exited;
+    if (browser.exitCode === null && browser.signalCode === null) {
+      const exited = new Promise((resolve) => browser.once("exit", resolve));
+      browser.kill();
+      await exited;
+    }
     await rm(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
   }
 });

@@ -82,3 +82,9 @@
   .users-contact { padding-left: 36px !important; }
   .users-table .users-joined, .users-table .users-actions { padding-left: 36px; }
 }
+
+.identity-review-cta { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 11px 18px; border-radius: 10px; text-align: center; white-space: normal; }
+.identity-review-cta svg { flex-shrink: 0; }
+.identity-review-cta:active { transform: translateY(1px); }
+.identity-review-cta:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (max-width: 600px) { .identity-review-cta { width: 100%; order: 3; } }

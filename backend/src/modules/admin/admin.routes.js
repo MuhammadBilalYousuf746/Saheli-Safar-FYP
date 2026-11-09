@@ -1,3 +1,4 @@
+import { createNotificationRoutes } from "./admin-notification.routes.js";
 
 import { Router } from "express";
 import { createAdminVerificationRoutes } from "../verification/verification.routes.js";
@@ -64,6 +65,7 @@ router.post(
 
 // Every route below requires an active admin access token.
 router.use(requireAuth("admin"));
+router.use("/notifications", createNotificationRoutes());
 router.use("/passenger-verifications", createAdminVerificationRoutes());
 
 router.post(

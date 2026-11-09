@@ -1,4 +1,4 @@
-.overview-page { gap: 30px; }
+.overview-page { gap: 30px; max-width: none; margin-inline: 0; }
 .overview-heading { min-width: 0; }
 .overview-heading h1 { font-size: clamp(23px, 2.1vw, 29px); }
 .overview-heading .admin-greeting > svg { width: 18px; height: 18px; }
@@ -18,7 +18,7 @@
 .overview-metric-value { color: var(--text-primary); font-size: 34px; font-weight: 650; line-height: 1.15; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .overview-primary-metric:last-child .overview-metric-value { color: var(--primary-dark); }
 .overview-primary-metric:hover .overview-metric-label { color: var(--primary-dark); }
-.overview-status-metrics { display: flex; flex-wrap: wrap; gap: 14px 28px; padding: 17px 28px; border-top: 1px solid var(--divider); }
+.overview-status-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 28px; padding: 17px 28px; border-top: 1px solid var(--divider); }
 .overview-status-metric { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--text-secondary); font-size: 12px; }
 .overview-status-metric strong { margin-left: 4px; color: var(--text-primary); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .overview-status-metric:hover { color: var(--primary-dark); }
@@ -62,7 +62,7 @@
   .overview-primary-metric { padding: 0 16px; }
   .overview-metric-value { font-size: 28px; }
   .overview-metric-label { font-size: 11px; }
-  .overview-status-metrics { padding: 16px; gap: 12px 20px; }
+  .overview-status-metrics { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); padding: 16px; gap: 12px 20px; }
   .overview-queue-header { align-items: flex-start; }
   .overview-queue-table thead { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
   .overview-queue-table tbody { display: block; border-top: 1px solid var(--border); }
@@ -77,6 +77,6 @@
   .overview-primary-metrics { grid-template-columns: 1fr; padding: 0; }
   .overview-primary-metric { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; }
   .overview-primary-metric + .overview-primary-metric { border-left: 0; border-top: 1px solid var(--divider); }
-  .overview-status-metrics { flex-direction: column; gap: 14px; padding: 18px 20px; }
+  .overview-status-metrics { grid-template-columns: 1fr; gap: 14px; padding: 18px 20px; }
   .overview-status-metric strong { margin-left: auto; }
 }

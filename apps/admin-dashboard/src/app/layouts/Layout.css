@@ -347,8 +347,8 @@
   gap: 24px;
   width: 100%;
   min-width: 0;
-  max-width: 1320px;
-  margin: 0 auto 0 0;
+  max-width: 1600px;
+  margin: 0 auto;
   padding: 36px 36px 52px;
 }
 
@@ -518,3 +518,21 @@
     transition-delay: 0s;
   }
 }
+
+/* In-app notification feed: constrained to the viewport at every size. */
+.topbar-notifications { width: 380px; }
+.notification-list { list-style: none; margin: 0; padding: 0; }
+.notification-mark-all { margin: 0 10px 10px; min-height: 44px; padding: 6px 0; border: 0; background: transparent; color: var(--primary); font-size: 12px; cursor: pointer; }
+.notification-mark-all:disabled { opacity: .6; cursor: wait; }
+.notification-row { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 13px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--text-secondary); text-align: left; cursor: pointer; }
+.notification-row > svg { flex-shrink: 0; margin-top: 2px; color: var(--primary); }
+.notification-row > span { min-width: 0; flex: 1; }
+.notification-row strong { display: block; color: var(--text-primary); font-size: 12px; }
+.notification-row span span { display: block; margin-top: 4px; font-size: 12px; line-height: 1.5; }
+.notification-row time, .notification-row small { display: block; margin-top: 5px; font-size: 10px; color: var(--text-muted); }
+.notification-row.is-unread { background: var(--accent-light); }
+.notification-row.is-unread strong::before { content: ''; display: inline-block; width: 5px; height: 5px; margin: 0 6px 2px 0; border-radius: 50%; background: var(--primary); }
+.notification-row.is-unread small { color: var(--primary-dark); font-weight: 650; }
+.notification-row:hover { background: var(--surface-alt); }
+.notification-row:disabled { opacity: .65; cursor: wait; }
+.topbar-bell, .topbar-avatar { min-width: 44px; min-height: 44px; }
