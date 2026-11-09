@@ -35,7 +35,12 @@ export default function TravelSpaceCarousel({ onOpen }) {
     const frame = requestAnimationFrame(() => goTo(activeRef.current, false));
     return () => cancelAnimationFrame(frame);
   }, [width, minimumHeight, goTo]);
-  const measure = useCallback(event => setHeight(current => Math.max(current, Math.ceil(event.nativeEvent.layout.height))), []);
+  const measure = useCallback(event => {
+    const measuredHeight = event?.nativeEvent?.layout?.height;
+    if (!Number.isFinite(measuredHeight) || measuredHeight <= 0) return;
+    const roundedHeight = Math.ceil(measuredHeight);
+    setHeight(current => Math.max(current, roundedHeight));
+  }, []);
   const update = useCallback(event => {
     const index = nearestTravelCard(event.nativeEvent.contentOffset.x, sizing.offsets);
     if (index !== activeRef.current) { activeRef.current = index; }

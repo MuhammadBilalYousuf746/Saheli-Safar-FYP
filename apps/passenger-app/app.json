@@ -4,22 +4,18 @@
     "slug": "saheli-safar-passenger",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo-withoutbg-text.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#17131F",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "backgroundColor": "#17131F"
       },
       "backgroundColor": "#17131F"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
       "backgroundColor": "#17131F",
       "themeColor": "#17131F"
     },
@@ -28,7 +24,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#17131F",
-          "image": "./src/assets/images/logo-withoutbg.png",
+          "image": "./assets/logo-withoutbg-text.png",
           "imageWidth": 220,
           "resizeMode": "contain"
         }
