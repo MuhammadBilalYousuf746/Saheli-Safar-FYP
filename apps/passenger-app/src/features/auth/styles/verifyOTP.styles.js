@@ -1,160 +1,110 @@
+import { colors } from "../../../theme/colors";
 
 import { StyleSheet } from "react-native";
 import { typography } from "../../../theme/typography";
 
-const C = {
-  plum: "#552D50",
-  dark: "#382039",
-  lavender: "#9473AE",
-  rose: "#C98291",
-  ink: "#392C3C",
-  muted: "#827982",
-  ivory: "#FCF9F6",
-  white: "#FFFFFF",
-};
+
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: C.ivory,
+    backgroundColor: colors.background
   },
-
   keyboardContainer: {
-    flex: 1,
+    flex: 1
   },
-
   scroll: {
-    flex: 1,
+    flex: 1
   },
-
   content: {
     flexGrow: 1,
     justifyContent: "space-between",
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 12,
+    paddingBottom: 12
   },
-
   contentCompact: {
     paddingTop: 14,
-    paddingBottom: 8,
+    paddingBottom: 8
   },
-
   contentVeryCompact: {
     paddingTop: 10,
-    paddingBottom: 6,
+    paddingBottom: 6
   },
-
   contentKeyboard: {
-    paddingBottom: 20,
+    paddingBottom: 20
   },
-
   header: {
-    height: 46,
+    height: 48,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "center"
   },
-
-  backButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 15,
-    backgroundColor: C.white,
-    borderWidth: 1,
-    borderColor: "#E9DFE9",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  backPressed: {
-    backgroundColor: "#F4E7F0",
-  },
-
-  backArrow: {
-    fontSize: 32,
-    lineHeight: 37,
-    marginTop: -3,
-    color: C.plum,
-  },
-
   progress: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 6
   },
-
   progressFilled: {
     width: 34,
     height: 4,
     borderRadius: 5,
-    backgroundColor: C.plum,
+    backgroundColor: colors.primary
   },
-
   progressEmpty: {
     width: 34,
     height: 4,
     borderRadius: 5,
-    backgroundColor: "#E7D7E6",
+    backgroundColor: colors.border
   },
-
   step: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: 11,
     letterSpacing: 1,
-    color: C.muted,
+    color: colors.textMuted
   },
-
   artwork: {
     height: 184,
     marginTop: 9,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   artworkCompact: {
     height: 145,
-    marginTop: 5,
+    marginTop: 5
   },
-
   artworkVeryCompact: {
     height: 115,
-    marginTop: 2,
+    marginTop: 2
   },
-
   intro: {
-    marginTop: 6,
+    marginTop: 6
   },
-
   eyebrow: {
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 10,
+    fontSize: 11,
     letterSpacing: 1.65,
-    color: C.rose,
+    color: colors.accent
   },
-
   title: {
     marginTop: 8,
     fontFamily: typography.fontFamily.displayBold,
     fontSize: 35,
     lineHeight: 44,
     letterSpacing: -0.9,
-    color: C.dark,
-    includeFontPadding: false,
+    color: colors.textPrimary,
+    includeFontPadding: false
   },
-
   titleAccent: {
-    color: C.lavender,
+    color: colors.primaryLight
   },
-
   description: {
     marginTop: 8,
     fontFamily: typography.fontFamily.regular,
-    fontSize: 13,
-    lineHeight: 19,
-    color: "#766D78",
+    fontSize: 14,
+    lineHeight: 23,
+    color: colors.textSecondary
   },
-
   numberRow: {
     marginTop: 11,
     flexDirection: "row",
@@ -163,89 +113,75 @@ const styles = StyleSheet.create({
     gap: 8,
     alignSelf: "flex-start",
     borderRadius: 12,
-    backgroundColor: "#F3E8F1",
+    backgroundColor: colors.surfaceAlt,
     paddingVertical: 9,
-    paddingHorizontal: 12,
+    paddingHorizontal: 12
   },
-
   numberDot: {
     height: 7,
     width: 7,
     borderRadius: 4,
-    backgroundColor: C.rose,
+    backgroundColor: colors.accent
   },
-
   phoneNumber: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: 12,
-    color: C.plum,
+    color: colors.primary
   },
-
   editButton: {
     paddingHorizontal: 5,
-    paddingVertical: 3,
+    paddingVertical: 3
   },
-
   editText: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: 12,
-    color: C.lavender,
+    color: colors.primaryLight
   },
-
   form: {
-    marginTop: 22,
+    marginTop: 22
   },
-
   formCompact: {
-    marginTop: 15,
+    marginTop: 15
   },
-
   fieldLabel: {
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 10,
+    fontSize: typography.fontSize.xs,
     letterSpacing: 1.4,
-    color: C.ink,
-    marginBottom: 11,
+    color: colors.textSecondary,
+    marginBottom: 11
   },
-
   otpContainer: {
     height: 54,
-    position: "relative",
+    position: "relative"
   },
-
   otpRow: {
     height: 54,
     width: "100%",
-    flexDirection: "row",
+    flexDirection: "row"
   },
-
   otpBox: {
     flex: 1,
     minWidth: 0,
     height: 54,
-    borderRadius: 13,
-    backgroundColor: C.white,
+    borderRadius: 14,
+    backgroundColor: colors.input,
     borderWidth: 1.5,
-    borderColor: "#E8DDE8",
+    borderColor: colors.border,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   otpBoxFilled: {
-    borderColor: "#C7ACC9",
-    backgroundColor: "#FFF9FF",
+    borderColor: colors.primaryDark,
+    backgroundColor: colors.surfaceAlt
   },
-
   otpBoxActive: {
-    borderColor: C.lavender,
+    borderColor: colors.focus
   },
-
   otpDigit: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: 22,
-    color: C.plum,
+    color: colors.textPrimary
   },
-
   hiddenInput: {
     position: "absolute",
     top: 0,
@@ -256,116 +192,101 @@ const styles = StyleSheet.create({
     color: "transparent",
     backgroundColor: "transparent",
     fontSize: 20,
-    zIndex: 10,
+    zIndex: 10
   },
-
   securityNote: {
     marginTop: 13,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 8
   },
-
   securityIcon: {
     fontSize: 15,
-    color: C.rose,
+    color: colors.accent
   },
-
   securityText: {
     fontFamily: typography.fontFamily.regular,
-    fontSize: 11,
-    color: C.muted,
+    fontSize: 12,
+    color: colors.textMuted
   },
-
   resendRow: {
     marginTop: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: 8,
+    gap: 8
   },
-
   resendLabel: {
     flexShrink: 1,
     fontFamily: typography.fontFamily.regular,
     fontSize: 12,
-    color: "#766D78",
+    color: colors.textSecondary
   },
-
   resendAction: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: 12,
-    color: C.plum,
+    color: colors.primary
   },
-
   resendDisabled: {
-    color: C.muted,
+    color: colors.textMuted
   },
-
   footer: {
     marginTop: 20,
-    paddingBottom: 5,
+    paddingBottom: 5
   },
-
   footerCompact: {
-    marginTop: 20,
+    marginTop: 20
   },
-
   footerKeyboard: {
-    marginTop: 18,
+    marginTop: 18
   },
-
   verifyButton: {
     height: 56,
     borderRadius: 18,
-    backgroundColor: C.plum,
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    paddingHorizontal: 18,
+    paddingHorizontal: 18
   },
-
   verifyDisabled: {
-    backgroundColor: "#AA96A9",
+    backgroundColor: colors.buttonDisabled
   },
-
   verifyPressed: {
-    backgroundColor: C.dark,
-    transform: [{ scale: 0.985 }],
+    backgroundColor: colors.buttonPressed,
+    transform: [{
+      scale: 0.985
+    }]
   },
-
   verifyText: {
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 15,
-    color: C.white,
+    fontSize: 16,
+    color: colors.textOnPrimary
   },
-
   arrowCircle: {
     position: "absolute",
     right: 15,
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "rgba(255,255,255,0.17)",
+    backgroundColor: colors.buttonDetail,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   arrowText: {
     fontSize: 20,
     lineHeight: 23,
     marginTop: -2,
-    color: C.white,
+    color: colors.textOnPrimary
   },
-
   footerNote: {
     marginTop: 14,
     textAlign: "center",
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 9,
-    letterSpacing: 1.35,
-    color: C.lavender,
-  },
+    fontSize: 11,
+    letterSpacing: 1.2,
+    color: colors.primaryLight
+  }
 });
 
 export default styles;

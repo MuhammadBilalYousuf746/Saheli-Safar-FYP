@@ -1,85 +1,30 @@
-
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import SplashScreen from "../features/onboarding/screens/SplashScreen";
-import OnboardingScreen from "../features/onboarding/screens/OnboardingScreen";
-
-import WelcomeScreen from "../features/auth/screens/WelcomeScreen";
-import RegisterPhoneScreen from "../features/auth/screens/RegisterPhoneScreen";
-import VerifyOTPScreen from "../features/auth/screens/VerifyOTPScreen";
-import CompleteProfileScreen from "../features/auth/screens/CompleteProfileScreen";
-import LoginScreen from "../features/auth/screens/LoginScreen";
-import ForgotPasswordScreen from "../features/auth/screens/ForgotPasswordScreen";
-import VerifyResetOTPScreen from "../features/auth/screens/VerifyResetOTPScreen";
-import CreateNewPasswordScreen from "../features/auth/screens/CreateNewPasswordScreen";
-import HomeDashboardScreen from "../features/home/screens/HomeDashboardScreen";
-
-const Stack = createNativeStackNavigator();
+import React from 'react';
+import { Text, Pressable } from 'react-native';
+import { Stack } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthSession } from '../features/auth/context/AuthSessionContext';
+import SaheliLoader from "../components/SaheliLoader";
+import { colors } from '../theme/colors';
 
 export default function RootNavigator() {
-  return (
-    <Stack.Navigator
-      initialRouteName="Splash"
-      screenOptions={{
-        headerShown: false,
-        animation: "fade",
-      }}
-    >
-      <Stack.Screen
-        name="Splash"
-        component={SplashScreen}
-      />
-
-      <Stack.Screen
-        name="Onboarding"
-        component={OnboardingScreen}
-      />
-
-      <Stack.Screen
-        name="Welcome"
-        component={WelcomeScreen}
-      />
-
-      <Stack.Screen
-        name="RegisterPhone"
-        component={RegisterPhoneScreen}
-      />
-
-      <Stack.Screen
-        name="VerifyOTP"
-        component={VerifyOTPScreen}
-      />
-
-      <Stack.Screen
-        name="CompleteProfile"
-        component={CompleteProfileScreen}
-      />
-
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-      />
-
-      <Stack.Screen
-        name="ForgotPassword"
-        component={ForgotPasswordScreen}
-      />
-
-      <Stack.Screen
-        name="VerifyResetOTP"
-        component={VerifyResetOTPScreen}
-      />
-
-      <Stack.Screen
-        name="CreateNewPassword"
-        component={CreateNewPasswordScreen}
-      />
-
-      <Stack.Screen
-  name="HomeDashboard"
-  component={HomeDashboardScreen}
-/>
-    </Stack.Navigator>
+  const { status, message, retry, logout } = useAuthSession();
+  if (status === 'initializing') return <SaheliLoader mode="fullscreen" label="Restoring your session..." />;
+  if (status === 'unavailable') return (
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32, gap: 20, backgroundColor: colors.background }}>
+      <>
+        <Text accessibilityRole="alert" style={{ color: colors.error, lineHeight: 24 }}>{message}</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel="Retry session" onPress={retry}><Text style={{ color: colors.primary }}>Retry</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Sign in instead" onPress={logout}><Text style={{ color: colors.primary }}>Sign in instead</Text></Pressable>
+      </>
+    </SafeAreaView>
   );
+  return <Stack key={status === 'authenticated' ? 'passenger' : 'public'} screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: colors.background } }}>
+      <Stack.Protected guard={status !== 'authenticated'}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(public)" />
+      </Stack.Protected>
+      <Stack.Protected guard={status === 'authenticated'}>
+        <Stack.Screen name="(passenger)" />
+      </Stack.Protected>
+    </Stack>;
 }

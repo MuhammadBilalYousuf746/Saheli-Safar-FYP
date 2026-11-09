@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -22,18 +23,18 @@ export default function ProfileArtwork() {
            C241 20 310 57 305 113
            C300 163 247 176 169 173
            C89 169 39 143 42 93Z"
-        fill="#F1E1EE"
+        fill={colors.artwork.backdropAlt}
       />
 
-      <Circle cx="79" cy="59" r="25" fill="#E7CDDF" />
-      <Circle cx="280" cy="125" r="20" fill="#F6DFE2" />
+      <Circle cx="79" cy="59" r="25" fill={colors.artwork.backdropAlt} />
+      <Circle cx="280" cy="125" r="20" fill={colors.artwork.backdropAlt} />
 
       <Ellipse
         cx="178"
         cy="164"
         rx="111"
         ry="8"
-        fill="#DBC5D8"
+        fill={colors.artwork.paperLight}
         opacity="0.6"
       />
 
@@ -45,7 +46,7 @@ export default function ProfileArtwork() {
           width="177"
           height="112"
           rx="20"
-          fill="#BFA7C4"
+          fill={colors.artwork.paperLight}
           opacity="0.35"
         />
       </G>
@@ -58,7 +59,7 @@ export default function ProfileArtwork() {
           width="177"
           height="112"
           rx="19"
-          fill="#FFFFFF"
+          fill={colors.artwork.paper}
         />
 
         <Rect
@@ -83,7 +84,7 @@ export default function ProfileArtwork() {
           cx="131"
           cy="91"
           r="29"
-          fill="#F6E6ED"
+          fill={colors.artwork.backdropAlt}
         />
 
         {/* Hijab */}
@@ -123,7 +124,7 @@ export default function ProfileArtwork() {
         <Path
           d="M110 114 Q113 101 126 102
              L140 102 Q153 104 156 114Z"
-          fill="#9876A6"
+          fill={colors.artwork.rose}
         />
 
         {/* Card details */}
@@ -142,7 +143,7 @@ export default function ProfileArtwork() {
           width="68"
           height="5"
           rx="2.5"
-          fill="#E3D5E5"
+          fill={colors.artwork.backdropAlt}
         />
 
         <Rect
@@ -151,7 +152,7 @@ export default function ProfileArtwork() {
           width="54"
           height="5"
           rx="2.5"
-          fill="#E3D5E5"
+          fill={colors.artwork.backdropAlt}
         />
 
         <Rect
@@ -160,32 +161,32 @@ export default function ProfileArtwork() {
           width="38"
           height="7"
           rx="3.5"
-          fill="#F0D9E1"
+          fill={colors.artwork.backdropAlt}
         />
       </G>
 
       {/* Heart badge */}
-      <Circle cx="258" cy="51" r="22" fill="#FFFFFF" />
+      <Circle cx="258" cy="51" r="22" fill={colors.artwork.paper} />
 
       <Path
         d="M258 61 C244 53 244 43 251 41
            Q256 39 258 45
            Q263 39 268 41
            C275 44 272 53 258 61Z"
-        fill="#C98291"
+        fill={colors.artwork.rose}
       />
 
       {/* Flower */}
       <G transform="translate(76 124)">
-        <Ellipse cx="0" cy="-10" rx="5" ry="10" fill="#DCA5B9" />
-        <Ellipse cx="10" cy="0" rx="10" ry="5" fill="#E7BECD" />
-        <Ellipse cx="0" cy="10" rx="5" ry="10" fill="#DCA5B9" />
-        <Ellipse cx="-10" cy="0" rx="10" ry="5" fill="#E7BECD" />
-        <Circle cx="0" cy="0" r="5" fill="#FFF2D9" />
+        <Ellipse cx="0" cy="-10" rx="5" ry="10" fill={colors.artwork.paperLight} />
+        <Ellipse cx="10" cy="0" rx="10" ry="5" fill={colors.artwork.paperLight} />
+        <Ellipse cx="0" cy="10" rx="5" ry="10" fill={colors.artwork.paperLight} />
+        <Ellipse cx="-10" cy="0" rx="10" ry="5" fill={colors.artwork.paperLight} />
+        <Circle cx="0" cy="0" r="5" fill={colors.artwork.backdropAlt} />
       </G>
 
-      <Circle cx="290" cy="87" r="3" fill="#D5A3C0" />
-      <Circle cx="59" cy="85" r="3" fill="#BDA3D1" />
+      <Circle cx="290" cy="87" r="3" fill={colors.artwork.paperLight} />
+      <Circle cx="59" cy="85" r="3" fill={colors.artwork.paperLight} />
     </Svg>
   );
 }

@@ -1,5 +1,6 @@
 
 import { ZodError } from "zod";
+import { isApplicationError } from "../utils/app-error.js";
 
 // Centralized error handler for all API modules.
 export const errorHandler = (err, req, res, next) => {
@@ -58,8 +59,8 @@ export const errorHandler = (err, req, res, next) => {
   // Expected application errors.
   const statusCode =
     Number.isInteger(err.statusCode) &&
-    err.statusCode >= 400 &&
-    err.statusCode < 500
+    ((err.statusCode >= 400 && err.statusCode < 500) ||
+      (isApplicationError(err) && [502, 503].includes(err.statusCode)))
       ? err.statusCode
       : 500;
 

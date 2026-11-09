@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -24,8 +25,8 @@ export default function ResetOTPBackground() {
           x2="1"
           y2="1"
         >
-          <Stop offset="0" stopColor="#EEDFED" />
-          <Stop offset="1" stopColor="#FAF3F7" />
+          <Stop offset="0" stopColor={colors.backgroundDark} />
+          <Stop offset="1" stopColor={colors.backgroundDark} />
         </LinearGradient>
 
         <LinearGradient
@@ -35,8 +36,8 @@ export default function ResetOTPBackground() {
           x2="1"
           y2="1"
         >
-          <Stop offset="0" stopColor="#F8EAEB" />
-          <Stop offset="1" stopColor="#F0E5F4" />
+          <Stop offset="0" stopColor={colors.backgroundDark} />
+          <Stop offset="1" stopColor={colors.backgroundDark} />
         </LinearGradient>
       </Defs>
 
@@ -54,7 +55,7 @@ export default function ResetOTPBackground() {
            C55 153 91 111 168 83
            C272 48 349 115 430 71"
         fill="none"
-        stroke="#DBC7DD"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.2"
         opacity="0.75"
       />
@@ -73,7 +74,7 @@ export default function ResetOTPBackground() {
            C57 687 129 741 213 731
            C307 719 359 684 428 731"
         fill="none"
-        stroke="#E1CDE1"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.2"
       />
     </Svg>

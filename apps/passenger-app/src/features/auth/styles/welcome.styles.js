@@ -11,84 +11,77 @@ import {
 } from "../../../theme/spacing";
 
 const styles = StyleSheet.create({
+  brandWordmark: {
+    fontFamily: typography.fontFamily.semibold,
+    color: colors.primaryLight,
+    fontSize: 11,
+    letterSpacing: 2.4
+  },
   container: {
-    flex: 1,
+    flexGrow: 1
   },
-
   header: {
+    gap: spacing.sm,
     alignItems: "center",
-    paddingTop: spacing.xs,
+    paddingTop: spacing.md
   },
-
   logo: {
-    height: 80,
+    tintColor: colors.primaryLight,
+    height: 64
   },
-
-  headerSpacing: {
-    height: 32,
-    marginTop: spacing.xs,
-  },
-
   artworkSection: {
-    flex: 1.2,
+    height: 275,
     minHeight: 0,
-    maxHeight: 310,
-    marginTop: spacing.sm,
+    marginTop: spacing.lg,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   artworkCompact: {
-    maxHeight: 235,
+    height: 210,
+    maxHeight: 235
   },
-
   messageSection: {
-    flex: 0.9,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.lg,
+    gap: 4,
     minHeight: 0,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   title: {
     fontFamily: typography.fontFamily.displayBold,
-    fontSize: 34,
-    lineHeight: 43,
-    color: colors.primaryDark,
+    fontSize: 38,
+    lineHeight: 47,
+    color: colors.textPrimary,
     textAlign: "center",
     letterSpacing: -0.8,
-    includeFontPadding: false,
+    includeFontPadding: false
   },
-
   titleCompact: {
-    fontSize: 29,
-    lineHeight: 37,
+    fontSize: 32,
+    lineHeight: 40
   },
-
   titleAccent: {
-    color: colors.primaryLight,
+    color: colors.primaryLight
   },
-
   description: {
     marginTop: spacing.sm,
     maxWidth: 310,
     fontFamily: typography.fontFamily.regular,
-    fontSize: typography.fontSize.sm,
-    lineHeight: typography.lineHeight.base,
+    fontSize: 15,
+    lineHeight: 24,
     color: colors.textSecondary,
-    textAlign: "center",
+    textAlign: "center"
   },
-
   dividerSpacing: {
-    height: 5,
-    marginTop: spacing.lg,
+    height: 0,
+    marginTop: 0
   },
-
   footer: {
     paddingTop: spacing.sm,
     paddingBottom: spacing.md,
-    gap: spacing.sm,
+    gap: spacing.sm
   },
-
   primaryButton: {
     height: layout.buttonHeight,
     borderRadius: radius.lg,
@@ -96,53 +89,51 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.lg
   },
-
   primaryButtonPressed: {
-    backgroundColor: colors.primaryDark,
-    transform: [{ scale: 0.985 }],
+    backgroundColor: colors.buttonPressed,
+    transform: [{
+      scale: 0.985
+    }]
   },
-
   primaryButtonText: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: typography.fontSize.base,
-    color: colors.textOnPrimary,
+    color: colors.textOnPrimary
   },
-
   primaryArrow: {
     position: "absolute",
     right: spacing.lg,
-    color: colors.white,
+    color: colors.textOnPrimary,
     fontSize: 23,
     lineHeight: 28,
-    transform: [{ translateY: -3 }],
-    includeFontPadding: false,
+    transform: [{
+      translateY: -3
+    }],
+    includeFontPadding: false
   },
-
   secondaryButton: {
+    backgroundColor: colors.backgroundDark,
     height: layout.buttonHeight,
     borderRadius: radius.lg,
     borderWidth: 1.5,
-    borderColor: colors.primary,
+    borderColor: colors.border,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   secondaryButtonPressed: {
-    backgroundColor: colors.accentLight,
+    backgroundColor: colors.accentLight
   },
-
   secondaryButtonText: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: typography.fontSize.sm,
-    color: colors.primary,
+    color: colors.primary
   },
-
   footerCaptionSpacing: {
-    height: 25,
-    marginTop: spacing.xs,
-  },
+    height: 0,
+    marginTop: 0
+  }
 });
 
 export default styles;

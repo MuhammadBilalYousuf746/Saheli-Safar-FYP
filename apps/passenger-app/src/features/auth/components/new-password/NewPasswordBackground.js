@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -25,8 +26,8 @@ export default function NewPasswordBackground() {
           x2="1"
           y2="1"
         >
-          <Stop offset="0" stopColor="#F0E4F3" />
-          <Stop offset="1" stopColor="#FCF6F8" />
+          <Stop offset="0" stopColor={colors.backgroundDark} />
+          <Stop offset="1" stopColor={colors.backgroundDark} />
         </LinearGradient>
 
         <LinearGradient
@@ -36,8 +37,8 @@ export default function NewPasswordBackground() {
           x2="1"
           y2="1"
         >
-          <Stop offset="0" stopColor="#F8E7EB" />
-          <Stop offset="1" stopColor="#ECE0F2" />
+          <Stop offset="0" stopColor={colors.backgroundDark} />
+          <Stop offset="1" stopColor={colors.backgroundDark} />
         </LinearGradient>
       </Defs>
 
@@ -54,7 +55,7 @@ export default function NewPasswordBackground() {
            C49 166 111 67 204 104
            C299 140 356 68 427 110"
         fill="none"
-        stroke="#DDC6E1"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.3"
       />
 
@@ -63,12 +64,12 @@ export default function NewPasswordBackground() {
         d="M353 242
            C315 258 301 304 330 340"
         fill="none"
-        stroke="#E8D7E9"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
       />
 
-      <Circle cx="329" cy="342" r="4" fill="#D9BEDF" />
-      <Circle cx="39" cy="418" r="3" fill="#E6C2D0" />
+      <Circle cx="329" cy="342" r="4" fill={colors.artwork.backdrop} />
+      <Circle cx="39" cy="418" r="3" fill={colors.artwork.backdrop} />
 
       {/* Bottom layered curves */}
       <Path
@@ -84,11 +85,11 @@ export default function NewPasswordBackground() {
            C64 677 132 725 197 749
            C293 784 351 704 432 728"
         fill="none"
-        stroke="#DEC9E1"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.3"
       />
 
-      <Circle cx="55" cy="664" r="4" fill="#E6C2D2" />
+      <Circle cx="55" cy="664" r="4" fill={colors.artwork.backdrop} />
     </Svg>
   );
 }

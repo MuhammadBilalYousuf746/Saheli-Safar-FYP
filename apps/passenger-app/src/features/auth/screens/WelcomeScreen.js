@@ -1,8 +1,10 @@
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef } from "react";
 
 import {
-  Alert,
+  Platform,
   Animated,
   Easing,
   Image,
@@ -17,7 +19,9 @@ import WelcomeIllustration from "../../onboarding/components/welcome/WelcomeIllu
 
 import styles from "../styles/welcome.styles";
 
-export default function WelcomeScreen({ navigation }) {
+export default function WelcomeScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
   const { height, width } = useWindowDimensions();
   const compact = height < 740;
 
@@ -28,33 +32,33 @@ export default function WelcomeScreen({ navigation }) {
     const animation = Animated.parallel([
       Animated.timing(fade, {
         toValue: 1,
-        duration: 650,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(rise, {
         toValue: 0,
-        duration: 750,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]);
 
     animation.start();
 
     return () => animation.stop();
-  }, [fade, rise]);
+  }, [fade, rise, reducedMotion]);
 
   const handleRegister = () => {
-    navigation.navigate("RegisterPhone");
+    router.navigate("/(public)/register");
   };
 
 const handleLogin = () => {
-  navigation.navigate("Login");
+  router.navigate("/(public)/login");
 };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer scrollable>
       <View style={styles.container}>
 
         {/* Logo */}
@@ -68,7 +72,7 @@ const handleLogin = () => {
             resizeMode="contain"
             accessibilityLabel="Saheli Safar logo"
           />
-          <View style={styles.headerSpacing} />
+          <Text style={styles.brandWordmark}>SAHELI SAFAR</Text>
         </View>
 
         {/* Illustration */}

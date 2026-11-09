@@ -5,33 +5,48 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FCF9F6",
+        "backgroundColor": "#17131F",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "backgroundColor": "#17131F"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "backgroundColor": "#17131F",
+      "themeColor": "#17131F"
     },
     "plugins": [
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#FCF9F6",
+          "backgroundColor": "#17131F",
           "image": "./src/assets/images/logo-withoutbg.png",
           "imageWidth": 220,
           "resizeMode": "contain"
         }
       ],
       "expo-font",
-      "expo-secure-store"
-    ]
+      "expo-secure-store",
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Saheli Safar to select identity images for manual verification.",
+          "cameraPermission": "Allow Saheli Safar to capture identity images for manual verification.",
+          "microphonePermission": false
+        }
+      ]
+    ],
+    "scheme": "saheli-safar-passenger",
+    "backgroundColor": "#17131F"
   }
 }

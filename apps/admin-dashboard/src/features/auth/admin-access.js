@@ -2,6 +2,12 @@ export const hasFullAdminAccess = (admin) =>
   Array.isArray(admin?.permissions) &&
   admin.permissions.includes("manageAdmins");
 
+export const canReviewPassengerVerification = (admin) =>
+  admin?.role === "admin" &&
+  admin.status === "active" &&
+  hasFullAdminAccess(admin) &&
+  admin.permissions.includes("verifyPassengers");
+
 export const getAdminLoginRedirect = (admin, requestedPath) => {
   const fullAccess = hasFullAdminAccess(admin);
   const fallback = fullAccess ? "/overview" : "/drivers";

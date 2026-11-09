@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React, { useState } from "react";
 
@@ -36,11 +37,12 @@ export default function FormField({
           !!error && styles.inputError,
         ]}
       >
-        <TextInput
+        <TextInput keyboardAppearance="dark" underlineColorAndroid="transparent"
+          accessibilityLabel={label}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="#B4A7B3"
+          placeholderTextColor={colors.textMuted}
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
           autoCorrect={false}
@@ -49,7 +51,7 @@ export default function FormField({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           style={styles.input}
-          selectionColor="#552D50"
+          selectionColor={colors.primary}
         />
 
         {rightAction}

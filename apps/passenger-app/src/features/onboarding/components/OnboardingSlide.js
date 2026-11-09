@@ -22,18 +22,18 @@ import { typography } from "../../../theme/typography";
 import { spacing } from "../../../theme/spacing";
 
 const C = {
-  plum: "#552D50",
-  violet: "#40335F",
-  lavender: "#9473AE",
-  blush: "#F4DFE5",
-  coral: "#F29A9C",
-  ivory: "#FCF9F6",
+  plum: colors.artwork.purple,
+  violet: colors.artwork.purple,
+  lavender: colors.artwork.rose,
+  blush: colors.artwork.backdropAlt,
+  coral: colors.artwork.paperLight,
+  ivory: colors.artwork.backdropAlt,
   peach: "#F8CEBA",
   skin: "#D99C7B",
   darkSkin: "#A96952",
-  road: "#D6CBDC",
-  mint: "#87B3A0",
-  white: "#FFFFFF",
+  road: colors.artwork.paperLight,
+  mint: colors.artwork.mint,
+  white: colors.artwork.paper,
 };
 
 // Shared commuter vehicle illustration
@@ -45,7 +45,7 @@ function CommuterBus({ x = 0, y = 0, scale = 1 }) {
         cy="130"
         rx="110"
         ry="12"
-        fill="#40335F"
+        fill={colors.artwork.purple}
         opacity={0.12}
       />
 
@@ -69,7 +69,7 @@ function CommuterBus({ x = 0, y = 0, scale = 1 }) {
         width="44"
         height="36"
         rx="7"
-        fill="#DDECF0"
+        fill={colors.artwork.window}
       />
       <Rect
         x="78"
@@ -77,7 +77,7 @@ function CommuterBus({ x = 0, y = 0, scale = 1 }) {
         width="44"
         height="36"
         rx="7"
-        fill="#DDECF0"
+        fill={colors.artwork.window}
       />
       <Rect
         x="129"
@@ -85,7 +85,7 @@ function CommuterBus({ x = 0, y = 0, scale = 1 }) {
         width="56"
         height="36"
         rx="7"
-        fill="#DDECF0"
+        fill={colors.artwork.window}
       />
 
       {/* Window highlights */}
@@ -118,7 +118,7 @@ function CommuterBus({ x = 0, y = 0, scale = 1 }) {
 
       <Path
         d="M30 27 H183"
-        stroke="#F8D9E1"
+        stroke={colors.artwork.backdropAlt}
         strokeWidth="2"
         opacity={0.42}
       />
@@ -158,9 +158,9 @@ function CommuterBus({ x = 0, y = 0, scale = 1 }) {
 
       {/* Wheels */}
       <Circle cx="52" cy="124" r="15" fill="#30283E" />
-      <Circle cx="52" cy="124" r="7" fill="#DBCFDE" />
+      <Circle cx="52" cy="124" r="7" fill={colors.artwork.paperLight} />
       <Circle cx="165" cy="124" r="15" fill="#30283E" />
-      <Circle cx="165" cy="124" r="7" fill="#DBCFDE" />
+      <Circle cx="165" cy="124" r="7" fill={colors.artwork.paperLight} />
       <Circle cx="52" cy="124" r="3" fill={C.white} opacity={0.65} />
       <Circle cx="165" cy="124" r="3" fill={C.white} opacity={0.65} />
 
@@ -170,7 +170,7 @@ function CommuterBus({ x = 0, y = 0, scale = 1 }) {
         width="34"
         height="3"
         rx="1.5"
-        fill="#E3B5CB"
+        fill={colors.artwork.paperLight}
         opacity={0.65}
       />
     </G>
@@ -187,13 +187,13 @@ function WomenCommuteIllustration() {
       preserveAspectRatio="xMidYMid meet"
     >
       {/* Background composition */}
-      <Circle cx="180" cy="150" r="133" fill="#F5DEE5" />
-      <Circle cx="280" cy="65" r="37" fill="#E8CCDD" />
+      <Circle cx="180" cy="150" r="133" fill={colors.artwork.backdropAlt} />
+      <Circle cx="280" cy="65" r="37" fill={colors.artwork.paperLight} />
       <Circle cx="68" cy="81" r="12" fill={C.coral} />
 
       {/* Botanical accents */}
       <G
-        stroke="#A7BBA7"
+        stroke={colors.artwork.mint}
         strokeWidth="3"
         fill="none"
         opacity={0.85}
@@ -204,7 +204,7 @@ function WomenCommuteIllustration() {
         <Path d="M309 211 Q322 199 324 188" />
       </G>
 
-      <G fill="#A7BBA7" opacity={0.78}>
+      <G fill={colors.artwork.mint} opacity={0.78}>
         <Ellipse
           cx="294"
           cy="203"
@@ -223,11 +223,11 @@ function WomenCommuteIllustration() {
 
       {/* City skyline */}
       <G opacity={0.62}>
-        <Rect x="33" y="128" width="43" height="98" rx="5" fill="#D9BFD2" />
-        <Rect x="65" y="104" width="48" height="122" rx="5" fill="#CAB4D0" />
-        <Rect x="113" y="139" width="39" height="87" rx="5" fill="#D9BFD2" />
-        <Rect x="234" y="121" width="45" height="105" rx="5" fill="#CAB4D0" />
-        <Rect x="275" y="148" width="42" height="78" rx="5" fill="#D9BFD2" />
+        <Rect x="33" y="128" width="43" height="98" rx="5" fill={colors.artwork.paperLight} />
+        <Rect x="65" y="104" width="48" height="122" rx="5" fill={colors.artwork.paperLight} />
+        <Rect x="113" y="139" width="39" height="87" rx="5" fill={colors.artwork.paperLight} />
+        <Rect x="234" y="121" width="45" height="105" rx="5" fill={colors.artwork.paperLight} />
+        <Rect x="275" y="148" width="42" height="78" rx="5" fill={colors.artwork.paperLight} />
 
         {Array.from({ length: 4 }, (_, i) => (
           <G key={i}>
@@ -252,7 +252,7 @@ function WomenCommuteIllustration() {
       </G>
 
       {/* Ground */}
-      <Ellipse cx="180" cy="259" rx="157" ry="31" fill="#D6CAD8" />
+      <Ellipse cx="180" cy="259" rx="157" ry="31" fill={colors.artwork.paperLight} />
       <Path
         d="M25 247 Q180 229 335 247"
         stroke={C.white}
@@ -297,18 +297,18 @@ function WomenCommuteIllustration() {
         />
         <Path
           d="M22 58 Q34 52 46 58"
-          stroke="#FFD2CE"
+          stroke={colors.artwork.backdropAlt}
           strokeWidth="2"
           opacity={0.8}
           fill="none"
         />
         <Path
           d="M35 69 V106"
-          stroke="#D77F8E"
+          stroke={colors.artwork.rose}
           strokeWidth="1.5"
           opacity={0.45}
         />
-        <Circle cx="35" cy="83" r="2" fill="#FFCFD0" />
+        <Circle cx="35" cy="83" r="2" fill={colors.artwork.backdropAlt} />
 
         <Path
           d="M14 64 L3 96"
@@ -340,7 +340,7 @@ function WomenCommuteIllustration() {
         />
         <Path
           d="M7 156 H23 M41 156 H58"
-          stroke="#302638"
+          stroke={colors.artwork.backdropAlt}
           strokeWidth="8"
           strokeLinecap="round"
         />
@@ -375,11 +375,11 @@ function ScheduledTravelIllustration() {
         width="318"
         height="272"
         rx="32"
-        fill="#EEE7F0"
+        fill={colors.artwork.backdropAlt}
       />
 
       {/* Neighborhood blocks */}
-      <G fill="#D9CADF">
+      <G fill={colors.artwork.paperLight}>
         <Rect x="39" y="34" width="89" height="57" rx="10" />
         <Rect x="143" y="34" width="71" height="57" rx="10" />
         <Rect x="230" y="34" width="91" height="57" rx="10" />
@@ -392,10 +392,10 @@ function ScheduledTravelIllustration() {
       </G>
 
       {/* Green spaces */}
-      <Rect x="48" y="43" width="66" height="39" rx="7" fill="#C7D9C8" />
-      <Rect x="252" y="220" width="57" height="35" rx="7" fill="#C7D9C8" />
+      <Rect x="48" y="43" width="66" height="39" rx="7" fill={colors.artwork.mint} />
+      <Rect x="252" y="220" width="57" height="35" rx="7" fill={colors.artwork.mint} />
 
-      <G fill="#A4BAAA" opacity={0.8}>
+      <G fill={colors.artwork.mint} opacity={0.8}>
         <Circle cx="59" cy="59" r="7" />
         <Circle cx="83" cy="59" r="6" />
         <Circle cx="273" cy="237" r="7" />
@@ -403,7 +403,7 @@ function ScheduledTravelIllustration() {
       </G>
 
       {/* Building details */}
-      <G fill="#F8F2FA" opacity={0.45}>
+      <G fill={colors.artwork.backdropAlt} opacity={0.45}>
         <Rect x="152" y="50" width="24" height="4" rx="2" />
         <Rect x="152" y="62" width="38" height="4" rx="2" />
         <Rect x="51" y="129" width="28" height="4" rx="2" />
@@ -453,7 +453,7 @@ function ScheduledTravelIllustration() {
       <G transform="translate(101 124)">
         <Circle cx="24" cy="24" r="27" fill={C.white} />
         <Rect x="9" y="12" width="30" height="24" rx="7" fill={C.plum} />
-        <Rect x="13" y="15" width="22" height="10" rx="3" fill="#CFDCEB" />
+        <Rect x="13" y="15" width="22" height="10" rx="3" fill={colors.artwork.backdropAlt} />
         <Circle cx="15" cy="37" r="3" fill="#383044" />
         <Circle cx="33" cy="37" r="3" fill="#383044" />
       </G>
@@ -467,7 +467,7 @@ function ScheduledTravelIllustration() {
           textAnchor="middle"
           fontSize="11"
           fontWeight="700"
-          fill={C.plum}
+          fill={colors.primaryLight}
         >
           PICKUP
         </SvgText>
@@ -481,7 +481,7 @@ function ScheduledTravelIllustration() {
           textAnchor="middle"
           fontSize="11"
           fontWeight="700"
-          fill={C.plum}
+          fill={colors.primaryLight}
         >
           DROP-OFF
         </SvgText>
@@ -499,13 +499,13 @@ function TravelConfidenceIllustration() {
       viewBox="0 0 360 310"
       preserveAspectRatio="xMidYMid meet"
     >
-      <Circle cx="169" cy="144" r="124" fill="#F4E1E7" />
-      <Circle cx="277" cy="61" r="33" fill="#E2D4EC" />
+      <Circle cx="169" cy="144" r="124" fill={colors.artwork.backdropAlt} />
+      <Circle cx="277" cy="61" r="33" fill={colors.artwork.backdropAlt} />
 
       {/* Driver profile card */}
       <G transform="translate(100 29)">
         <Rect x="0" y="0" width="161" height="214" rx="24" fill={C.white} />
-        <Rect x="10" y="10" width="141" height="141" rx="20" fill="#EDE4EF" />
+        <Rect x="10" y="10" width="141" height="141" rx="20" fill={colors.artwork.backdropAlt} />
 
         {/* Hair and face */}
         <Path
@@ -558,9 +558,9 @@ function TravelConfidenceIllustration() {
         />
 
         {/* Profile information */}
-        <Rect x="25" y="164" width="111" height="10" rx="5" fill="#D9D0E0" />
-        <Rect x="44" y="184" width="73" height="7" rx="3.5" fill="#E9E3EA" />
-        <Circle cx="119" cy="168" r="4" fill="#86B4A1" />
+        <Rect x="25" y="164" width="111" height="10" rx="5" fill={colors.artwork.paperLight} />
+        <Rect x="44" y="184" width="73" height="7" rx="3.5" fill={colors.artwork.backdropAlt} />
+        <Circle cx="119" cy="168" r="4" fill={colors.artwork.mint} />
       </G>
 
       {/* Verification mark */}
@@ -569,7 +569,7 @@ function TravelConfidenceIllustration() {
         <Circle cx="258" cy="188" r="24" fill={C.white} />
         <Path
           d="M246 188 L254 197 L270 179"
-          stroke="#398269"
+          stroke={colors.artwork.mint}
           strokeWidth="4"
           fill="none"
           strokeLinecap="round"
@@ -584,7 +584,7 @@ function TravelConfidenceIllustration() {
           cy="77"
           rx="91"
           ry="13"
-          fill="#40335F"
+          fill={colors.artwork.purple}
           opacity={0.12}
         />
 
@@ -595,7 +595,7 @@ function TravelConfidenceIllustration() {
 
         <Path
           d="M42 19 H115 Q125 19 131 33 L139 43 H24Z"
-          fill="#D9E8EC"
+          fill={colors.artwork.backdropAlt}
         />
 
         <Path d="M85 20 V43" stroke={C.plum} strokeWidth="5" />
@@ -610,7 +610,7 @@ function TravelConfidenceIllustration() {
 
         <Path
           d="M10 57 H168"
-          stroke="#AD7E9F"
+          stroke={colors.artwork.rose}
           strokeWidth="2.5"
           opacity={0.58}
         />
@@ -619,9 +619,9 @@ function TravelConfidenceIllustration() {
         <Rect x="151" y="53" width="17" height="8" rx="4" fill={C.peach} />
 
         <Circle cx="45" cy="68" r="15" fill="#30283E" />
-        <Circle cx="45" cy="68" r="7" fill="#DDD3DF" />
+        <Circle cx="45" cy="68" r="7" fill={colors.artwork.paperLight} />
         <Circle cx="137" cy="68" r="15" fill="#30283E" />
-        <Circle cx="137" cy="68" r="7" fill="#DDD3DF" />
+        <Circle cx="137" cy="68" r="7" fill={colors.artwork.paperLight} />
       </G>
 
       {/* Journey trail */}
@@ -658,7 +658,7 @@ export default function OnboardingSlide({
 
   return (
     <View style={styles.container}>
-      <View style={styles.artSection}>
+      <View style={[styles.artSection, compact && styles.artCompact]}>
         <View style={styles.illustrationFrame}>
           <Illustration />
         </View>
@@ -698,68 +698,62 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    minHeight: 0,
+    minHeight: 0
   },
-
   artSection: {
-    flex: 1.55,
+    height: 300,
     minHeight: 0,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
+  artCompact: {
+    height: 210
+  },
   illustrationFrame: {
     width: "100%",
     height: "100%",
     maxHeight: 360,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   contentSection: {
-    flex: 0.95,
     minHeight: 0,
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: spacing.sm,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.lg
   },
-
   eyebrowRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.xs,
-    marginBottom: spacing.md,
+    marginBottom: spacing.md
   },
-
   eyebrowDot: {
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: colors.coral,
+    backgroundColor: colors.coral
   },
-
   eyebrow: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: typography.fontSize.xs,
     letterSpacing: typography.letterSpacing.wide,
-    color: colors.primaryLight,
+    color: colors.primaryLight
   },
-
   title: {
     fontFamily: typography.fontFamily.display,
     fontSize: typography.fontSize.display,
     lineHeight: typography.lineHeight.display,
-    color: colors.primaryDark,
+    color: colors.textPrimary,
     textAlign: "center",
     letterSpacing: -0.7,
-    includeFontPadding: false,
+    includeFontPadding: false
   },
-
   compactTitle: {
     fontSize: 27,
-    lineHeight: 35,
+    lineHeight: 35
   },
-
   description: {
     marginTop: spacing.md,
     maxWidth: 310,
@@ -768,11 +762,10 @@ const styles = StyleSheet.create({
     lineHeight: typography.lineHeight.base,
     color: colors.textSecondary,
     textAlign: "center",
-    includeFontPadding: false,
+    includeFontPadding: false
   },
-
   compactDescription: {
     marginTop: spacing.xs,
-    lineHeight: typography.lineHeight.sm,
-  },
+    lineHeight: typography.lineHeight.sm
+  }
 });

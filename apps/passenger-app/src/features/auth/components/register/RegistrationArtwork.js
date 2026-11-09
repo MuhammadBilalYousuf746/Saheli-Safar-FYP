@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -23,12 +24,12 @@ export default function RegistrationArtwork() {
            C256 28 316 70 309 139
            C303 194 247 207 178 201
            C91 193 39 164 44 106Z"
-        fill="#F3E4EC"
+        fill={colors.artwork.backdropAlt}
       />
 
       <Path
         d="M76 75 C126 24 247 32 291 108"
-        stroke="#FFFFFF"
+        stroke={colors.artwork.highlight}
         strokeWidth="2"
         strokeDasharray="5 7"
         fill="none"
@@ -37,13 +38,13 @@ export default function RegistrationArtwork() {
 
       {/* Faint Karachi buildings */}
       <G opacity="0.65">
-        <Rect x="57" y="118" width="38" height="68" rx="3" fill="#E2CEDC" />
-        <Rect x="88" y="101" width="32" height="85" rx="3" fill="#DAC4D8" />
-        <Rect x="116" y="130" width="32" height="56" rx="3" fill="#E8D5E0" />
-        <Rect x="242" y="112" width="37" height="74" rx="3" fill="#DCC8DD" />
-        <Rect x="276" y="133" width="28" height="53" rx="3" fill="#E6D2DF" />
+        <Rect x="57" y="118" width="38" height="68" rx="3" fill={colors.artwork.paperLight} />
+        <Rect x="88" y="101" width="32" height="85" rx="3" fill={colors.artwork.paperLight} />
+        <Rect x="116" y="130" width="32" height="56" rx="3" fill={colors.artwork.backdropAlt} />
+        <Rect x="242" y="112" width="37" height="74" rx="3" fill={colors.artwork.paperLight} />
+        <Rect x="276" y="133" width="28" height="53" rx="3" fill={colors.artwork.backdropAlt} />
 
-        <G fill="#FFF9FA">
+        <G fill={colors.artwork.backdropAlt}>
           <Rect x="68" y="130" width="7" height="9" rx="1" />
           <Rect x="81" y="130" width="7" height="9" rx="1" />
           <Rect x="68" y="149" width="7" height="9" rx="1" />
@@ -62,7 +63,7 @@ export default function RegistrationArtwork() {
         cy="193"
         rx="121"
         ry="10"
-        fill="#DAC6D5"
+        fill={colors.artwork.paperLight}
         opacity="0.6"
       />
 
@@ -71,19 +72,19 @@ export default function RegistrationArtwork() {
         d="M160 120 C145 120 137 132 134 153
            L125 194 Q176 209 225 194
            L215 148 C211 130 198 120 189 119Z"
-        fill="#775079"
+        fill={colors.artwork.purple}
       />
 
       <Path
         d="M155 130 C149 150 147 171 150 196"
-        stroke="#AC86AA"
+        stroke={colors.artwork.rose}
         strokeWidth="2"
         fill="none"
       />
 
       <Path
         d="M194 131 C204 150 203 174 207 196"
-        stroke="#AC86AA"
+        stroke={colors.artwork.rose}
         strokeWidth="2"
         fill="none"
       />
@@ -169,8 +170,8 @@ export default function RegistrationArtwork() {
 
       {/* Phone */}
       <Rect x="187" y="129" width="23" height="39" rx="5" fill="#32283C" />
-      <Rect x="190" y="133" width="17" height="29" rx="2" fill="#F9F1F7" />
-      <Circle cx="198.5" cy="159" r="1.8" fill="#A98DA7" />
+      <Rect x="190" y="133" width="17" height="29" rx="2" fill={colors.artwork.backdropAlt} />
+      <Circle cx="198.5" cy="159" r="1.8" fill={colors.artwork.rose} />
 
       {/* Hand */}
       <Path
@@ -183,15 +184,15 @@ export default function RegistrationArtwork() {
 
       {/* Decorative floral accent */}
       <G transform="translate(91 63)">
-        <Ellipse cx="0" cy="-12" rx="6" ry="12" fill="#DBA1B5" />
-        <Ellipse cx="12" cy="0" rx="12" ry="6" fill="#E6B8C5" />
-        <Ellipse cx="0" cy="12" rx="6" ry="12" fill="#DBA1B5" />
-        <Ellipse cx="-12" cy="0" rx="12" ry="6" fill="#E6B8C5" />
-        <Circle cx="0" cy="0" r="6" fill="#FFF3CF" />
+        <Ellipse cx="0" cy="-12" rx="6" ry="12" fill={colors.artwork.paperLight} />
+        <Ellipse cx="12" cy="0" rx="12" ry="6" fill={colors.artwork.paperLight} />
+        <Ellipse cx="0" cy="12" rx="6" ry="12" fill={colors.artwork.paperLight} />
+        <Ellipse cx="-12" cy="0" rx="12" ry="6" fill={colors.artwork.paperLight} />
+        <Circle cx="0" cy="0" r="6" fill={colors.artwork.backdropAlt} />
 
         <Path
           d="M2 19 C11 31 9 40 5 47"
-          stroke="#819B86"
+          stroke={colors.artwork.mint}
           strokeWidth="2"
           fill="none"
         />
@@ -205,37 +206,37 @@ export default function RegistrationArtwork() {
           width="106"
           height="52"
           rx="16"
-          fill="#D3BCCC"
+          fill={colors.artwork.paperLight}
           opacity="0.35"
         />
 
-        <Rect x="218" y="47" width="106" height="52" rx="16" fill="#FFFFFF" />
-        <Circle cx="240" cy="73" r="13" fill="#E3F2EA" />
+        <Rect x="218" y="47" width="106" height="52" rx="16" fill={colors.artwork.paper} />
+        <Circle cx="240" cy="73" r="13" fill={colors.artwork.mint} />
 
         <Path
           d="M234 73 L239 78 L247 68"
-          stroke="#27836B"
+          stroke={colors.artwork.mint}
           strokeWidth="2.7"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
         />
 
-        <Rect x="261" y="65" width="47" height="5" rx="2.5" fill="#775079" />
-        <Rect x="261" y="77" width="33" height="4" rx="2" fill="#D8CDD9" />
+        <Rect x="261" y="65" width="47" height="5" rx="2.5" fill={colors.artwork.purple} />
+        <Rect x="261" y="77" width="33" height="4" rx="2" fill={colors.artwork.paperLight} />
       </G>
 
       {/* Subtle motion marks */}
       <Path
         d="M108 168 Q100 159 92 164"
-        stroke="#C98291"
+        stroke={colors.artwork.rose}
         strokeWidth="2"
         fill="none"
         strokeLinecap="round"
       />
 
-      <Circle cx="288" cy="112" r="3" fill="#C98291" />
-      <Circle cx="79" cy="112" r="3" fill="#B99DCC" />
+      <Circle cx="288" cy="112" r="3" fill={colors.artwork.rose} />
+      <Circle cx="79" cy="112" r="3" fill={colors.artwork.rose} />
     </Svg>
   );
 }

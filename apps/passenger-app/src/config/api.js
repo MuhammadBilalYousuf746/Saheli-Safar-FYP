@@ -1,6 +1,7 @@
 
 import { Platform } from "react-native";
 import Constants from "expo-constants";
+import { fetch as expoFetch } from "expo/fetch";
 
 const API_PORT = 5000;
 
@@ -30,24 +31,43 @@ const resolveApiBaseUrl = () => {
 
 const API_BASE_URL = resolveApiBaseUrl();
 
+let authBridge;
+export const setAuthenticationBridge = bridge => { authBridge = bridge; };
+
 // Shared API request function for the Passenger App.
 export const apiRequest = async (
   endpoint,
-  { method = "GET", body, token } = {}
+  { method = "GET", body, token, authenticated = false, expectedSession, multipart = false, responseType = "json", requireHttps = false } = {}
 ) => {
+  if (requireHttps && process.env.NODE_ENV === "production" && !API_BASE_URL.startsWith("https://")) throw new Error("A secure HTTPS connection is required for identity documents.");
+  if (expectedSession !== undefined && !authBridge?.isCurrentSession?.(expectedSession)) {
+    throw new Error("Your session changed. Reopen your profile before saving.");
+  }
+  const current = authBridge?.capture();
+  const identity = authenticated || (token && token === current?.accessToken) ? current : null;
+  if (authenticated && !identity) {
+    authBridge?.expire();
+    throw new Error("Please sign in again.");
+  }
+  const requestToken = authenticated ? identity.accessToken : token;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), multipart ? 90000 : 15000);
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const requestFetch = multipart && Platform.OS !== "web" ? expoFetch : fetch;
+    const response = await requestFetch(`${API_BASE_URL}${endpoint}`, {
       method,
+      signal: controller.signal,
       headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(!multipart ? { "Content-Type": "application/json" } : {}),
+        ...(requestToken ? { Authorization: `Bearer ${requestToken}` } : {}),
       },
       ...(body !== undefined
-        ? { body: JSON.stringify(body) }
+        ? { body: multipart ? body : JSON.stringify(body) }
         : {}),
     });
 
-    const data = await response.json();
+    if (response.ok && responseType === "blob") return await response.blob();
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
       const error = new Error(
@@ -55,6 +75,10 @@ export const apiRequest = async (
       );
 
       error.status = response.status;
+      if (identity && response.status === 401) authBridge?.reject(identity);
+      if (identity && response.status === 403 && data.message === "Your account is not active.") {
+        authBridge?.reject(identity, data.message);
+      }
       error.details = data.errors;
 
       throw error;
@@ -62,6 +86,7 @@ export const apiRequest = async (
 
     return data;
   } catch (error) {
+    if (error.name === "AbortError") throw new Error("The server took too long to respond. Please retry.");
     if (error instanceof TypeError) {
       throw new Error(
         "Unable to connect to Saheli Safar server. Check your network connection."
@@ -69,8 +94,7 @@ export const apiRequest = async (
     }
 
     throw error;
-  }
+  } finally { clearTimeout(timeout); }
 };
 
 export { API_BASE_URL };
-  

@@ -1,7 +1,9 @@
 
 import crypto from "node:crypto";
+import { generateOtp, hashOtp } from "./otp-crypto.js";
 import OTP from "./otp.model.js";
 import { isValidEmail } from "../../utils/constants.js";
+import { createError } from "../../utils/app-error.js";
 
 const OTP_EXPIRY_MINUTES = 5;
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -25,19 +27,6 @@ const validateInputs = (email, purpose) => {
   }
 };
 
-const hashOtp = (email, purpose, otp) => {
-  const secret = process.env.OTP_HMAC_SECRET;
-
-  if (!secret || secret.length < 32) {
-    throw new Error("OTP_HMAC_SECRET is not configured.");
-  }
-
-  return crypto
-    .createHmac("sha256", secret)
-    .update(`${purpose}:${email}:${otp}`)
-    .digest("hex");
-};
-
 // Generate and email a secure OTP.
 // `registration` ({ fullName, phone, role }) is stored with the OTP
 // and returned after successful verification. When omitted (resend),
@@ -57,10 +46,7 @@ export const sendEmailOtp = async ({
 
   const now = new Date();
 
-  const otp = crypto
-    .randomInt(0, 1000000)
-    .toString()
-    .padStart(6, "0");
+  const otp = generateOtp();
 
   const expiresAt = new Date(
     now.getTime() + OTP_EXPIRY_MS
@@ -133,11 +119,7 @@ export const sendEmailOtp = async ({
       otpHash,
     });
 
-    const deliveryError = new Error(
-      "Verification email could not be sent. Please try again."
-    );
-    deliveryError.statusCode = 502;
-    throw deliveryError;
+    throw createError("Verification email could not be sent. Please try again.", 502);
   }
 
   return {

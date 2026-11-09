@@ -1,321 +1,252 @@
+import { colors } from "../../../theme/colors";
 
 import { StyleSheet } from "react-native";
 import { typography } from "../../../theme/typography";
 
-const C = {
-  plum: "#552D50",
-  dark: "#382039",
-  lavender: "#9473AE",
-  rose: "#C98291",
-  ink: "#392C3C",
-  muted: "#827982",
-  ivory: "#FCF9F6",
-  white: "#FFFFFF",
-  border: "#E8DDE8",
-  error: "#C44555",
-  success: "#27836B",
-};
+
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: C.ivory,
+    backgroundColor: colors.background
   },
-
   keyboardContainer: {
-    flex: 1,
+    flex: 1
   },
-
   scroll: {
-    flex: 1,
+    flex: 1
   },
-
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 14,
-    paddingBottom: 20,
+    paddingBottom: 20
   },
-
   scrollCompact: {
     paddingTop: 12,
-    paddingBottom: 14,
+    paddingBottom: 14
   },
-
   header: {
-    height: 46,
+    height: 48,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
-
-  backButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 15,
-    backgroundColor: C.white,
-    borderWidth: 1,
-    borderColor: C.border,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  backArrow: {
-    fontSize: 32,
-    lineHeight: 37,
-    marginTop: -3,
-    color: C.plum,
-  },
-
   progress: {
     flexDirection: "row",
     gap: 6,
-    alignItems: "center",
+    alignItems: "center"
   },
-
   progressFilled: {
     width: 34,
     height: 4,
     borderRadius: 6,
-    backgroundColor: C.plum,
+    backgroundColor: colors.primary
   },
-
   step: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: 11,
     letterSpacing: 1,
-    color: C.muted,
+    color: colors.textMuted
   },
-
   artwork: {
     height: 153,
     marginTop: 10,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   artworkCompact: {
     height: 117,
-    marginTop: 5,
+    marginTop: 5
   },
-
   intro: {
-    marginTop: 5,
+    marginTop: 5
   },
-
   eyebrow: {
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 10,
+    fontSize: 11,
     letterSpacing: 1.7,
-    color: C.rose,
+    color: colors.accent
   },
-
   title: {
     marginTop: 7,
     fontFamily: typography.fontFamily.displayBold,
     fontSize: 35,
     lineHeight: 44,
     letterSpacing: -0.9,
-    color: C.dark,
-    includeFontPadding: false,
+    color: colors.textPrimary,
+    includeFontPadding: false
   },
-
   titleAccent: {
-    color: C.lavender,
+    color: colors.primaryLight
   },
-
   description: {
     marginTop: 7,
     fontFamily: typography.fontFamily.regular,
-    fontSize: 13,
-    lineHeight: 19,
-    color: "#766D78",
+    fontSize: 14,
+    lineHeight: 23,
+    color: colors.textSecondary
   },
-
   phoneBadge: {
     marginTop: 16,
     paddingVertical: 11,
     paddingHorizontal: 15,
     borderRadius: 15,
-    backgroundColor: "#F3E8F1",
+    backgroundColor: colors.surfaceAlt,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 10
   },
-
   phoneDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: C.rose,
+    backgroundColor: colors.accent
   },
-
   phoneInfo: {
-    flex: 1,
+    flex: 1
   },
-
   phoneCaption: {
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 9,
+    fontSize: 11,
     letterSpacing: 1.1,
-    color: C.muted,
+    color: colors.textMuted
   },
-
   phoneValue: {
     marginTop: 3,
     fontFamily: typography.fontFamily.semibold,
     fontSize: 13,
-    color: C.plum,
+    color: colors.primary
   },
-
   phoneLock: {
     fontSize: 20,
-    color: C.lavender,
+    color: colors.primaryLight
   },
-
   form: {
     marginTop: 20,
-    gap: 13,
+    gap: 13
   },
-
   fieldBlock: {
-    width: "100%",
+    width: "100%"
   },
-
   fieldLabel: {
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 10,
+    fontSize: typography.fontSize.xs,
     letterSpacing: 1.3,
     marginBottom: 8,
-    color: C.ink,
+    color: colors.textSecondary
   },
-
   inputWrap: {
-    height: 54,
+    height: 58,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: C.white,
-    borderWidth: 1.5,
-    borderColor: C.border,
+    backgroundColor: colors.input,
+    borderWidth: 1,
+    borderColor: colors.border,
     borderRadius: 16,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15
   },
-
   inputFocused: {
-    borderColor: C.lavender,
-    backgroundColor: "#FFFCFF",
+    borderColor: colors.focus,
+    backgroundColor: colors.input
   },
-
   inputError: {
-    borderColor: C.error,
+    borderColor: colors.error
   },
-
   input: {
     flex: 1,
     height: "100%",
-    color: C.ink,
+    color: colors.textPrimary,
     fontFamily: typography.fontFamily.medium,
-    fontSize: 14,
-    paddingVertical: 0,
+    fontSize: 16,
+    paddingVertical: 0
   },
-
   eyeButton: {
     paddingHorizontal: 6,
-    paddingVertical: 9,
+    paddingVertical: 9
   },
-
   eyeText: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: 12,
-    color: C.lavender,
+    color: colors.primaryLight
   },
-
   errorText: {
     marginTop: 5,
     fontFamily: typography.fontFamily.regular,
-    fontSize: 10,
+    fontSize: 12,
     lineHeight: 15,
-    color: C.error,
+    color: colors.error
   },
-
   passwordHint: {
     marginTop: -6,
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
+    gap: 7
   },
-
   hintDot: {
     width: 5,
     height: 5,
     borderRadius: 3,
-    backgroundColor: C.rose,
+    backgroundColor: colors.accent
   },
-
   hintText: {
     flex: 1,
     fontFamily: typography.fontFamily.regular,
-    fontSize: 10,
-    lineHeight: 16,
-    color: C.muted,
+    fontSize: 12,
+    lineHeight: 20,
+    color: colors.textMuted
   },
-
   footer: {
     marginTop: 30,
-    paddingBottom: 8,
+    paddingBottom: 8
   },
-
   createButton: {
     height: 56,
     borderRadius: 18,
-    backgroundColor: C.plum,
+    backgroundColor: colors.primary,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 18,
+    paddingHorizontal: 18
   },
-
   createButtonInactive: {
-    backgroundColor: "#AA96A9",
+    backgroundColor: colors.buttonDisabled
   },
-
   createButtonPressed: {
-    backgroundColor: C.dark,
-    transform: [{ scale: 0.985 }],
+    backgroundColor: colors.buttonPressed,
+    transform: [{
+      scale: 0.985
+    }]
   },
-
   createButtonText: {
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 15,
-    color: C.white,
+    fontSize: 16,
+    color: colors.textOnPrimary
   },
-
   arrowCircle: {
     position: "absolute",
     right: 15,
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "rgba(255,255,255,0.17)",
+    backgroundColor: colors.buttonDetail,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
-
   arrowText: {
     fontSize: 20,
     lineHeight: 23,
     marginTop: -2,
-    color: C.white,
+    color: colors.textOnPrimary
   },
-
   footerNote: {
     marginTop: 15,
     textAlign: "center",
     fontFamily: typography.fontFamily.semibold,
-    fontSize: 9,
-    letterSpacing: 1.4,
-    color: C.lavender,
-  },
+    fontSize: 11,
+    letterSpacing: 1.2,
+    color: colors.primaryLight
+  }
 });
 
 export default styles;

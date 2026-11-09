@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import { createCorsOptions } from "./config/cors.js";
 
 import {
   createEmailProvider,
@@ -36,14 +37,7 @@ if (process.env.TRUST_PROXY_HOPS !== undefined) {
 app.use(helmet());
 
 app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN
-      ? process.env.CORS_ORIGIN.split(",").map((origin) =>
-          origin.trim()
-        )
-      : false,
-    credentials: false,
-  })
+  cors(createCorsOptions())
 );
 
 // ========================================

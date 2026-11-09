@@ -1,3 +1,9 @@
+import BackButton from '../../../components/BackButton';
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { colors } from "../../../theme/colors";
+import { useRecoveryFlow, recoveryErrorMessage } from "../context/RecoveryFlowContext";
+import RecoveryRequired from "../components/recovery/RecoveryRequired";
+import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef, useState } from "react";
 
@@ -8,13 +14,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
   useWindowDimensions,
 } from "react-native";
-import { showAlert } from "../../../utils/alert";
+import { useFeedback, InlineFeedback } from "../../../notifications/useFeedback";
 
 import ScreenContainer from "../../../components/ScreenContainer";
 
@@ -22,18 +29,19 @@ import ResetOTPBackground from "../components/reset-otp/ResetOTPBackground";
 
 import styles from "../styles/verifyResetOTP.styles";
 
-export default function VerifyResetOTPScreen({
-  navigation,
-  route,
-}) {
+export default function VerifyResetOTPScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const { feedback, error: reportError, inline, clearFeedback } = useFeedback();
+  const { recovery, busy, verify, request, clear } = useRecoveryFlow();
   const { height } = useWindowDimensions();
 
   const compact = height < 760;
 
-  const phoneNumber = route?.params?.phoneNumber || "";
+
 
   const [otp, setOtp] = useState("");
-  const [secondsLeft, setSecondsLeft] = useState(60);
+  const [secondsLeft, setSecondsLeft] = useState(() => Math.max(0, Math.ceil(((recovery.retryAt || 0) - Date.now()) / 1000)));
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [focused, setFocused] = useState(false);
 
@@ -46,32 +54,32 @@ export default function VerifyResetOTPScreen({
     const animation = Animated.parallel([
       Animated.timing(fade, {
         toValue: 1,
-        duration: 450,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(rise, {
         toValue: 0,
-        duration: 550,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]);
 
     animation.start();
 
     return () => animation.stop();
-  }, [fade, rise]);
+  }, [fade, rise, reducedMotion]);
 
   useEffect(() => {
     if (secondsLeft <= 0) return;
 
     const timer = setTimeout(() => {
-      setSecondsLeft((current) => Math.max(0, current - 1));
+      setSecondsLeft(Math.max(0, Math.ceil(((recovery.retryAt || 0) - Date.now()) / 1000)));
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [secondsLeft]);
+  }, [secondsLeft, recovery.retryAt]);
 
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -97,38 +105,26 @@ export default function VerifyResetOTPScreen({
   const cleanOTP = otp.replace(/\D/g, "").slice(0, 6);
   const canVerify = cleanOTP.length === 6;
 
-  const displayPhone =
-    typeof phoneNumber === "string" && /^3\d{9}$/.test(phoneNumber)
-      ? `+92 ${phoneNumber.slice(0, 3)} ${phoneNumber.slice(3)}`
-      : "your registered mobile number";
-
-  const handleVerify = () => {
+  const handleVerify = async () => {
+    clearFeedback();
     Keyboard.dismiss();
-
-    if (!canVerify) {
-      showAlert(
-        "Incomplete Code",
-        "Please enter the complete 6-digit code."
-      );
-      return;
-    }
-
-    showAlert(
-      "Verification Preview",
-      "OTP verification will be available after connecting the authentication backend."
-    );
+    if (!canVerify) return;
+    try {
+      if (await verify(cleanOTP)) { setOtp(""); router.replace("/(public)/new-password"); }
+    } catch (error) { reportError("Code Not Verified", recoveryErrorMessage(error)); }
   };
-
-  const handleResend = () => {
-    if (secondsLeft > 0) return;
-
-    Keyboard.dismiss();
-
-    showAlert(
-      "SMS Not Connected",
-      "A new verification code cannot be sent until the backend is connected."
-    );
+  const handleResend = async () => {
+    clearFeedback();
+    if (secondsLeft > 0 || busy) return;
+    try {
+      if (await request(recovery.email)) {
+        setOtp(""); setSecondsLeft(60);
+        inline("If this email belongs to an eligible Passenger, a new code will arrive shortly. Use only the newest code.");
+      }
+    } catch (error) { reportError("Unable to Resend Code", recoveryErrorMessage(error)); }
   };
+  const changeEmail = () => { clear(); router.replace("/(public)/forgot-password"); };
+  if (!recovery.email) return <RecoveryRequired />;
 
   return (
     <ScreenContainer padded={false}>
@@ -145,9 +141,9 @@ export default function VerifyResetOTPScreen({
           style={styles.keyboardContainer}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-          {/* Fixed layout — no scrolling */}
-          <View
-            style={[
+          {/* Content scrolls when the keyboard or a small screen limits height. */}
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false}
+            contentContainerStyle={[
               styles.content,
               compact && styles.contentCompact,
               keyboardVisible && styles.contentKeyboard,
@@ -155,14 +151,7 @@ export default function VerifyResetOTPScreen({
           >
             {/* Header */}
             <View style={styles.header}>
-              <Pressable
-                onPress={() => navigation.goBack()}
-                style={styles.backButton}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Text style={styles.backArrow}>‹</Text>
-              </Pressable>
+              <BackButton onPress={changeEmail} />
 
               <Text style={styles.headerLabel}>
                 ACCOUNT RECOVERY
@@ -191,26 +180,25 @@ export default function VerifyResetOTPScreen({
               >
                 Verify your{"\n"}
                 <Text style={styles.titleAccent}>
-                  number.
+                  email.
                 </Text>
               </Text>
 
               {!keyboardVisible && (
                 <Text style={styles.description}>
-                  Enter the 6-digit code sent to your
-                  registered mobile number.
+                  {recovery.message || "If your Passenger account is eligible, check your email for the six-digit reset code."}
                 </Text>
               )}
 
               <View style={styles.phoneRow}>
                 <Text style={styles.phoneNumber}>
-                  {displayPhone}
+                  {recovery.email}
                 </Text>
 
                 <Pressable
-                  onPress={() => navigation.goBack()}
+                  onPress={changeEmail}
                   accessibilityRole="button"
-                  accessibilityLabel="Change mobile number"
+                  accessibilityLabel="Change email address"
                   hitSlop={8}
                 >
                   <Text style={styles.changeText}>
@@ -259,7 +247,7 @@ export default function VerifyResetOTPScreen({
                   })}
 
                   {/* Real input across all six boxes */}
-                  <TextInput
+                  <TextInput keyboardAppearance="dark" selectionColor={colors.primary} placeholderTextColor={colors.textMuted} underlineColorAndroid="transparent"
                     ref={inputRef}
                     value={cleanOTP}
                     onChangeText={(value) =>
@@ -310,9 +298,11 @@ export default function VerifyResetOTPScreen({
                 keyboardVisible && styles.footerKeyboard,
               ]}
             >
-              <Pressable
+              <InlineFeedback feedback={feedback} />
+<Pressable
                 onPress={handleVerify}
-                disabled={!canVerify}
+                disabled={!canVerify || busy}
+                accessibilityState={{ busy }}
                 accessibilityRole="button"
                 accessibilityLabel="Verify code"
                 style={({ pressed }) => [
@@ -321,8 +311,8 @@ export default function VerifyResetOTPScreen({
                   pressed && canVerify && styles.verifyPressed,
                 ]}
               >
-                <Text style={styles.verifyText}>
-                  Verify Code
+                <Text style={[styles.verifyText, (!canVerify || busy) && { color: colors.textMuted }]}>
+                  {busy ? "Checking..." : "Verify Code"}
                 </Text>
 
                 <View style={styles.arrowCircle}>
@@ -336,7 +326,7 @@ export default function VerifyResetOTPScreen({
                 </Text>
               )}
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </View>
     </ScreenContainer>

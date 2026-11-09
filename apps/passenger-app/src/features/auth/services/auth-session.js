@@ -1,4 +1,5 @@
 
+import { eligibleSession, sessionFromLogin } from "./session-policy";
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 
@@ -12,23 +13,11 @@ import * as SecureStore from "expo-secure-store";
 const storage =
   Platform.OS === "web"
     ? {
-        getItem: async (key) => {
-          try {
-            return window.sessionStorage.getItem(key);
-          } catch {
-            return null;
-          }
-        },
+        getItem: async (key) => window.sessionStorage.getItem(key),
         setItem: async (key, value) => {
           window.sessionStorage.setItem(key, value);
         },
-        deleteItem: async (key) => {
-          try {
-            window.sessionStorage.removeItem(key);
-          } catch {
-            // Storage unavailable: nothing to delete.
-          }
-        },
+        deleteItem: async (key) => window.sessionStorage.removeItem(key),
       }
     : {
         getItem: (key) => SecureStore.getItemAsync(key),
@@ -41,7 +30,7 @@ const SESSION_KEY = "saheli_safar_passenger_session";
 
 // Backend currently generates a 15-minute Access JWT.
 // Use a slightly shorter local lifetime.
-const SESSION_LIFETIME_MS = 14 * 60 * 1000;
+
 
 // ==========================================
 // STEP 1: SAVE PASSENGER SESSION
@@ -49,34 +38,9 @@ const SESSION_LIFETIME_MS = 14 * 60 * 1000;
 export const savePassengerSession = async ({
   accessToken,
   user,
+  expiresInSeconds,
 }) => {
-  if (
-    typeof accessToken !== "string" ||
-    !accessToken.trim()
-  ) {
-    throw new Error("A valid access token is required.");
-  }
-
-  if (
-    !user ||
-    user.role !== "passenger" ||
-    user.status !== "active"
-  ) {
-    throw new Error("Invalid passenger session.");
-  }
-
-  const session = {
-    accessToken,
-    user: {
-      id: user.id,
-      fullName: user.fullName,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      status: user.status,
-    },
-    expiresAt: Date.now() + SESSION_LIFETIME_MS,
-  };
+  const session = sessionFromLogin({ success: true, accessToken, user, expiresInSeconds });
 
   await storage.setItem(
     SESSION_KEY,
@@ -103,21 +67,13 @@ export const getPassengerSession = async () => {
   try {
     session = JSON.parse(storedSession);
   } catch {
-    await storage.deleteItem(SESSION_KEY);
-    return null;
+    throw Object.assign(new Error("Invalid saved session."), { status: 401 });
   }
 
-  const isValid =
-    typeof session?.accessToken === "string" &&
-    session.accessToken.length > 0 &&
-    session.user?.role === "passenger" &&
-    session.user?.status === "active" &&
-    typeof session.expiresAt === "number" &&
-    Date.now() < session.expiresAt;
+  const isValid = eligibleSession(session);
 
   if (!isValid) {
-    await storage.deleteItem(SESSION_KEY);
-    return null;
+    throw Object.assign(new Error("Invalid or expired saved session."), { status: 401 });
   }
 
   return session;

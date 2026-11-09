@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -19,12 +20,12 @@ export default function ProfileBackground() {
         d="M260 -70 C380 -55 441 48 390 151
            C357 214 296 187 285 129
            C274 72 326 30 368 50"
-        fill="#F4E7F0"
+        fill={colors.backgroundDark}
       />
 
       <Path
         d="M310 -20 C390 19 395 89 346 154"
-        stroke="#D8BFD8"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
         fill="none"
       />
@@ -32,12 +33,12 @@ export default function ProfileBackground() {
       <Path
         d="M-78 321 C28 272 92 352 53 438
            C22 506 -65 487 -80 423Z"
-        fill="#F9E9E8"
+        fill={colors.backgroundDark}
       />
 
       <Path
         d="M-18 335 Q64 357 29 434"
-        stroke="#E7C9D4"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.4"
         fill="none"
       />
@@ -45,11 +46,11 @@ export default function ProfileBackground() {
       <Path
         d="M285 742 C316 677 368 672 420 705
            L420 826 L284 826Z"
-        fill="#F2E5F0"
+        fill={colors.backgroundDark}
       />
 
       <G
-        stroke="#D3B4CD"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
         fill="none"
       >
@@ -58,12 +59,12 @@ export default function ProfileBackground() {
         <Path d="M346 747 Q370 735 378 746 Q361 762 346 747Z" />
       </G>
 
-      <Circle cx="43" cy="198" r="3" fill="#DAB4CB" />
-      <Circle cx="345" cy="307" r="4" fill="#EBC4D2" />
-      <Circle cx="64" cy="573" r="3" fill="#C8AFD8" />
+      <Circle cx="43" cy="198" r="3" fill={colors.artwork.backdrop} />
+      <Circle cx="345" cy="307" r="4" fill={colors.artwork.backdrop} />
+      <Circle cx="64" cy="573" r="3" fill={colors.artwork.backdrop} />
 
       <G
-        stroke="#D5B5CC"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.6"
         strokeLinecap="round"
       >

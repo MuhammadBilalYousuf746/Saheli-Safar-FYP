@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -18,8 +19,8 @@ export default function IllustrationDefs() {
         x2="100%"
         y2="100%"
       >
-        <Stop offset="0%" stopColor="#F7E9EF" />
-        <Stop offset="100%" stopColor="#EED6E4" />
+        <Stop offset="0%" stopColor={colors.artwork.backdropAlt} />
+        <Stop offset="100%" stopColor={colors.artwork.backdropAlt} />
       </LinearGradient>
 
       {/* Saheli Safar shuttle */}
@@ -30,8 +31,8 @@ export default function IllustrationDefs() {
         x2="0%"
         y2="100%"
       >
-        <Stop offset="0%" stopColor="#674069" />
-        <Stop offset="58%" stopColor="#552D50" />
+        <Stop offset="0%" stopColor={colors.artwork.purple} />
+        <Stop offset="58%" stopColor={colors.artwork.purple} />
         <Stop offset="100%" stopColor="#3A253F" />
       </LinearGradient>
 
@@ -43,8 +44,8 @@ export default function IllustrationDefs() {
         x2="100%"
         y2="100%"
       >
-        <Stop offset="0%" stopColor="#E1F0F1" />
-        <Stop offset="100%" stopColor="#9BB9C9" />
+        <Stop offset="0%" stopColor={colors.artwork.window} />
+        <Stop offset="100%" stopColor="#47566E" />
       </LinearGradient>
 
       {/* Working woman's kurta */}
@@ -55,7 +56,7 @@ export default function IllustrationDefs() {
         x2="100%"
         y2="100%"
       >
-        <Stop offset="0%" stopColor="#CB8D9D" />
+        <Stop offset="0%" stopColor={colors.artwork.rose} />
         <Stop offset="100%" stopColor="#A96D80" />
       </LinearGradient>
 
@@ -67,8 +68,8 @@ export default function IllustrationDefs() {
         x2="100%"
         y2="100%"
       >
-        <Stop offset="0%" stopColor="#A2C4B9" />
-        <Stop offset="100%" stopColor="#7CA498" />
+        <Stop offset="0%" stopColor={colors.artwork.mint} />
+        <Stop offset="100%" stopColor={colors.artwork.mint} />
       </LinearGradient>
 
       {/* Student's hijab */}

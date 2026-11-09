@@ -7,6 +7,7 @@ import { transformSync } from "esbuild";
 import {
   getAdminLoginRedirect,
   hasFullAdminAccess,
+  canReviewPassengerVerification,
 } from "../src/features/auth/admin-access.js";
 import { getGreetingPeriod, isFreshLoginWelcome } from "../src/shared/utils/greeting.js";
 
@@ -20,6 +21,15 @@ test("only admins with manageAdmins have Full Access", () => {
     false
   );
   assert.equal(hasFullAdminAccess(null), false);
+});
+
+test("Passenger review requires an active Full Access Admin with the separate explicit capability", () => {
+  const account = { role: "admin", status: "active" };
+  assert.equal(canReviewPassengerVerification({ ...account, permissions: ["manageAdmins", "verifyPassengers"] }), true);
+  for (const permissions of [["manageAdmins"], ["verifyPassengers"], []]) assert.equal(canReviewPassengerVerification({ ...account, permissions }), false);
+  for (const role of ["passenger", "driver"]) assert.equal(canReviewPassengerVerification({ ...account, role, permissions: ["manageAdmins", "verifyPassengers"] }), false);
+  assert.equal(canReviewPassengerVerification({ ...account, status: "disabled", permissions: ["manageAdmins", "verifyPassengers"] }), false);
+  assert.equal(canReviewPassengerVerification(null), false);
 });
 
 test("Standard Access defaults away from Overview after login", () => {
@@ -110,14 +120,15 @@ const findElement = (node, type) => {
   return children.map((child) => findElement(child, type)).find(Boolean);
 };
 
-const makePassengerDirectory = (query = "", result = { users: [], pagination: { total: 0 } }, failure) => {
+const makePassengerDirectory = (query = "", result = { users: [], pagination: { total: 0 } }, failure, admin) => {
   const hooks = makeHooks();
   const requests = [];
   const updates = [];
   const { default: UsersPage } = loadComponent("../src/features/users/pages/UsersPage.jsx", {
     react: hooks.react,
-    "react-router-dom": { Navigate: "Navigate", useSearchParams: () => [new URLSearchParams(query), value => updates.push(value)] },
-    "../../../features/auth/context/AuthContext": { useAuth: () => ({ request() {} }) },
+    "react-router-dom": { Navigate: "Navigate", Link: "Link", useSearchParams: () => [new URLSearchParams(query), value => updates.push(value)] },
+    "../../../features/auth/context/AuthContext": { useAuth: () => ({ admin, request() {} }) },
+    "../../auth/admin-access": { canReviewPassengerVerification },
     "../../../shared/services/admin-list.service": { useAdminListApi: () => ({ listUsers: async params => {
       requests.push(params);
       if (failure) throw failure;
@@ -134,6 +145,13 @@ const makePassengerDirectory = (query = "", result = { users: [], pagination: { 
   } });
   return { hooks, requests, updates, render: () => hooks.render(UsersPage) };
 };
+
+test("Passenger directory review link requires Full Access plus verification capability", () => {
+  for (const permissions of [["manageAdmins", "verifyPassengers"], ["verifyPassengers"], ["manageAdmins"], []]) {
+    const directory = makePassengerDirectory("", undefined, undefined, { role: "admin", status: "active", permissions });
+    assert.equal(Boolean(findElement(directory.render(), "Link")), permissions.length === 2);
+  }
+});
 
 test("Passenger directory always requests passengers with server pagination and account status", async () => {
   for (const query of ["", "role=admin", "status=suspended&page=2"]) {

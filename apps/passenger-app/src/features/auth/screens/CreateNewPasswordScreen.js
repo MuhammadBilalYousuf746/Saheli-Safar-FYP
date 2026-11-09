@@ -1,3 +1,9 @@
+import BackButton from '../../../components/BackButton';
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { colors } from "../../../theme/colors";
+import { useRecoveryFlow, recoveryErrorMessage } from "../context/RecoveryFlowContext";
+import RecoveryRequired from "../components/recovery/RecoveryRequired";
+import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef, useState } from "react";
 
@@ -8,13 +14,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
   useWindowDimensions,
 } from "react-native";
-import { showAlert } from "../../../utils/alert";
+import { useFeedback, InlineFeedback } from "../../../notifications/useFeedback";
 
 import ScreenContainer from "../../../components/ScreenContainer";
 
@@ -22,15 +29,15 @@ import NewPasswordBackground from "../components/new-password/NewPasswordBackgro
 
 import styles from "../styles/createNewPassword.styles";
 
-export default function CreateNewPasswordScreen({
-  navigation,
-  route,
-}) {
+export default function CreateNewPasswordScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const { feedback, validation, success: reportSuccess, error: reportError, clearFeedback } = useFeedback();
+  const { recovery, busy, reset, clear } = useRecoveryFlow();
   const { height } = useWindowDimensions();
   const compact = height < 760;
 
-  // Reserved for backend integration after OTP verification.
-  const phoneNumber = route?.params?.phoneNumber || "";
+
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -47,22 +54,22 @@ export default function CreateNewPasswordScreen({
     const animation = Animated.parallel([
       Animated.timing(fade, {
         toValue: 1,
-        duration: 480,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(rise, {
         toValue: 0,
-        duration: 580,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]);
 
     animation.start();
 
     return () => animation.stop();
-  }, [fade, rise]);
+  }, [fade, rise, reducedMotion]);
 
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -86,11 +93,15 @@ export default function CreateNewPasswordScreen({
   }, []);
 
   const hasMinLength = password.length >= 8;
-  const hasLetter = /[A-Za-z]/.test(password);
+  const hasLetter = /[A-Z]/.test(password) && /[a-z]/.test(password);
+  const withinByteLimit = Array.from(password).reduce((bytes, char) => {
+    const point = char.codePointAt(0);
+    return bytes + (point <= 0x7f ? 1 : point <= 0x7ff ? 2 : point <= 0xffff ? 3 : 4);
+  }, 0) <= 72;
   const hasNumber = /\d/.test(password);
 
   const passwordValid =
-    hasMinLength && hasLetter && hasNumber;
+    hasMinLength && hasLetter && hasNumber && withinByteLimit;
 
   const passwordsMatch =
     confirmPassword.length > 0 &&
@@ -98,24 +109,20 @@ export default function CreateNewPasswordScreen({
 
   const canReset = passwordValid && passwordsMatch;
 
-  const handleReset = () => {
+  const handleReset = async () => {
+    clearFeedback();
     Keyboard.dismiss();
-
-    if (!canReset) {
-      showAlert(
-        "Check Your Password",
-        "Please meet all password requirements and ensure both passwords match."
-      );
-      return;
-    }
-
-    // Actual password reset requires a backend-verified
-    // recovery token. Never reset using only a phone number.
-    showAlert(
-      "Password Reset Preview",
-      "Your password meets the requirements. The actual reset will be enabled after secure OTP verification and backend integration."
-    );
+    if (!canReset) { validation("Use 8 or more characters, uppercase and lowercase letters, a number, and at most 72 UTF-8 bytes. Passwords must match."); return; }
+    try {
+      if (await reset(password, confirmPassword)) {
+        setPassword(""); setConfirmPassword("");
+        reportSuccess("Password Reset", "Your password has been reset. Sign in with your new password.");
+        router.dismissAll(); router.replace("/(public)/login");
+      }
+    } catch (error) { reportError("Unable to Reset Password", recoveryErrorMessage(error)); }
   };
+  const abandon = () => { clear(); router.replace("/(public)/forgot-password"); };
+  if (!recovery.resetToken || Date.now() >= recovery.grantExpiresAt) return <RecoveryRequired />;
 
   return (
     <ScreenContainer padded={false}>
@@ -132,9 +139,9 @@ export default function CreateNewPasswordScreen({
           style={styles.keyboardContainer}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-          {/* Fixed layout — no ScrollView */}
-          <View
-            style={[
+          {/* Content scrolls when the keyboard or a small screen limits height. */}
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false}
+            contentContainerStyle={[
               styles.content,
               compact && styles.contentCompact,
               keyboardVisible && styles.contentKeyboard,
@@ -142,14 +149,7 @@ export default function CreateNewPasswordScreen({
           >
             {/* Header */}
             <View style={styles.header}>
-              <Pressable
-                onPress={() => navigation.goBack()}
-                style={styles.backButton}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Text style={styles.backArrow}>‹</Text>
-              </Pressable>
+              <BackButton onPress={abandon} />
 
               <Text style={styles.headerLabel}>
                 ACCOUNT RECOVERY
@@ -186,7 +186,7 @@ export default function CreateNewPasswordScreen({
 
               {!keyboardVisible && (
                 <Text style={styles.description}>
-                  Create a strong new password to secure
+                  Your reset code is verified. Create a strong new password to secure
                   your Saheli Safar account.
                 </Text>
               )}
@@ -209,14 +209,14 @@ export default function CreateNewPasswordScreen({
                     passwordFocused && styles.inputFocused,
                   ]}
                 >
-                  <TextInput
+                  <TextInput keyboardAppearance="dark" selectionColor={colors.primary} underlineColorAndroid="transparent"
                     value={password}
                     onChangeText={setPassword}
                     onFocus={() => setPasswordFocused(true)}
                     onBlur={() => setPasswordFocused(false)}
                     secureTextEntry={!showPassword}
                     placeholder="Enter new password"
-                    placeholderTextColor="#B4A7B3"
+                    placeholderTextColor={colors.textMuted}
                     autoComplete="new-password"
                     style={styles.input}
                     accessibilityLabel="New password"
@@ -253,7 +253,7 @@ export default function CreateNewPasswordScreen({
                           hasMinLength && styles.requirementTextMet,
                         ]}
                       >
-                        At least 8 characters
+                        8+ characters; maximum 72 UTF-8 bytes
                       </Text>
                     </View>
 
@@ -273,7 +273,7 @@ export default function CreateNewPasswordScreen({
                           hasLetter && styles.requirementTextMet,
                         ]}
                       >
-                        One letter
+                        Uppercase and lowercase letters
                       </Text>
                     </View>
 
@@ -313,14 +313,14 @@ export default function CreateNewPasswordScreen({
                       styles.inputError,
                   ]}
                 >
-                  <TextInput
+                  <TextInput keyboardAppearance="dark" selectionColor={colors.primary} underlineColorAndroid="transparent"
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
                     onFocus={() => setConfirmFocused(true)}
                     onBlur={() => setConfirmFocused(false)}
                     secureTextEntry={!showConfirm}
                     placeholder="Re-enter new password"
-                    placeholderTextColor="#B4A7B3"
+                    placeholderTextColor={colors.textMuted}
                     autoComplete="new-password"
                     style={styles.input}
                     accessibilityLabel="Confirm new password"
@@ -357,9 +357,11 @@ export default function CreateNewPasswordScreen({
 
             {/* Footer */}
             <View style={styles.footer}>
-              <Pressable
+              <InlineFeedback feedback={feedback} />
+<Pressable
                 onPress={handleReset}
-                disabled={!canReset}
+                disabled={!canReset || busy}
+                accessibilityState={{ busy }}
                 accessibilityRole="button"
                 accessibilityLabel="Reset password"
                 style={({ pressed }) => [
@@ -368,8 +370,8 @@ export default function CreateNewPasswordScreen({
                   pressed && canReset && styles.resetPressed,
                 ]}
               >
-                <Text style={styles.resetText}>
-                  Reset Password
+                <Text style={[styles.resetText, (!canReset || busy) && { color: colors.textMuted }]}>
+                  {busy ? "Resetting..." : "Reset Password"}
                 </Text>
 
                 <View style={styles.arrowCircle}>
@@ -383,7 +385,7 @@ export default function CreateNewPasswordScreen({
                 </Text>
               )}
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </View>
     </ScreenContainer>

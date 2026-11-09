@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -32,13 +33,13 @@ function WelcomeIllustration() {
         cy="269"
         rx="165"
         ry="17"
-        fill="#DAD0DC"
+        fill={colors.artwork.paperLight}
         opacity={0.62}
       />
 
       <Path
         d="M24 259 Q178 246 335 259"
-        stroke="#FFFFFF"
+        stroke={colors.artwork.highlight}
         strokeWidth="3"
         opacity={0.8}
         fill="none"

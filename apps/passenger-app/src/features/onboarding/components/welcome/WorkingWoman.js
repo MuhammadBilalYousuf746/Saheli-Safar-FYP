@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -139,13 +140,13 @@ function WorkingWoman() {
       {/* Shirt seam */}
       <Path
         d="M37 78 V114"
-        stroke="#E6A8B2"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.8"
         opacity={0.7}
       />
 
-      <Circle cx="37" cy="90" r="1.8" fill="#F6D7D5" />
-      <Circle cx="37" cy="101" r="1.8" fill="#F6D7D5" />
+      <Circle cx="37" cy="90" r="1.8" fill={colors.artwork.backdropAlt} />
+      <Circle cx="37" cy="101" r="1.8" fill={colors.artwork.backdropAlt} />
 
       {/* Dupatta */}
       <Path
@@ -153,14 +154,14 @@ function WorkingWoman() {
            Q51 83 58 75
            L52 120 Q42 129 33 126
            L26 95 L18 136 L10 134Z"
-        fill="#F1C5C9"
+        fill={colors.artwork.paperLight}
         opacity={0.88}
       />
 
       {/* Dupatta fabric folds */}
       <Path
         d="M19 84 Q22 108 15 130"
-        stroke="#D999A9"
+        stroke={colors.artwork.rose}
         strokeWidth="1.5"
         fill="none"
         opacity={0.68}
@@ -168,7 +169,7 @@ function WorkingWoman() {
 
       <Path
         d="M46 84 Q51 103 48 120"
-        stroke="#FFFFFF"
+        stroke={colors.artwork.highlight}
         strokeWidth="1.6"
         fill="none"
         opacity={0.52}
@@ -247,7 +248,7 @@ function WorkingWoman() {
         width="9"
         height="3"
         rx="1.5"
-        fill="#E5BBC8"
+        fill={colors.artwork.paperLight}
       />
     </G>
   );

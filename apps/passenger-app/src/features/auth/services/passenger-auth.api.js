@@ -1,6 +1,16 @@
 
 import { apiRequest } from "../../../config/api";
 
+export const requestPassengerReset = email => apiRequest("/passenger/auth/forgot-password", {
+  method: "POST", body: { email },
+});
+export const verifyPassengerReset = (email, otp) => apiRequest("/passenger/auth/verify-reset-otp", {
+  method: "POST", body: { email, otp },
+});
+export const resetPassengerPassword = (token, password, confirmPassword) => apiRequest("/passenger/auth/reset-password", {
+  method: "POST", body: { token, password, confirmPassword },
+});
+
 // ==========================================
 // SAHELI SAFAR - PASSENGER AUTHENTICATION API
 // ==========================================

@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -22,13 +23,13 @@ export default function OTPArtwork() {
     >
       <Defs>
         <LinearGradient id="envelope" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#AC8FB9" />
-          <Stop offset="1" stopColor="#77547E" />
+          <Stop offset="0" stopColor={colors.artwork.rose} />
+          <Stop offset="1" stopColor={colors.artwork.purple} />
         </LinearGradient>
 
         <LinearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#77547E" />
-          <Stop offset="1" stopColor="#4E3053" />
+          <Stop offset="0" stopColor={colors.artwork.purple} />
+          <Stop offset="1" stopColor={colors.artwork.purple} />
         </LinearGradient>
       </Defs>
 
@@ -38,15 +39,15 @@ export default function OTPArtwork() {
            C249 20 309 64 308 120
            C307 176 258 198 178 196
            C95 194 45 160 45 111Z"
-        fill="#F1E1EE"
+        fill={colors.artwork.backdropAlt}
       />
 
-      <Circle cx="83" cy="71" r="27" fill="#E8D2E6" />
-      <Circle cx="278" cy="150" r="19" fill="#F3DDE1" />
+      <Circle cx="83" cy="71" r="27" fill={colors.artwork.backdropAlt} />
+      <Circle cx="278" cy="150" r="19" fill={colors.artwork.backdropAlt} />
 
       <Path
         d="M56 127 C92 103 111 115 137 130"
-        stroke="#FFFFFF"
+        stroke={colors.artwork.highlight}
         strokeWidth="2"
         strokeDasharray="4 6"
         fill="none"
@@ -54,7 +55,7 @@ export default function OTPArtwork() {
 
       <Path
         d="M224 85 C251 70 279 79 300 98"
-        stroke="#FFFFFF"
+        stroke={colors.artwork.highlight}
         strokeWidth="2"
         strokeDasharray="4 6"
         fill="none"
@@ -66,7 +67,7 @@ export default function OTPArtwork() {
         cy="190"
         rx="112"
         ry="9"
-        fill="#D7C1D6"
+        fill={colors.artwork.paperLight}
         opacity="0.55"
       />
 
@@ -77,7 +78,7 @@ export default function OTPArtwork() {
         width="165"
         height="104"
         rx="19"
-        fill="#BBA3BE"
+        fill={colors.artwork.rose}
         opacity="0.25"
       />
 
@@ -95,7 +96,7 @@ export default function OTPArtwork() {
         d="M88 92 L168 146 Q172 149 177 146
            L249 92"
         fill="none"
-        stroke="#DCC5DF"
+        stroke={colors.artwork.paperLight}
         strokeWidth="3"
         strokeLinecap="round"
       />
@@ -103,14 +104,14 @@ export default function OTPArtwork() {
       <Path
         d="M88 174 L143 129"
         fill="none"
-        stroke="#BA9ABE"
+        stroke={colors.artwork.rose}
         strokeWidth="2"
       />
 
       <Path
         d="M249 174 L197 129"
         fill="none"
-        stroke="#BA9ABE"
+        stroke={colors.artwork.rose}
         strokeWidth="2"
       />
 
@@ -121,7 +122,7 @@ export default function OTPArtwork() {
         width="124"
         height="79"
         rx="14"
-        fill="#D7BDD6"
+        fill={colors.artwork.paperLight}
         opacity="0.45"
       />
 
@@ -131,7 +132,7 @@ export default function OTPArtwork() {
         width="124"
         height="79"
         rx="14"
-        fill="#FFFFFF"
+        fill={colors.artwork.paper}
       />
 
       <Rect
@@ -140,7 +141,7 @@ export default function OTPArtwork() {
         width="45"
         height="5"
         rx="2.5"
-        fill="#D8C7DC"
+        fill={colors.artwork.paperLight}
       />
 
       <Rect
@@ -149,11 +150,11 @@ export default function OTPArtwork() {
         width="65"
         height="4"
         rx="2"
-        fill="#EDE3EF"
+        fill={colors.artwork.backdropAlt}
       />
 
       {/* Six verification dots */}
-      <G fill="#77547E">
+      <G fill={colors.artwork.purple}>
         <Circle cx="127" cy="88" r="4.5" />
         <Circle cx="144" cy="88" r="4.5" />
         <Circle cx="161" cy="88" r="4.5" />
@@ -167,7 +168,7 @@ export default function OTPArtwork() {
         cx="252"
         cy="64"
         r="34"
-        fill="#FFFFFF"
+        fill={colors.artwork.paper}
       />
 
       <Path
@@ -179,7 +180,7 @@ export default function OTPArtwork() {
 
       <Path
         d="M242 64 L250 72 L264 56"
-        stroke="#FFFFFF"
+        stroke={colors.artwork.highlight}
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -188,16 +189,16 @@ export default function OTPArtwork() {
 
       {/* Tiny flower */}
       <G transform="translate(73 118)">
-        <Ellipse cx="0" cy="-10" rx="5" ry="10" fill="#DAA6BB" />
-        <Ellipse cx="10" cy="0" rx="10" ry="5" fill="#E6BECA" />
-        <Ellipse cx="0" cy="10" rx="5" ry="10" fill="#DAA6BB" />
-        <Ellipse cx="-10" cy="0" rx="10" ry="5" fill="#E6BECA" />
-        <Circle cx="0" cy="0" r="5" fill="#FFF2D9" />
+        <Ellipse cx="0" cy="-10" rx="5" ry="10" fill={colors.artwork.paperLight} />
+        <Ellipse cx="10" cy="0" rx="10" ry="5" fill={colors.artwork.paperLight} />
+        <Ellipse cx="0" cy="10" rx="5" ry="10" fill={colors.artwork.paperLight} />
+        <Ellipse cx="-10" cy="0" rx="10" ry="5" fill={colors.artwork.paperLight} />
+        <Circle cx="0" cy="0" r="5" fill={colors.artwork.backdropAlt} />
       </G>
 
       {/* Decorative stars */}
       <G
-        stroke="#C68CA9"
+        stroke={colors.artwork.rose}
         strokeWidth="2"
         strokeLinecap="round"
       >
@@ -205,8 +206,8 @@ export default function OTPArtwork() {
         <Path d="M63 52 V64 M57 58 H69" />
       </G>
 
-      <Circle cx="283" cy="160" r="3" fill="#C8ACD4" />
-      <Circle cx="95" cy="35" r="3" fill="#E0B4C4" />
+      <Circle cx="283" cy="160" r="3" fill={colors.artwork.paperLight} />
+      <Circle cx="95" cy="35" r="3" fill={colors.artwork.paperLight} />
     </Svg>
   );
 }

@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -17,28 +18,28 @@ export default function RecoverySymbol() {
         cx="55"
         cy="55"
         r="53"
-        fill="#F1E5F1"
+        fill={colors.artwork.backdropAlt}
       />
 
       <Circle
         cx="55"
         cy="55"
         r="41"
-        fill="#FFFFFF"
+        fill={colors.artwork.paper}
       />
 
       <Circle
         cx="55"
         cy="55"
         r="30"
-        fill="#F8F1F7"
+        fill={colors.artwork.backdropAlt}
       />
 
       <Path
         d="M72 47
            A20 20 0 1 0 75 58"
         fill="none"
-        stroke="#77547E"
+        stroke={colors.artwork.purple}
         strokeWidth="5"
         strokeLinecap="round"
       />
@@ -46,7 +47,7 @@ export default function RecoverySymbol() {
       <Path
         d="M73 34 L74 48 L60 47"
         fill="none"
-        stroke="#77547E"
+        stroke={colors.artwork.purple}
         strokeWidth="5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -56,7 +57,7 @@ export default function RecoverySymbol() {
         cx="55"
         cy="57"
         r="4"
-        fill="#C98291"
+        fill={colors.artwork.rose}
       />
     </Svg>
   );

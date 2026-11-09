@@ -9,6 +9,7 @@ import OverviewRoute from "../features/overview/pages/OverviewRoute";
 import DriversPage from "../features/drivers/pages/DriversPage";
 import DriverDetailPage from "../features/drivers/pages/DriverDetailPage";
 import UsersPage from "../features/users/pages/UsersPage";
+import PassengerVerificationPage from "../features/verification/PassengerVerificationPage";
 import SettingsPage from "../features/settings/pages/SettingsPage";
 import SettingsAccountPage from "../features/settings/pages/SettingsAccountPage";
 import SettingsSecurityPage from "../features/settings/pages/SettingsSecurityPage";
@@ -35,6 +36,8 @@ const App = () => (
               <Route path="drivers" element={<DriversPage />} />
               <Route path="drivers/:userId" element={<DriverDetailPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="passenger-verifications" element={<PassengerVerificationPage />} />
+              <Route path="passenger-verifications/:userId" element={<PassengerVerificationPage />} />
               <Route path="settings" element={<SettingsPage />}>
                 <Route index element={<Navigate to="account" replace />} />
                 <Route path="account" element={<SettingsAccountPage />} />

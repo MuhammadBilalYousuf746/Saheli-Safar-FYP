@@ -1,5 +1,6 @@
 
 import { Router } from "express";
+import { createAdminVerificationRoutes } from "../verification/verification.routes.js";
 
 import {
   requireAuth,
@@ -63,6 +64,7 @@ router.post(
 
 // Every route below requires an active admin access token.
 router.use(requireAuth("admin"));
+router.use("/passenger-verifications", createAdminVerificationRoutes());
 
 router.post(
   "/auth/change-password",

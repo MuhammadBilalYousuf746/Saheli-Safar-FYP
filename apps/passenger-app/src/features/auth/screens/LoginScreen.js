@@ -1,3 +1,6 @@
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { colors } from "../../../theme/colors";
+import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef, useState } from "react";
 
@@ -8,15 +11,17 @@ import {
     KeyboardAvoidingView,
     Platform,
     Pressable,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     View,
     useWindowDimensions,
 } from "react-native";
-import { showAlert } from "../../../utils/alert";
+import { notifications, safeFeedbackMessage } from "../../../notifications/notification-store";
 
 import ScreenContainer from "../../../components/ScreenContainer";
+import SaheliLoader from '../../../components/SaheliLoader';
 
 import LoginBackground from "../components/login/LoginBackground";
 import LoginArtwork from "../components/login/LoginArtwork";
@@ -24,12 +29,16 @@ import LoginArtwork from "../components/login/LoginArtwork";
 import styles from "../styles/login.styles";
 
 // Real Passenger Login API
-import { loginPassenger } from "../services/passenger-auth.api";
+import { useAuthSession } from "../context/AuthSessionContext";
 
 // Secure authentication session
-import { savePassengerSession } from "../services/auth-session";
 
-export default function LoginScreen({ navigation }) {
+
+export default function LoginScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const { signIn, cancelSignIn } = useAuthSession();
+  useEffect(() => () => cancelSignIn(), [cancelSignIn]);
     const { height } = useWindowDimensions();
 
     const compact = height < 760;
@@ -44,31 +53,33 @@ export default function LoginScreen({ navigation }) {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
     const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const [loginError, setLoginError] = useState("");
     const loginInProgress = useRef(false);
 
     const fade = useRef(new Animated.Value(0)).current;
     const rise = useRef(new Animated.Value(12)).current;
+    useEffect(() => { Keyboard.dismiss(); }, []);
 
     useEffect(() => {
         const animation = Animated.parallel([
             Animated.timing(fade, {
                 toValue: 1,
-                duration: 550,
+                duration: reducedMotion ? 0 : 260,
                 easing: Easing.out(Easing.cubic),
-                useNativeDriver: true,
+                useNativeDriver: Platform.OS !== 'web',
             }),
             Animated.timing(rise, {
                 toValue: 0,
-                duration: 650,
+                duration: reducedMotion ? 0 : 260,
                 easing: Easing.out(Easing.cubic),
-                useNativeDriver: true,
+                useNativeDriver: Platform.OS !== 'web',
             }),
         ]);
 
         animation.start();
 
         return () => animation.stop();
-    }, [fade, rise]);
+    }, [fade, rise, reducedMotion]);
 
     useEffect(() => {
         const show = Keyboard.addListener(
@@ -120,12 +131,10 @@ export default function LoginScreen({ navigation }) {
         if (loginInProgress.current) return;
 
         Keyboard.dismiss();
+        setLoginError("");
 
         if (!canLogin) {
-            showAlert(
-                "Check Your Details",
-                "Enter your email address or mobile number, and your password."
-            );
+            setLoginError("Enter your email address or mobile number, and your password.");
             return;
         }
 
@@ -133,64 +142,12 @@ export default function LoginScreen({ navigation }) {
             loginInProgress.current = true;
             setIsLoggingIn(true);
 
-            // STEP 1: Authenticate with backend.
-            const response = await loginPassenger({
-                email: loginEmail,
-                phone: loginPhone,
-                password,
-            });
-
-            if (
-                response.success &&
-                response.accessToken &&
-                response.user?.status === "active" &&
-                response.user?.role === "passenger"
-            ) {
-                // STEP 2: Store JWT securely on the device.
-                await savePassengerSession({
-                    accessToken: response.accessToken,
-                    user: response.user,
-                });
-
-                // STEP 3: Clear password after successful login.
-                setPassword("");
-
-                // STEP 4: Show success.
-                // Dashboard navigation will be connected next.
-                showAlert(
-                    "Login Successful",
-                    "Welcome back to Saheli Safar! Your journey awaits.",
-                    [
-                        {
-                            text: "Continue",
-                            onPress: () => {
-                                navigation.reset({
-                                    index: 0,
-                                    routes: [
-                                        {
-                                            name: "HomeDashboard",
-                                        },
-                                    ],
-                                });
-                            },
-                        },
-                    ],
-                    {
-                        cancelable: false,
-                    }
-                );
-            } else {
-                showAlert(
-                    "Login Failed",
-                    "Unable to complete login. Please try again."
-                );
-            }
+            const accepted = await signIn({ email: loginEmail, phone: loginPhone, password });
+            if (accepted) setPassword("");
         } catch (error) {
-            showAlert(
-                "Login Failed",
-                error.message ||
-                "Unable to log in. Please try again."
-            );
+            const message = safeFeedbackMessage(error.message, "Unable to log in. Please try again.");
+            setLoginError(message);
+            notifications.notify({ type: "error", title: "Unable to Sign In", message });
         } finally {
             loginInProgress.current = false;
             setIsLoggingIn(false);
@@ -199,7 +156,7 @@ export default function LoginScreen({ navigation }) {
 
     const handleForgotPassword = () => {
         Keyboard.dismiss();
-        navigation.navigate("ForgotPassword");
+        router.navigate("/(public)/forgot-password");
     };
 
     return (
@@ -217,36 +174,13 @@ export default function LoginScreen({ navigation }) {
                     style={styles.keyboardContainer}
                     behavior={Platform.OS === "ios" ? "padding" : undefined}
                 >
-                    {/* Fixed non-scrollable layout */}
-                    <View
-                        style={[
+                    <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false}
+                        contentContainerStyle={[
                             styles.content,
                             compact && styles.contentCompact,
                             keyboardVisible && styles.contentKeyboard,
                         ]}
                     >
-                        {/* Header */}
-                        <View style={styles.header}>
-                            <Pressable
-                                onPress={() => navigation.goBack()}
-                                style={({ pressed }) => [
-                                    styles.backButton,
-                                    pressed && styles.backPressed,
-                                ]}
-                                accessibilityRole="button"
-                                accessibilityLabel="Go back"
-                            >
-                                <Text style={styles.backArrow}>‹</Text>
-                            </Pressable>
-
-                            <View style={styles.headerBrand}>
-                                <View style={styles.brandLine} />
-                                <Text style={styles.brandText}>
-                                    SAHELI SAFAR
-                                </Text>
-                            </View>
-                        </View>
-
                         <View
                             style={[
                                 styles.middle,
@@ -325,7 +259,7 @@ export default function LoginScreen({ navigation }) {
                                         phoneFocused && styles.inputFocused,
                                     ]}
                                 >
-                                    <TextInput
+                                    <TextInput keyboardAppearance="dark" selectionColor={colors.primary} underlineColorAndroid="transparent"
                                         value={identifier}
                                         onChangeText={setIdentifier}
                                         onFocus={() => setPhoneFocused(true)}
@@ -336,7 +270,7 @@ export default function LoginScreen({ navigation }) {
                                         autoCapitalize="none"
                                         autoCorrect={false}
                                         placeholder="you@example.com or 0300 1234567"
-                                        placeholderTextColor="#B4A7B3"
+                                        placeholderTextColor={colors.textMuted}
                                         maxLength={254}
                                         style={styles.input}
                                         accessibilityLabel="Email address or mobile number"
@@ -373,7 +307,7 @@ export default function LoginScreen({ navigation }) {
                                         passwordFocused && styles.inputFocused,
                                     ]}
                                 >
-                                    <TextInput
+                                    <TextInput keyboardAppearance="dark" selectionColor={colors.primary} underlineColorAndroid="transparent"
                                         value={password}
                                         onChangeText={setPassword}
                                         onFocus={() => setPasswordFocused(true)}
@@ -381,7 +315,7 @@ export default function LoginScreen({ navigation }) {
                                         secureTextEntry={!showPassword}
                                         autoComplete="current-password"
                                         placeholder="Enter your password"
-                                        placeholderTextColor="#B4A7B3"
+                                        placeholderTextColor={colors.textMuted}
                                         style={styles.input}
                                         accessibilityLabel="Password"
                                     />
@@ -409,6 +343,7 @@ export default function LoginScreen({ navigation }) {
                                 keyboardVisible && styles.footerKeyboard,
                             ]}
                         >
+                            {!!loginError && <Text accessibilityRole="alert" style={styles.error}>{loginError}</Text>}
                             <Pressable
                                 onPress={handleLogin}
                                 disabled={!canLogin || isLoggingIn}
@@ -421,12 +356,12 @@ export default function LoginScreen({ navigation }) {
                                     pressed && canLogin && styles.loginPressed,
                                 ]}
                             >
-                                <Text style={styles.loginText}>
+                                <Text style={[styles.loginText, (!canLogin || isLoggingIn) && { color: colors.textMuted }]}>
                                     Log In
                                 </Text>
 
                                 <View style={styles.arrowCircle}>
-                                    <Text style={styles.arrowText}>→</Text>
+                                    {isLoggingIn ? <SaheliLoader mode="inline" color={colors.textOnPrimary} label="Signing in" /> : <Text style={styles.arrowText}>→</Text>}
                                 </View>
                             </Pressable>
 
@@ -439,7 +374,7 @@ export default function LoginScreen({ navigation }) {
 
                                         <Pressable
                                             onPress={() =>
-                                                navigation.navigate("RegisterPhone")
+                                                router.navigate("/(public)/register")
                                             }
                                             accessibilityRole="button"
                                             accessibilityLabel="Create an account"
@@ -456,7 +391,7 @@ export default function LoginScreen({ navigation }) {
                                 </>
                             )}
                         </View>
-                    </View>
+                    </ScrollView>
                 </KeyboardAvoidingView>
             </View>
         </ScreenContainer>

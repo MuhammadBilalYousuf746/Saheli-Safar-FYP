@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../../../features/auth/context/AuthContext";
+import { canReviewPassengerVerification } from "../../auth/admin-access";
 import { useAdminListApi } from "../../../shared/services/admin-list.service";
 import Pagination from "../../../shared/components/Pagination";
 import StatusBadge from "../../../shared/components/StatusBadge";
@@ -20,7 +21,7 @@ const STATUS_OPTIONS = [
 const PAGE_SIZE = 20;
 
 const UsersPage = () => {
-  const { request } = useAuth();
+  const { request, admin } = useAuth();
   const api = useAdminListApi(request);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -79,6 +80,7 @@ const UsersPage = () => {
       <header className="page-header">
         <div>
           <h1>Passengers</h1>
+          {canReviewPassengerVerification(admin) && <Link className="link" to="/passenger-verifications">Review identity submissions</Link>}
           <p className="muted">
             Manage passenger accounts and review their status.
           </p>

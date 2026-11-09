@@ -18,8 +18,9 @@ const toQueryString = (query = {}) => {
 // Shared API request function for the Admin Dashboard.
 export const apiRequest = async (
   endpoint,
-  { method = "GET", body, token, query } = {}
+  { method = "GET", body, token, query, responseType = "json" } = {}
 ) => {
+  if (endpoint.startsWith("/admin/passenger-verifications") && import.meta.env.PROD && !API_BASE_URL.startsWith("https://")) throw new Error("A secure HTTPS API connection is required for identity review.");
   let response;
 
   try {
@@ -40,6 +41,7 @@ export const apiRequest = async (
     );
   }
 
+  if (response.ok && responseType === "blob") return response.blob();
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {

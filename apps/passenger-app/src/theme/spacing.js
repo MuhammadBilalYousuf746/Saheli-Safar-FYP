@@ -38,16 +38,16 @@ export const layout = {
 
   // Interactive elements
   buttonHeight: 56,
-  inputHeight: 54,
+  inputHeight: 58,
   minTouchTarget: 48,
 
   // Cards and containers
-  cardRadius: 20,
-  cardPadding: 20,
+  cardRadius: 24,
+  cardPadding: 22,
   sectionGap: 32,
 
   // Layout constraints
-  maxContentWidth: 480,
+  maxContentWidth: 520,
 
   // Onboarding
   onboardingIllustrationMaxHeight: 360,

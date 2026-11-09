@@ -1,7 +1,10 @@
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { useRouter } from "expo-router";
+import { useLaunchPreferences } from '../components/LaunchExperience';
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
+  Platform,
   Animated,
   Easing,
   Pressable,
@@ -19,6 +22,7 @@ import { typography } from "../../../theme/typography";
 import { spacing, radius, layout } from "../../../theme/spacing";
 
 function ProgressIndicator({ active }) {
+  const reducedMotion = useReducedMotion();
   const progress = useRef(
     new Animated.Value(active ? 1 : 0)
   ).current;
@@ -26,7 +30,7 @@ function ProgressIndicator({ active }) {
   useEffect(() => {
     const animation = Animated.timing(progress, {
       toValue: active ? 1 : 0,
-      duration: 280,
+      duration: reducedMotion ? 0 : 260,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: false,
     });
@@ -34,7 +38,7 @@ function ProgressIndicator({ active }) {
     animation.start();
 
     return () => animation.stop();
-  }, [active, progress]);
+  }, [active, progress, reducedMotion]);
 
   const animatedWidth = progress.interpolate({
     inputRange: [0, 1],
@@ -59,7 +63,11 @@ function ProgressIndicator({ active }) {
   );
 }
 
-export default function OnboardingScreen({ navigation }) {
+export default function OnboardingScreen() {
+  const router = useRouter();
+  const { completeOnboarding } = useLaunchPreferences();
+  const finishing = useRef(false);
+  const reducedMotion = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const buttonScale = useRef(new Animated.Value(1)).current;
@@ -76,25 +84,28 @@ export default function OnboardingScreen({ navigation }) {
     const animation = Animated.parallel([
       Animated.timing(slideOpacity, {
         toValue: 1,
-        duration: 330,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(slideTranslate, {
         toValue: 0,
-        duration: 330,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]);
 
     animation.start();
 
     return () => animation.stop();
-  }, [currentIndex, slideOpacity, slideTranslate]);
+  }, [currentIndex, slideOpacity, slideTranslate, reducedMotion]);
 
 const handleFinish = () => {
-  navigation.replace("Welcome");
+  if (finishing.current) return;
+  finishing.current = true;
+  completeOnboarding();
+  router.replace("/(public)/welcome");
 };
 
   const handleNext = () => {
@@ -107,25 +118,15 @@ const handleFinish = () => {
   };
 
   const handlePressIn = () => {
-    Animated.spring(buttonScale, {
-      toValue: 0.975,
-      speed: 35,
-      bounciness: 0,
-      useNativeDriver: true,
-    }).start();
+    Animated.timing(buttonScale, { toValue: 0.975, duration: reducedMotion ? 0 : 120, easing: Easing.out(Easing.cubic), useNativeDriver: Platform.OS !== 'web' }).start();
   };
 
   const handlePressOut = () => {
-    Animated.spring(buttonScale, {
-      toValue: 1,
-      speed: 25,
-      bounciness: 4,
-      useNativeDriver: true,
-    }).start();
+    Animated.timing(buttonScale, { toValue: 1, duration: reducedMotion ? 0 : 120, easing: Easing.out(Easing.cubic), useNativeDriver: Platform.OS !== 'web' }).start();
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer scrollable>
       <View style={styles.container}>
         {/* Header — same position as before */}
         <View style={styles.header}>
@@ -222,71 +223,60 @@ const handleFinish = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1
   },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: spacing.md,
-    minHeight: 56,
+    minHeight: 56
   },
-
   stepText: {
     fontFamily: typography.fontFamily.semibold,
     fontSize: typography.fontSize.sm,
     color: colors.textMuted,
-    letterSpacing: 1.5,
+    letterSpacing: 1.5
   },
-
   skipButton: {
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm,
     minHeight: 44,
     justifyContent: "center",
-    borderRadius: radius.pill,
+    borderRadius: radius.pill
   },
-
   skipPlaceholder: {
     width: 56,
-    height: 44,
+    height: 44
   },
-
   skipPressed: {
-    backgroundColor: colors.accentLight,
+    backgroundColor: colors.accentLight
   },
-
   skipText: {
     color: colors.primary,
     fontFamily: typography.fontFamily.semibold,
-    fontSize: typography.fontSize.sm,
+    fontSize: typography.fontSize.sm
   },
-
   slideContainer: {
     flex: 1,
-    minHeight: 0,
+    minHeight: 0
   },
-
   footer: {
     paddingTop: spacing.md,
-    paddingBottom: spacing.lg,
+    paddingBottom: spacing.lg
   },
-
   progressContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: spacing.xs,
     marginBottom: spacing.lg,
-    minHeight: 8,
+    minHeight: 8
   },
-
   progressDot: {
     height: 8,
-    borderRadius: radius.pill,
+    borderRadius: radius.pill
   },
-
   nextButton: {
     height: layout.buttonHeight,
     backgroundColor: colors.primary,
@@ -294,32 +284,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.lg
   },
-
   nextButtonPressed: {
-    backgroundColor: colors.primaryDark,
+    backgroundColor: colors.buttonPressed
   },
-
   nextButtonText: {
     color: colors.textOnPrimary,
     fontFamily: typography.fontFamily.semibold,
-    fontSize: typography.fontSize.base,
+    fontSize: typography.fontSize.base
   },
-
   arrowContainer: {
     position: "absolute",
     right: spacing.lg,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
-
   arrowText: {
     color: colors.textOnPrimary,
     fontSize: 23,
     lineHeight: 28,
     fontWeight: "400",
     includeFontPadding: false,
-    transform: [{ translateY: -4 }],
-  },
+    transform: [{
+      translateY: -4
+    }]
+  }
 });

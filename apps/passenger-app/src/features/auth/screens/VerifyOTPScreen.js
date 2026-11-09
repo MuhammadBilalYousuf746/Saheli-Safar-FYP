@@ -1,3 +1,9 @@
+import BackButton from '../../../components/BackButton';
+import { backOrReplace } from '../../../navigation/passenger-navigation';
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { colors } from "../../../theme/colors";
+import { useRegistrationFlow } from "../context/RegistrationFlowContext";
+import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef, useState } from "react";
 
@@ -15,7 +21,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { showAlert } from "../../../utils/alert";
+import { useFeedback, InlineFeedback } from "../../../notifications/useFeedback";
 
 import ScreenContainer from "../../../components/ScreenContainer";
 
@@ -32,7 +38,11 @@ import {
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
 
-export default function VerifyOTPScreen({ navigation, route }) {
+export default function VerifyOTPScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const { feedback, validation, error: reportError, inline, clearFeedback } = useFeedback();
+  const { registration, setRegistration } = useRegistrationFlow();
   const { height, width } = useWindowDimensions();
 
   const compact = height < 790;
@@ -40,9 +50,9 @@ export default function VerifyOTPScreen({ navigation, route }) {
   const tiny = height < 620;
 
   // The OTP is sent to the email entered at registration.
-  const email = route?.params?.email || "";
-  const fullName = route?.params?.fullName || "";
-  const phoneNumber = route?.params?.phoneNumber || "";
+  const email = registration.email || "";
+  const fullName = registration.fullName || "";
+  const phoneNumber = registration.phoneNumber || "";
 
   const [otp, setOtp] = useState("");
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
@@ -63,22 +73,22 @@ export default function VerifyOTPScreen({ navigation, route }) {
     const animation = Animated.parallel([
       Animated.timing(fade, {
         toValue: 1,
-        duration: 500,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(rise, {
         toValue: 0,
-        duration: 620,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]);
 
     animation.start();
 
     return () => animation.stop();
-  }, [fade, rise]);
+  }, [fade, rise, reducedMotion]);
 
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -115,21 +125,16 @@ export default function VerifyOTPScreen({ navigation, route }) {
   // VERIFY OTP WITH BACKEND
   // ==========================================
   const handleVerify = async () => {
+    clearFeedback();
     if (requestInProgress.current) return;
 
     if (otp.length !== OTP_LENGTH) {
-      showAlert(
-        "Incomplete Code",
-        "Please enter the complete six-digit code."
-      );
+      validation("Please enter the complete six-digit code.");
       return;
     }
 
     if (!email) {
-      showAlert(
-        "Email Missing",
-        "Please return to registration and enter your email address."
-      );
+      reportError("Email Missing", "Please return to registration and enter your email address.");
       return;
     }
 
@@ -144,24 +149,20 @@ export default function VerifyOTPScreen({ navigation, route }) {
       if (response.success && response.onboardingToken) {
         // Only navigate after real backend verification.
         // The onboarding token is needed to complete registration.
-        navigation.navigate("CompleteProfile", {
+        setRegistration({
           email: response.user?.email || email,
           fullName: response.user?.fullName || fullName,
           phoneNumber: response.user?.phone || phoneNumber,
           onboardingToken: response.onboardingToken,
         });
+
+        router.navigate("/(public)/password-setup");
       } else {
-        showAlert(
-          "Verification Failed",
-          "Unable to verify your code. Please try again."
-        );
+        reportError("Verification Failed", "Unable to verify your code. Please try again.");
       }
     } catch (error) {
-      showAlert(
-        "Verification Failed",
-        error.message ||
-          "Invalid or expired verification code. Please try again."
-      );
+      reportError("Verification Failed", error.message ||
+          "Invalid or expired verification code. Please try again.");
     } finally {
       requestInProgress.current = false;
       setIsVerifying(false);
@@ -172,15 +173,13 @@ export default function VerifyOTPScreen({ navigation, route }) {
   // RESEND OTP USING BACKEND
   // ==========================================
   const handleResend = async () => {
+    clearFeedback();
     if (secondsLeft > 0 || requestInProgress.current) {
       return;
     }
 
     if (!email) {
-      showAlert(
-        "Email Missing",
-        "Please return to registration and enter your email address."
-      );
+      reportError("Email Missing", "Please return to registration and enter your email address.");
       return;
     }
 
@@ -192,24 +191,21 @@ export default function VerifyOTPScreen({ navigation, route }) {
 
       if (response.success) {
         // Clear previously entered OTP.
+        setRegistration(current => ({ ...current,
+          deliveryMode: response.deliveryMode === "simulated" ? "simulated" : undefined,
+        }));
         setOtp("");
 
         // Restart cooldown after successful resend.
         setSecondsLeft(RESEND_SECONDS);
 
-        showAlert(
-          "New Code Generated",
-          response.deliveryMode === "simulated"
+        inline(response.deliveryMode === "simulated"
             ? "A new verification code was generated. Check the development backend terminal."
-            : `A new verification code has been sent to ${email}. Check your inbox and spam folder.`
-        );
+            : `A new verification code has been sent to ${email}. Check your inbox and spam folder.`);
       }
     } catch (error) {
-      showAlert(
-        "Unable to Resend Code",
-        error.message ||
-          "Unable to resend verification code. Please try again."
-      );
+      reportError("Unable to Resend Code", error.message ||
+          "Unable to resend verification code. Please try again.");
     } finally {
       requestInProgress.current = false;
       setIsResending(false);
@@ -251,17 +247,7 @@ export default function VerifyOTPScreen({ navigation, route }) {
           >
             {/* Header */}
             <View style={styles.header}>
-              <Pressable
-                onPress={() => navigation.goBack()}
-                style={({ pressed }) => [
-                  styles.backButton,
-                  pressed && styles.backPressed,
-                ]}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Text style={styles.backArrow}>‹</Text>
-              </Pressable>
+              <BackButton onPress={() => backOrReplace(router, '/(public)/register')} />
 
               <View style={styles.progress}>
                 <View style={styles.progressFilled} />
@@ -311,8 +297,9 @@ export default function VerifyOTPScreen({ navigation, route }) {
               </Text>
 
               <Text style={styles.description}>
-                We emailed a six-digit code to you. Check your inbox
-                (and spam folder) and enter it here.
+                {registration.deliveryMode === "simulated"
+                  ? "A six-digit code was generated for development testing. Check the development backend terminal and enter it here. No email was sent."
+                  : "Enter the six-digit code sent to your email. Check your inbox and spam folder."}
               </Text>
 
               <View style={styles.numberRow}>
@@ -323,7 +310,7 @@ export default function VerifyOTPScreen({ navigation, route }) {
                 </Text>
 
                 <Pressable
-                  onPress={() => navigation.goBack()}
+                  onPress={() => backOrReplace(router, '/(public)/register')}
                   style={styles.editButton}
                   accessibilityRole="button"
                   accessibilityLabel="Change email address"
@@ -379,7 +366,7 @@ export default function VerifyOTPScreen({ navigation, route }) {
                 </View>
 
                 {/* Real input over decorative OTP boxes */}
-                <TextInput
+                <TextInput keyboardAppearance="dark" placeholderTextColor={colors.textMuted} underlineColorAndroid="transparent"
                   ref={inputRef}
                   value={otp}
                   onChangeText={handleOtpChange}
@@ -392,7 +379,7 @@ export default function VerifyOTPScreen({ navigation, route }) {
                   }
                   maxLength={6}
                   caretHidden
-                  selectionColor="#552D50"
+                  selectionColor={colors.primary}
                   style={styles.hiddenInput}
                   accessibilityLabel="Six-digit verification code"
                 />
@@ -443,7 +430,8 @@ export default function VerifyOTPScreen({ navigation, route }) {
                 keyboardVisible && styles.footerKeyboard,
               ]}
             >
-              <Pressable
+              <InlineFeedback feedback={feedback} />
+<Pressable
                 onPress={handleVerify}
                 disabled={
                   !isComplete ||
@@ -463,7 +451,7 @@ export default function VerifyOTPScreen({ navigation, route }) {
                     styles.verifyPressed,
                 ]}
               >
-                <Text style={styles.verifyText}>
+                <Text style={[styles.verifyText, (!isComplete || isVerifying || isResending) && { color: colors.textMuted }]}>
                   Verify & Continue
                 </Text>
 

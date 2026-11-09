@@ -1,5 +1,7 @@
 
 import { Router } from "express";
+import { createPassengerRecoveryRoutes } from "../auth/passenger-recovery.routes.js";
+import { createPassengerVerificationRoutes } from "../verification/verification.routes.js";
 
 import { createAuthRoutes } from "../auth/auth.routes.js";
 import {
@@ -11,6 +13,7 @@ import { createProfileLimiter } from "../../middlewares/rateLimiters.js";
 import {
   completeProfileController,
   getMyProfileController,
+  updateMyProfileController,
 } from "./passenger.controller.js";
 
 const router = Router();
@@ -21,6 +24,8 @@ const router = Router();
 
 // /auth/register, /auth/resend-otp, /auth/verify-otp, /auth/login
 router.use("/auth", createAuthRoutes("passenger"));
+router.use("/auth", createPassengerRecoveryRoutes());
+router.use("/verification", createPassengerVerificationRoutes());
 
 // ==========================================
 // PASSENGER PROFILE ROUTES
@@ -40,5 +45,7 @@ router.get(
   requireAuth("passenger"),
   getMyProfileController
 );
+
+router.patch("/profile/me", requireAuth("passenger"), createProfileLimiter(), updateMyProfileController);
 
 export default router;

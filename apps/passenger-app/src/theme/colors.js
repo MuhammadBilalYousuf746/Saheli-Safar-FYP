@@ -1,49 +1,21 @@
-
+// Saheli Soft Midnight Purple: shared by screens, navigation and artwork.
 export const colors = {
-  // Core brand identity
-  primary: "#552D50",
-  primaryDark: "#382039",
-  primaryLight: "#795273",
-
-  // Premium brand extensions
-  violet: "#40335F",
-  violetLight: "#64537D",
-  orchid: "#9473AE",
-
-  // Accent colors
-  accent: "#C98291",
-  accentLight: "#F3E7EA",
-  coral: "#F29A9C",
-  cream: "#FFF5DB",
-
-  // Backgrounds and surfaces
-  background: "#FCF9F6",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F0F1",
-  backgroundDark: "#40335F",
-  backgroundBlush: "#FFF0EC",
-
-  // Text colors
-  textPrimary: "#25232A",
-  textSecondary: "#716B73",
-  textMuted: "#827982",
-  textOnPrimary: "#FFFFFF",
-  textOnDark: "#FFFFFF",
-  textOnDarkMuted: "#E0D7E7",
-
-  // Borders and dividers
-  border: "#E9E1E5",
-  divider: "#F0E9EC",
-  borderOnDark: "#78698C",
-
-  // Semantic feedback colors
-  success: "#27836B",
-  warning: "#A76D22",
-  error: "#C44555",
-  info: "#4279A8",
-
-  // Utility colors
-  white: "#FFFFFF",
-  black: "#000000",
-  transparent: "transparent",
+  background: '#17131F', backgroundDark: '#1E1828', surface: '#272033', surfaceAlt: '#30263B',
+  input: '#30263B', primary: '#A77BC8', primaryLight: '#C7A3E4', primaryDark: '#69447D',
+  memberCardStart: '#63447F', memberCardMiddle: '#453057', memberCardEnd: '#281E37',
+  violet: '#69447D', violetLight: '#A77BC8', orchid: '#A77BC8',
+  accent: '#C7A3E4', accentLight: '#A77BC81A', coral: '#E6A8BC', cream: '#F2C779',
+  signature: '#FFB36A', iconPeriwinkle: '#9FAEF2',
+  backgroundBlush: '#30263B',
+  textPrimary: '#F7F2FA', textSecondary: '#C4B8CC', textMuted: '#A99BB3', textDisabled: '#A99BB3',
+  textOnPrimary: '#1E1828', textOnDark: '#F7F2FA', textOnDarkMuted: '#C4B8CC',
+  border: '#44364E', divider: '#362B40', borderOnDark: '#44364E', focus: '#C7A3E4',
+  success: '#75D5AD', warning: '#F2C779', error: '#FF8F9A', info: '#A4B9F2',
+  successSurface: '#20362F', errorSurface: '#3B2530', warningSurface: '#362D24', infoSurface: '#272D40',
+  buttonDisabled: '#44364E', buttonPressed: '#C7A3E4', buttonDetail: '#1B11241F',
+  glow: '#A77BC810', shadow: '#08060D', scrim: '#0D0913B8', white: '#FFFFFF', black: '#08060D',
+  // Original human/vehicle artwork is retained; only scene surfaces are adapted.
+  artwork: { backdrop: '#272033', backdropAlt: '#30263B', paper: '#3C2E48', paperLight: '#60496D',
+    line: '#8F6BA6', purple: '#88609E', highlight: '#C7A3E4', rose: '#B77E9C',
+    mint: '#6FAD98', window: '#879DB6' },
 };

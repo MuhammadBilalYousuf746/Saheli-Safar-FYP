@@ -1,3 +1,9 @@
+import BackButton from '../../../components/BackButton';
+import { backOrReplace } from '../../../navigation/passenger-navigation';
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { colors } from "../../../theme/colors";
+import { useRegistrationFlow } from "../context/RegistrationFlowContext";
+import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef, useState } from "react";
 
@@ -14,7 +20,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { showAlert } from "../../../utils/alert";
+import { useFeedback, InlineFeedback } from "../../../notifications/useFeedback";
 
 import ScreenContainer from "../../../components/ScreenContainer";
 
@@ -27,7 +33,11 @@ import styles from "../styles/registerPhone.styles";
 // Backend Registration API
 import { registerPassenger } from "../services/passenger-auth.api";
 
-export default function RegisterPhoneScreen({ navigation }) {
+export default function RegisterPhoneScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const { feedback, validation, error: reportError, clearFeedback } = useFeedback();
+  const { setRegistration } = useRegistrationFlow();
   const { height } = useWindowDimensions();
 
   const compact = height < 760;
@@ -49,22 +59,22 @@ export default function RegisterPhoneScreen({ navigation }) {
     const animation = Animated.parallel([
       Animated.timing(fade, {
         toValue: 1,
-        duration: 550,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(rise, {
         toValue: 0,
-        duration: 650,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]);
 
     animation.start();
 
     return () => animation.stop();
-  }, [fade, rise]);
+  }, [fade, rise, reducedMotion]);
 
   const cleanPhone = phone.replace(/\D/g, "").slice(0, 10);
   const isValidPhone = /^3\d{9}$/.test(cleanPhone);
@@ -84,15 +94,13 @@ export default function RegisterPhoneScreen({ navigation }) {
 
   // Register passenger using the real backend API.
   const handleContinue = async () => {
+    clearFeedback();
     if (isSubmitting) return;
 
     setSubmitted(true);
 
     if (!canContinue) {
-      showAlert(
-        "Check Your Details",
-        "Please enter your full name, a valid email address and a valid Pakistani mobile number."
-      );
+      validation("Please enter your full name, a valid email address and a valid Pakistani mobile number.");
       return;
     }
 
@@ -110,18 +118,18 @@ export default function RegisterPhoneScreen({ navigation }) {
 
       // Navigate only after successful API response.
       if (response.success) {
-        navigation.navigate("VerifyOTP", {
+        setRegistration({
           email: cleanEmail,
           fullName: cleanName,
           phoneNumber,
+          deliveryMode: response.deliveryMode === "simulated" ? "simulated" : undefined,
         });
+
+        router.navigate("/(public)/verify-otp");
       }
     } catch (error) {
-      showAlert(
-        "Registration Failed",
-        error.message ||
-          "Unable to process your request. Please try again."
-      );
+      reportError("Registration Failed", error.message ||
+          "Unable to process your request. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -153,17 +161,7 @@ export default function RegisterPhoneScreen({ navigation }) {
           >
             {/* Header */}
             <View style={styles.header}>
-              <Pressable
-                onPress={() => navigation.goBack()}
-                style={({ pressed }) => [
-                  styles.backButton,
-                  pressed && styles.backPressed,
-                ]}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Text style={styles.backArrow}>‹</Text>
-              </Pressable>
+              <BackButton onPress={() => backOrReplace(router, '/(public)/welcome')} />
 
               <View style={styles.progressContainer}>
                 <View
@@ -268,7 +266,7 @@ export default function RegisterPhoneScreen({ navigation }) {
                   ]}
                 >
                   <View style={styles.codeBox}>
-                    <Text style={styles.flag}>🇵🇰</Text>
+                    <Text style={styles.flag}>PK</Text>
                     <Text style={styles.countryCode}>
                       +92
                     </Text>
@@ -276,7 +274,7 @@ export default function RegisterPhoneScreen({ navigation }) {
 
                   <View style={styles.separator} />
 
-                  <TextInput
+                  <TextInput keyboardAppearance="dark" selectionColor={colors.primary} underlineColorAndroid="transparent"
                     value={phone}
                     onChangeText={(value) => {
                       setPhone(
@@ -287,7 +285,7 @@ export default function RegisterPhoneScreen({ navigation }) {
                     onBlur={() => setFocused(false)}
                     style={styles.phoneInput}
                     placeholder="300 1234567"
-                    placeholderTextColor="#B2A6B1"
+                    placeholderTextColor={colors.textMuted}
                     keyboardType="phone-pad"
                     textContentType="telephoneNumber"
                     autoComplete="tel"
@@ -316,7 +314,8 @@ export default function RegisterPhoneScreen({ navigation }) {
 
             {/* Continue button */}
             <View style={styles.footer}>
-              <Pressable
+              <InlineFeedback feedback={feedback} />
+<Pressable
                 onPress={handleContinue}
                 disabled={isSubmitting}
                 accessibilityRole="button"
@@ -334,7 +333,7 @@ export default function RegisterPhoneScreen({ navigation }) {
                     styles.pressedButton,
                 ]}
               >
-                <Text style={styles.continueText}>
+                <Text style={[styles.continueText, (!canContinue || isSubmitting) && { color: colors.textMuted }]}>
                   {isSubmitting ? "Sending code…" : "Continue"}
                 </Text>
 

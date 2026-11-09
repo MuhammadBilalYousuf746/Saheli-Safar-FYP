@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -34,7 +35,7 @@ function StudentWoman() {
 
       <Path
         d="M57 86 Q70 97 68 123"
-        stroke="#A999BE"
+        stroke={colors.artwork.line}
         strokeWidth="3"
         fill="none"
       />
@@ -73,14 +74,14 @@ function StudentWoman() {
       {/* Fabric folds */}
       <Path
         d="M35 81 V137"
-        stroke="#C2D9D0"
+        stroke={colors.artwork.mint}
         strokeWidth="1.5"
         opacity={0.7}
       />
 
       <Path
         d="M18 102 Q23 122 17 139"
-        stroke="#628E82"
+        stroke={colors.artwork.mint}
         strokeWidth="1.5"
         fill="none"
         opacity={0.5}
@@ -88,7 +89,7 @@ function StudentWoman() {
 
       <Path
         d="M54 104 Q50 125 58 139"
-        stroke="#D4E3DC"
+        stroke={colors.artwork.mint}
         strokeWidth="1.5"
         fill="none"
         opacity={0.6}
@@ -143,7 +144,7 @@ function StudentWoman() {
       {/* Hijab fabric details */}
       <Path
         d="M23 21 Q36 12 49 24"
-        stroke="#A18BAE"
+        stroke={colors.artwork.rose}
         strokeWidth="1.8"
         opacity={0.6}
         fill="none"
@@ -159,7 +160,7 @@ function StudentWoman() {
 
       <Path
         d="M25 63 Q39 84 52 67"
-        stroke="#A691B3"
+        stroke={colors.artwork.rose}
         strokeWidth="1.6"
         fill="none"
         opacity={0.55}

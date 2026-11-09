@@ -1,3 +1,9 @@
+import BackButton from '../../../components/BackButton';
+import { backOrReplace } from '../../../navigation/passenger-navigation';
+import { colors } from "../../../theme/colors";
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { useRegistrationFlow } from "../context/RegistrationFlowContext";
+import { useRouter } from "expo-router";
 
 import React, { useEffect, useRef, useState } from "react";
 
@@ -14,7 +20,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { showAlert } from "../../../utils/alert";
+import { useFeedback, InlineFeedback } from "../../../notifications/useFeedback";
 
 import ScreenContainer from "../../../components/ScreenContainer";
 
@@ -29,16 +35,20 @@ import {
   completePassengerProfile,
 } from "../services/passenger-auth.api";
 
-export default function CompleteProfileScreen({ navigation, route }) {
+export default function CompleteProfileScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const { feedback, validation, error: reportError, success: reportSuccess, clearFeedback } = useFeedback();
+  const { registration, setRegistration } = useRegistrationFlow();
   const { height } = useWindowDimensions();
   const compact = height < 760;
 
   // Name, email and phone were entered at registration
   // and verified with the email OTP.
-  const fullName = route?.params?.fullName || "";
-  const email = route?.params?.email || "";
-  const phoneNumber = route?.params?.phoneNumber || "";
-  const onboardingToken = route?.params?.onboardingToken || "";
+  const fullName = registration.fullName || "";
+  const email = registration.email || "";
+  const phoneNumber = registration.phoneNumber || "";
+  const onboardingToken = registration.onboardingToken || "";
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -59,22 +69,22 @@ export default function CompleteProfileScreen({ navigation, route }) {
     const animation = Animated.parallel([
       Animated.timing(fade, {
         toValue: 1,
-        duration: 500,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(rise, {
         toValue: 0,
-        duration: 600,
+        duration: reducedMotion ? 0 : 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]);
 
     animation.start();
 
     return () => animation.stop();
-  }, [fade, rise]);
+  }, [fade, rise, reducedMotion]);
 
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -116,24 +126,19 @@ export default function CompleteProfileScreen({ navigation, route }) {
   // REAL BACKEND ACCOUNT CREATION
   // ==========================================
   const handleCreateAccount = async () => {
+    clearFeedback();
     if (submittingRef.current) return;
 
     setSubmitted(true);
     Keyboard.dismiss();
 
     if (!canSubmit) {
-      showAlert(
-        "Check Your Details",
-        "Please create a valid password and confirm it."
-      );
+      validation("Please create a valid password and confirm it.");
       return;
     }
 
     if (!onboardingToken) {
-      showAlert(
-        "Verification Required",
-        "Please go back and verify your email address before creating your account."
-      );
+      reportError("Verification Required", "Please go back and verify your email address before creating your account.");
       return;
     }
 
@@ -149,38 +154,22 @@ export default function CompleteProfileScreen({ navigation, route }) {
       });
 
       if (response.success) {
+        setRegistration({});
         // Clear passwords from component state.
         setPassword("");
         setConfirmPassword("");
 
         // Access token is not logged or stored insecurely.
         // Login integration will manage authenticated sessions.
-        showAlert(
-          "Account Created Successfully",
-          "Welcome to Saheli Safar! Your account is now active. Please log in to continue.",
-          [
-            {
-              text: "Continue to Login",
-              onPress: () => {
-                navigation.navigate("Login");
-              },
-            },
-          ],
-          { cancelable: false }
-        );
+        reportSuccess("Account Created Successfully", "Welcome to Saheli Safar! Your account is now active. Please log in to continue.");
+        router.navigate("/(public)/login");
       } else {
-        showAlert(
-          "Account Creation Failed",
-          response.message ||
-            "Unable to create your account. Please try again."
-        );
+        reportError("Account Creation Failed", response.message ||
+            "Unable to create your account. Please try again.");
       }
     } catch (error) {
-      showAlert(
-        "Account Creation Failed",
-        error.message ||
-          "Something went wrong. Please try again."
-      );
+      reportError("Account Creation Failed", error.message ||
+          "Something went wrong. Please try again.");
     } finally {
       submittingRef.current = false;
       setIsSubmitting(false);
@@ -227,14 +216,7 @@ export default function CompleteProfileScreen({ navigation, route }) {
           >
             {/* Header */}
             <View style={styles.header}>
-              <Pressable
-                onPress={() => navigation.goBack()}
-                style={styles.backButton}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Text style={styles.backArrow}>‹</Text>
-              </Pressable>
+              <BackButton onPress={() => backOrReplace(router, '/(public)/register')} />
 
               <View style={styles.progress}>
                 <View style={styles.progressFilled} />
@@ -354,7 +336,8 @@ export default function CompleteProfileScreen({ navigation, route }) {
 
             {/* Footer */}
             <View style={styles.footer}>
-              <Pressable
+              <InlineFeedback feedback={feedback} />
+<Pressable
                 onPress={handleCreateAccount}
                 disabled={isSubmitting}
                 style={({ pressed }) => [
@@ -366,7 +349,7 @@ export default function CompleteProfileScreen({ navigation, route }) {
                 accessibilityLabel="Create account"
                 accessibilityState={{ busy: isSubmitting }}
               >
-                <Text style={styles.createButtonText}>
+                <Text style={[styles.createButtonText, (!canSubmit || isSubmitting) && { color: colors.textMuted }]}>
                   Create My Account
                 </Text>
 

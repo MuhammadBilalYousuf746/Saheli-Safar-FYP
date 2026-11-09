@@ -1,5 +1,10 @@
+import BackButton from '../../../components/BackButton';
+import { useReducedMotion } from '../../../theme/useReducedMotion';
+import { colors } from "../../../theme/colors";
+import { useRecoveryFlow, recoveryErrorMessage } from "../context/RecoveryFlowContext";
+import { useRouter, useFocusEffect } from "expo-router";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import {
     Animated,
@@ -8,13 +13,14 @@ import {
     KeyboardAvoidingView,
     Platform,
     Pressable,
+  ScrollView,
     StyleSheet,
     Text,
     TextInput,
     View,
     useWindowDimensions,
 } from "react-native";
-import { showAlert } from "../../../utils/alert";
+import { useFeedback, InlineFeedback } from "../../../notifications/useFeedback";
 
 import ScreenContainer from "../../../components/ScreenContainer";
 
@@ -23,13 +29,18 @@ import RecoverySymbol from "../components/recovery/RecoverySymbol";
 
 import styles from "../styles/forgotPassword.styles";
 
-export default function ForgotPasswordScreen({ navigation }) {
+export default function ForgotPasswordScreen() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const { feedback, validation, error: reportError, clearFeedback } = useFeedback();
+  const { request, busy, clear } = useRecoveryFlow();
+  useFocusEffect(useCallback(() => { clear(); }, [clear]));
     const { height } = useWindowDimensions();
 
     const compact = height < 760;
     const veryCompact = height < 680;
 
-    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
     const [focused, setFocused] = useState(false);
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -40,22 +51,22 @@ export default function ForgotPasswordScreen({ navigation }) {
         const animation = Animated.parallel([
             Animated.timing(fade, {
                 toValue: 1,
-                duration: 480,
+                duration: reducedMotion ? 0 : 260,
                 easing: Easing.out(Easing.cubic),
-                useNativeDriver: true,
+                useNativeDriver: Platform.OS !== 'web',
             }),
             Animated.timing(rise, {
                 toValue: 0,
-                duration: 580,
+                duration: reducedMotion ? 0 : 260,
                 easing: Easing.out(Easing.cubic),
-                useNativeDriver: true,
+                useNativeDriver: Platform.OS !== 'web',
             }),
         ]);
 
         animation.start();
 
         return () => animation.stop();
-    }, [fade, rise]);
+    }, [fade, rise, reducedMotion]);
 
     useEffect(() => {
         const show = Keyboard.addListener(
@@ -78,23 +89,15 @@ export default function ForgotPasswordScreen({ navigation }) {
         };
     }, []);
 
-    const cleanPhone = phone.replace(/\D/g, "").slice(0, 10);
-    const isValidPhone = /^3\d{9}$/.test(cleanPhone);
-
-    const handleContinue = () => {
+    const cleanEmail = email.trim().toLowerCase();
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail);
+    const handleContinue = async () => {
+        clearFeedback();
         Keyboard.dismiss();
-
-        if (!isValidPhone) {
-            showAlert(
-                "Invalid Number",
-                "Please enter a valid Pakistani mobile number."
-            );
-            return;
-        }
-
-        navigation.navigate("VerifyResetOTP", {
-            phoneNumber: cleanPhone,
-        });
+        if (!isValidEmail) { validation("Enter a valid registered email address."); return; }
+        try {
+            if (await request(cleanEmail)) router.navigate("/(public)/verify-reset-otp");
+        } catch (error) { reportError("Unable to Request Code", recoveryErrorMessage(error)); }
     };
 
     return (
@@ -112,9 +115,9 @@ export default function ForgotPasswordScreen({ navigation }) {
                     style={styles.keyboardContainer}
                     behavior={Platform.OS === "ios" ? "padding" : undefined}
                 >
-                    {/* Fixed layout: no ScrollView */}
-                    <View
-                        style={[
+                    {/* Content scrolls when the keyboard or a small screen limits height. */}
+                    <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false}
+                        contentContainerStyle={[
                             styles.content,
                             compact && styles.contentCompact,
                             keyboardVisible && styles.contentKeyboard,
@@ -122,14 +125,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     >
                         {/* Header */}
                         <View style={styles.header}>
-                            <Pressable
-                                onPress={() => navigation.goBack()}
-                                style={styles.backButton}
-                                accessibilityRole="button"
-                                accessibilityLabel="Go back"
-                            >
-                                <Text style={styles.backArrow}>‹</Text>
-                            </Pressable>
+                            <BackButton onPress={() => { clear(); router.replace("/(public)/login"); }} />
 
                             <Text style={styles.headerLabel}>
                                 ACCOUNT RECOVERY
@@ -177,8 +173,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 
                             {!keyboardVisible && (
                                 <Text style={styles.description}>
-                                    No worries. Enter your registered mobile
-                                    number and we'll help you get back in.
+                                    Enter your registered email address and we'll help you get back in.
                                 </Text>
                             )}
 
@@ -191,7 +186,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                                 ]}
                             >
                                 <Text style={styles.fieldLabel}>
-                                    REGISTERED MOBILE NUMBER
+                                    REGISTERED EMAIL ADDRESS
                                 </Text>
 
                                 <View
@@ -200,33 +195,24 @@ export default function ForgotPasswordScreen({ navigation }) {
                                         focused && styles.inputFocused,
                                     ]}
                                 >
-                                    <View style={styles.countryCode}>
-                                        <Text style={styles.flag}>🇵🇰</Text>
-                                        <Text style={styles.codeText}>+92</Text>
-                                    </View>
-
-                                    <View style={styles.separator} />
-
-                                    <TextInput
-                                        value={phone}
-                                        onChangeText={(value) =>
-                                            setPhone(
-                                                value.replace(/\D/g, "").slice(0, 10)
-                                            )
-                                        }
+                                    <TextInput keyboardAppearance="dark" selectionColor={colors.primary} underlineColorAndroid="transparent"
+                                        value={email}
+                                        onChangeText={setEmail}
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
                                         onFocus={() => setFocused(true)}
                                         onBlur={() => setFocused(false)}
-                                        placeholder="300 1234567"
-                                        placeholderTextColor="#B4A7B3"
-                                        keyboardType="phone-pad"
-                                        textContentType="telephoneNumber"
-                                        autoComplete="tel"
-                                        maxLength={10}
+                                        placeholder="you@example.com"
+                                        placeholderTextColor={colors.textMuted}
+                                        keyboardType="email-address"
+                                        textContentType="emailAddress"
+                                        autoComplete="email"
+                                        maxLength={254}
                                         style={styles.input}
-                                        accessibilityLabel="Registered mobile number"
+                                        accessibilityLabel="Registered email address"
                                     />
 
-                                    {isValidPhone && (
+                                    {isValidEmail && (
                                         <View style={styles.validCircle}>
                                             <Text style={styles.validCheck}>
                                                 ✓
@@ -239,7 +225,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                                     <View style={styles.helperDot} />
 
                                     <Text style={styles.helperText}>
-                                        We'll send a verification code to this number.
+                                        If your account is eligible, we'll email a reset code.
                                     </Text>
                                 </View>
                             </View>
@@ -247,19 +233,21 @@ export default function ForgotPasswordScreen({ navigation }) {
 
                         {/* Footer */}
                         <View style={styles.footer}>
-                            <Pressable
+                            <InlineFeedback feedback={feedback} />
+<Pressable
                                 onPress={handleContinue}
-                                disabled={!isValidPhone}
+                                disabled={!isValidEmail || busy}
+                                accessibilityState={{ busy }}
                                 accessibilityRole="button"
                                 accessibilityLabel="Continue password recovery"
                                 style={({ pressed }) => [
                                     styles.continueButton,
-                                    !isValidPhone && styles.continueDisabled,
-                                    pressed && isValidPhone && styles.continuePressed,
+                                    !isValidEmail && styles.continueDisabled,
+                                    pressed && isValidEmail && styles.continuePressed,
                                 ]}
                             >
-                                <Text style={styles.continueText}>
-                                    Continue
+                                <Text style={[styles.continueText, (!isValidEmail || busy) && { color: colors.textMuted }]}>
+                                    {busy ? "Requesting code..." : "Continue"}
                                 </Text>
 
                                 <View style={styles.arrowCircle}>
@@ -272,7 +260,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                             {!keyboardVisible && (
                                 <>
                                     <Pressable
-                                        onPress={() => navigation.goBack()}
+                                        onPress={() => { clear(); router.replace("/(public)/login"); }}
                                         style={styles.backToLogin}
                                         accessibilityRole="button"
                                         accessibilityLabel="Back to login"
@@ -288,7 +276,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                                 </>
                             )}
                         </View>
-                    </View>
+                    </ScrollView>
                 </KeyboardAvoidingView>
             </View>
         </ScreenContainer>

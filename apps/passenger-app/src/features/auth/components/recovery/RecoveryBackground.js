@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -21,13 +22,13 @@ export default function RecoveryBackground() {
     >
       <Defs>
         <LinearGradient id="topGlow" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#E9D8EB" />
-          <Stop offset="1" stopColor="#F8EFF5" />
+          <Stop offset="0" stopColor={colors.backgroundDark} />
+          <Stop offset="1" stopColor={colors.backgroundDark} />
         </LinearGradient>
 
         <LinearGradient id="bottomGlow" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#F8E6E8" />
-          <Stop offset="1" stopColor="#F2E4F4" />
+          <Stop offset="0" stopColor={colors.backgroundDark} />
+          <Stop offset="1" stopColor={colors.backgroundDark} />
         </LinearGradient>
       </Defs>
 
@@ -42,7 +43,7 @@ export default function RecoveryBackground() {
       <Path
         d="M-45 39 C44 92 162 53 195 -26"
         fill="none"
-        stroke="#D0B1D5"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
         opacity="0.7"
       />
@@ -50,7 +51,7 @@ export default function RecoveryBackground() {
       <Path
         d="M-40 54 C52 111 161 75 211 -12"
         fill="none"
-        stroke="#E2CBE1"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1"
       />
 
@@ -60,7 +61,7 @@ export default function RecoveryBackground() {
         cy="147"
         r="89"
         fill="none"
-        stroke="#E8D7E8"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
       />
 
@@ -69,18 +70,18 @@ export default function RecoveryBackground() {
         cy="147"
         r="66"
         fill="none"
-        stroke="#F0E2EF"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
       />
 
-      <Circle cx="350" cy="147" r="43" fill="#F7EDF4" />
+      <Circle cx="350" cy="147" r="43" fill={colors.backgroundDark} />
 
       {/* Floating accents */}
-      <Circle cx="306" cy="232" r="4" fill="#D5B7D9" />
-      <Circle cx="46" cy="286" r="3" fill="#E0BDCE" />
+      <Circle cx="306" cy="232" r="4" fill={colors.artwork.backdrop} />
+      <Circle cx="46" cy="286" r="3" fill={colors.artwork.backdrop} />
 
       <G
-        stroke="#D4B5CE"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
         strokeLinecap="round"
       >
@@ -102,7 +103,7 @@ export default function RecoveryBackground() {
            C57 632 119 713 216 694
            C315 675 361 650 430 702"
         fill="none"
-        stroke="#DCC3DB"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.5"
       />
 
@@ -111,7 +112,7 @@ export default function RecoveryBackground() {
            C75 665 128 741 223 726
            C325 708 362 683 433 734"
         fill="none"
-        stroke="#E9D4E4"
+        stroke={colors.artwork.paperLight}
         strokeWidth="1.2"
       />
 
@@ -120,12 +121,12 @@ export default function RecoveryBackground() {
         cy="623"
         rx="42"
         ry="42"
-        fill="#F5E5E9"
+        fill={colors.backgroundDark}
         opacity="0.75"
       />
 
-      <Circle cx="312" cy="755" r="5" fill="#D8BCD8" />
-      <Circle cx="76" cy="638" r="3" fill="#D9B5CB" />
+      <Circle cx="312" cy="755" r="5" fill={colors.artwork.backdrop} />
+      <Circle cx="76" cy="638" r="3" fill={colors.artwork.backdrop} />
     </Svg>
   );
 }

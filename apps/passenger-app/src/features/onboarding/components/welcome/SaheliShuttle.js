@@ -1,3 +1,4 @@
+import { colors } from "../../../../theme/colors";
 
 import React from "react";
 
@@ -10,8 +11,8 @@ import {
 } from "react-native-svg";
 
 const C = {
-  plum: "#552D50",
-  coral: "#F29A9C",
+  plum: colors.artwork.purple,
+  coral: colors.artwork.highlight,
 };
 
 function SaheliShuttle() {
@@ -42,7 +43,7 @@ function SaheliShuttle() {
         {/* Roof highlight */}
         <Path
           d="M35 15 Q42 12 57 12 H188"
-          stroke="#C8A5C4"
+          stroke={colors.artwork.paperLight}
           strokeWidth="3"
           strokeLinecap="round"
           fill="none"
@@ -75,7 +76,7 @@ function SaheliShuttle() {
         />
 
         {/* Reflections */}
-        <G fill="#FFFFFF" opacity={0.35}>
+        <G fill={colors.artwork.paper} opacity={0.35}>
           <Path d="M34 28 H47 L25 54 H20Z" />
           <Path d="M77 28 H88 L71 53 V39Z" />
           <Path d="M125 28 H135 L121 48 V34Z" />
@@ -84,7 +85,7 @@ function SaheliShuttle() {
         {/* Lower window trim */}
         <Path
           d="M20 61 H218"
-          stroke="#D2B9D0"
+          stroke={colors.artwork.paperLight}
           strokeWidth="2"
           opacity={0.65}
         />
@@ -101,7 +102,7 @@ function SaheliShuttle() {
 
         <Path
           d="M197 59 V96"
-          stroke="#C29DBB"
+          stroke={colors.artwork.rose}
           strokeWidth="1.8"
         />
 
@@ -111,7 +112,7 @@ function SaheliShuttle() {
           width="3"
           height="9"
           rx="1.5"
-          fill="#EEE2EB"
+          fill={colors.artwork.backdropAlt}
         />
 
         {/* Door glass */}
@@ -121,7 +122,7 @@ function SaheliShuttle() {
           width="13"
           height="10"
           rx="2"
-          fill="#ACC4CD"
+          fill={colors.artwork.paperLight}
           opacity={0.65}
         />
 
@@ -131,7 +132,7 @@ function SaheliShuttle() {
           width="13"
           height="10"
           rx="2"
-          fill="#ACC4CD"
+          fill={colors.artwork.paperLight}
           opacity={0.65}
         />
 
@@ -146,7 +147,7 @@ function SaheliShuttle() {
         {/* Lower highlight */}
         <Path
           d="M22 82 H163"
-          stroke="#A97D9F"
+          stroke={colors.artwork.rose}
           strokeWidth="1.4"
           opacity={0.75}
         />
@@ -167,7 +168,7 @@ function SaheliShuttle() {
           width="8"
           height="12"
           rx="3"
-          fill="#F4B8BB"
+          fill={colors.artwork.paperLight}
         />
 
         {/* Chassis line */}
@@ -180,18 +181,18 @@ function SaheliShuttle() {
 
         {/* Front wheel */}
         <Circle cx="55" cy="101" r="18" fill="#302639" />
-        <Circle cx="55" cy="101" r="9" fill="#D2CAD8" />
-        <Circle cx="55" cy="101" r="4" fill="#F8F2F5" />
+        <Circle cx="55" cy="101" r="9" fill={colors.artwork.paperLight} />
+        <Circle cx="55" cy="101" r="4" fill={colors.artwork.backdropAlt} />
 
         {/* Rear wheel */}
         <Circle cx="190" cy="101" r="18" fill="#302639" />
-        <Circle cx="190" cy="101" r="9" fill="#D2CAD8" />
-        <Circle cx="190" cy="101" r="4" fill="#F8F2F5" />
+        <Circle cx="190" cy="101" r="9" fill={colors.artwork.paperLight} />
+        <Circle cx="190" cy="101" r="4" fill={colors.artwork.backdropAlt} />
 
         {/* Wheel reflections */}
         <Path
           d="M47 97 Q55 90 63 97"
-          stroke="#FFFFFF"
+          stroke={colors.artwork.highlight}
           strokeWidth="1.5"
           opacity={0.65}
           fill="none"
@@ -199,7 +200,7 @@ function SaheliShuttle() {
 
         <Path
           d="M182 97 Q190 90 198 97"
-          stroke="#FFFFFF"
+          stroke={colors.artwork.highlight}
           strokeWidth="1.5"
           opacity={0.65}
           fill="none"
