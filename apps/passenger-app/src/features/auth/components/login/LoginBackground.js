@@ -80,8 +80,8 @@ export default function LoginBackground() {
         strokeWidth="1.6"
         strokeLinecap="round"
       >
-        <Path d="M41 520 V534 M34 527 H48" />
-        <Path d="M343 525 V539 M336 532 H350" />
+        <Path d="M10 520 V534 M3 527 H17" />
+        <Path d="M380 525 V539 M373 532 H387" />
       </G>
     </Svg>
   );

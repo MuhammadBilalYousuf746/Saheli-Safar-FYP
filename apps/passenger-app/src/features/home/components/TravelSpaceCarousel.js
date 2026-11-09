@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, FlatList, Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { FlatList, Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import SaheliIcon from "../../../components/icons/SaheliIcon";
 import { colors } from "../../../theme/colors";
 import { useReducedMotion } from "../../../theme/useReducedMotion";
@@ -21,21 +21,9 @@ const TravelCard = memo(function TravelCard({ item, index, width, height, onOpen
   </Pressable>;
 });
 
-function PageDot({ item, index, active, reduced, onPress }) {
-  const value = useRef(new Animated.Value(active ? 1 : 0)).current;
-  useEffect(() => {
-    value.stopAnimation();
-    const animation = Animated.timing(value, { toValue: active ? 1 : 0, duration: reduced ? 0 : 180, easing: Easing.out(Easing.cubic), useNativeDriver: Platform.OS !== "web" });
-    animation.start(); return () => animation.stop();
-  }, [active, reduced, value]);
-  return <Pressable accessibilityRole="button" accessibilityLabel={`Show travel card ${index + 1}: ${item.title}`} accessibilityState={{ selected: active }} aria-pressed={active} onPress={onPress} style={styles.pageButton}>
-    <Animated.View aria-hidden={true} style={[styles.dot, { opacity: value.interpolate({ inputRange: [0, 1], outputRange: [0.35, 1] }), transform: [{ scaleX: value.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }] }]} />
-  </Pressable>;
-}
-
 export default function TravelSpaceCarousel({ onOpen }) {
   const reduced = useReducedMotion(), { fontScale } = useWindowDimensions();
-  const [width, setWidth] = useState(0), [active, setActive] = useState(0);
+  const [width, setWidth] = useState(0);
   const minimumHeight = Math.ceil(204 * Math.max(1, fontScale));
   const [height, setHeight] = useState(minimumHeight);
   const list = useRef(null), activeRef = useRef(0), sizing = useMemo(() => travelCardLayout(width), [width]);
@@ -50,7 +38,7 @@ export default function TravelSpaceCarousel({ onOpen }) {
   const measure = useCallback(event => setHeight(current => Math.max(current, Math.ceil(event.nativeEvent.layout.height))), []);
   const update = useCallback(event => {
     const index = nearestTravelCard(event.nativeEvent.contentOffset.x, sizing.offsets);
-    if (index !== activeRef.current) { activeRef.current = index; setActive(index); }
+    if (index !== activeRef.current) { activeRef.current = index; }
   }, [sizing]);
   const renderItem = useCallback(({ item, index }) => <TravelCard item={item} index={index} width={sizing.cardWidth} height={height} onOpen={onOpen} onMeasure={measure} onFocus={() => goTo(index, false)} />, [sizing.cardWidth, height, onOpen, measure, goTo]);
   return <View testID="travel-carousel" onLayout={event => setWidth(Math.round(event.nativeEvent.layout.width))}>
@@ -60,10 +48,6 @@ export default function TravelSpaceCarousel({ onOpen }) {
       snapToOffsets={sizing.offsets} decelerationRate="fast" disableIntervalMomentum directionalLockEnabled nestedScrollEnabled
       showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" scrollEventThrottle={16} onScroll={update}
       style={[{ height }, Platform.OS === "web" && { scrollSnapType: "x mandatory" }]} contentContainerStyle={styles.listContent} />}
-    <View testID="travel-pagination" style={styles.pagination}>
-      {TRAVEL_CARDS.map((item, index) => <PageDot key={item.id} item={item} index={index} active={index === active} reduced={reduced} onPress={() => goTo(index)} />)}
-    </View>
-    <Text testID="travel-current-card" accessibilityLiveRegion="polite" style={styles.position}>{active + 1} / {TRAVEL_CARDS.length} · {TRAVEL_CARDS[active].title}</Text>
   </View>;
 }
 function Separator() { return <View style={{ width: 12 }} />; }
@@ -78,6 +62,4 @@ const styles = StyleSheet.create({
   copy: { gap: 6 }, title: { color: colors.textPrimary, fontFamily: "Inter_600SemiBold", fontSize: 18, lineHeight: 25, letterSpacing: -0.3 },
   description: { color: colors.textSecondary, fontFamily: "Inter_400Regular", fontSize: 13, lineHeight: 20 }, action: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }, ticketAction: { borderTopWidth: 1, borderTopColor: colors.divider, paddingTop: 12 },
   actionText: { color: colors.primaryLight, fontFamily: "Inter_600SemiBold", fontSize: 12, lineHeight: 20 }, pressed: { opacity: 0.82 },
-  pagination: { flexDirection: "row", alignItems: "center", justifyContent: "center" }, pageButton: { width: 44, height: 44, alignItems: "center", justifyContent: "center" }, dot: { width: 6, height: 4, borderRadius: 3, backgroundColor: colors.primaryLight },
-  position: { color: colors.textSecondary, fontFamily: "Inter_400Regular", fontSize: 10, lineHeight: 16, textAlign: "center" },
 });

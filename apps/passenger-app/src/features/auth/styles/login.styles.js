@@ -18,8 +18,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: 18,
-    justifyContent: "space-between",
-    gap: 24
+    justifyContent: "center"
   },
   contentCompact: {
     paddingTop: 10,
@@ -27,7 +26,8 @@ const styles = StyleSheet.create({
   },
   contentKeyboard: {
     paddingTop: 8,
-    paddingBottom: 8
+    paddingBottom: 8,
+    justifyContent: "flex-start"
   },
   middle: {
     flexShrink: 0,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     height: 110
   },
   intro: {
-    marginTop: 8
+    marginTop: 16
   },
   introKeyboard: {
     marginTop: 0
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginTop: 24
   },
   formCompact: {
-    marginTop: 14
+    marginTop: 20
   },
   formKeyboard: {
     marginTop: 10
@@ -178,7 +178,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.primaryLight
   },
+  actions: {
+    marginTop: 24,
+    flexShrink: 0
+  },
   footer: {
+    marginTop: 32,
     paddingBottom: 3,
     flexShrink: 0
   },
@@ -188,9 +193,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     marginBottom: 12
-  },
-  footerKeyboard: {
-    paddingBottom: 0
   },
   loginButton: {
     height: 56,
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
     color: colors.textOnPrimary
   },
   registerRow: {
-    marginTop: 19,
+    marginTop: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -250,7 +252,6 @@ const styles = StyleSheet.create({
     color: colors.primary
   },
   footerNote: {
-    marginTop: 21,
     textAlign: "center",
     fontFamily: typography.fontFamily.semibold,
     fontSize: 11,

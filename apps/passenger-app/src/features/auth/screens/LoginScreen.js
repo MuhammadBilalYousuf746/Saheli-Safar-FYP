@@ -333,62 +333,57 @@ export default function LoginScreen() {
                                         </Text>
                                     </Pressable>
                                 </View>
-                            </View>
-                        </View>
-
-                        {/* Footer */}
-                        <View
-                            style={[
-                                styles.footer,
-                                keyboardVisible && styles.footerKeyboard,
-                            ]}
-                        >
-                            {!!loginError && <Text accessibilityRole="alert" style={styles.error}>{loginError}</Text>}
-                            <Pressable
-                                onPress={handleLogin}
-                                disabled={!canLogin || isLoggingIn}
-                                accessibilityRole="button"
-                                accessibilityLabel="Log in"
-                                accessibilityState={{ busy: isLoggingIn }}
-                                style={({ pressed }) => [
-                                    styles.loginButton,
-                                    !canLogin && styles.loginDisabled,
-                                    pressed && canLogin && styles.loginPressed,
-                                ]}
-                            >
-                                <Text style={[styles.loginText, (!canLogin || isLoggingIn) && { color: colors.textMuted }]}>
-                                    Log In
-                                </Text>
-
-                                <View style={styles.arrowCircle}>
-                                    {isLoggingIn ? <SaheliLoader mode="inline" color={colors.textOnPrimary} label="Signing in" /> : <Text style={styles.arrowText}>→</Text>}
-                                </View>
-                            </Pressable>
-
-                            {!keyboardVisible && (
-                                <>
-                                    <View style={styles.registerRow}>
-                                        <Text style={styles.registerPrompt}>
-                                            New to Saheli Safar?
+                                {/* Keep the form and actions together within the centered composition. */}
+                                <View style={styles.actions}>
+                                    {!!loginError && <Text accessibilityRole="alert" style={styles.error}>{loginError}</Text>}
+                                    <Pressable
+                                        onPress={handleLogin}
+                                        disabled={!canLogin || isLoggingIn}
+                                        accessibilityRole="button"
+                                        accessibilityLabel="Log in"
+                                        accessibilityState={{ busy: isLoggingIn }}
+                                        style={({ pressed }) => [
+                                            styles.loginButton,
+                                            !canLogin && styles.loginDisabled,
+                                            pressed && canLogin && styles.loginPressed,
+                                        ]}
+                                    >
+                                        <Text style={[styles.loginText, (!canLogin || isLoggingIn) && { color: colors.textMuted }]}>
+                                            Log In
                                         </Text>
 
-                                        <Pressable
-                                            onPress={() =>
-                                                router.navigate("/(public)/register")
-                                            }
-                                            accessibilityRole="button"
-                                            accessibilityLabel="Create an account"
-                                        >
-                                            <Text style={styles.registerLink}>
-                                                Create an account ↗
-                                            </Text>
-                                        </Pressable>
-                                    </View>
+                                        <View style={styles.arrowCircle}>
+                                            {isLoggingIn ? <SaheliLoader mode="inline" color={colors.textOnPrimary} label="Signing in" /> : <Text style={styles.arrowText}>→</Text>}
+                                        </View>
+                                    </Pressable>
 
+                                    {!keyboardVisible && (
+                                        <View style={styles.registerRow}>
+                                            <Text style={styles.registerPrompt}>
+                                                New to Saheli Safar?
+                                            </Text>
+
+                                            <Pressable
+                                                onPress={() =>
+                                                    router.navigate("/(public)/register")
+                                                }
+                                                accessibilityRole="button"
+                                                accessibilityLabel="Create an account"
+                                            >
+                                                <Text style={styles.registerLink}>
+                                                    Create an account ↗
+                                                </Text>
+                                            </Pressable>
+                                        </View>
+                                    )}
+                                </View>
+                            </View>
+                            {!keyboardVisible && (
+                                <View style={styles.footer}>
                                     <Text style={styles.footerNote}>
                                         THE NEXT CHAPTER STARTS HERE.
                                     </Text>
-                                </>
+                                </View>
                             )}
                         </View>
                     </ScrollView>
