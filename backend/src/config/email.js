@@ -467,41 +467,22 @@ export const createEmailProvider = () => {
   return null;
 };
 
-/**
- * Team notifications (e.g. website contact form).
- * Sends to CONTACT_INBOX, or SMTP_USER when not set.
- * Returns null when no email provider is configured; callers
- * should still save the message so nothing is lost.
- */
+/** Contact delivery uses the existing SMTP transport and acceptance checks. */
 export const createTeamNotifier = () => {
-  const provider = process.env.EMAIL_PROVIDER;
-
-  if (provider === "smtp" && process.env.SMTP_USER && process.env.SMTP_PASS) {
-    const transporter = createTransporter();
-    const inbox = process.env.CONTACT_INBOX || process.env.SMTP_USER;
-
-    return async ({ subject, text, html, replyTo }) => {
-      await sendSmtpMessage(transporter, {
-        from: process.env.EMAIL_FROM,
-        to: inbox,
-        replyTo,
-        subject,
-        text,
-        html,
-      }, "team_notification");
-    };
-  }
-
-  if (
-    provider === "console" &&
-    process.env.NODE_ENV === "development"
-  ) {
-    return async ({ subject, text }) => {
-      console.log(`\n📨 TEAM NOTIFICATION (not sent)\n${subject}\n${text}\n`);
-    };
-  }
-
-  return null;
+  const required = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM", "CONTACT_RECIPIENT_EMAIL"];
+  const recipient = process.env.CONTACT_RECIPIENT_EMAIL || "";
+  const port = Number(process.env.SMTP_PORT);
+  if (process.env.EMAIL_PROVIDER !== "smtp" ||
+      required.some(key => !process.env[key] || /^<.*>$/.test(process.env[key])) ||
+      !Number.isInteger(port) || port < 1 || port > 65535 ||
+      !/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(recipient) ||
+      /[\r\n]/.test(process.env.EMAIL_FROM)) return null;
+  const transporter = createTransporter();
+  return async ({ subject, text, replyTo }) => {
+    await sendSmtpMessage(transporter, {
+      from: process.env.EMAIL_FROM, to: recipient, replyTo, subject, text,
+    }, "team_notification");
+  };
 };
 
 export { escapeHtml };

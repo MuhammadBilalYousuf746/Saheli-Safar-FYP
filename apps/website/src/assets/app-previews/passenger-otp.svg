@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="100%"
+      height="100%"
+      viewBox="0 0 350 215"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <linearGradient id="envelope" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#B77E9C" />
+          <stop offset="1" stop-color="#88609E" />
+        </linearGradient>
+
+        <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#88609E" />
+          <stop offset="1" stop-color="#88609E" />
+        </linearGradient>
+      </defs>
+
+
+      <path
+        d="M45 111 C45 58 99 26 170 24
+           C249 20 309 64 308 120
+           C307 176 258 198 178 196
+           C95 194 45 160 45 111Z"
+        fill="#30263B"
+      />
+
+      <circle cx="83" cy="71" r="27" fill="#30263B" />
+      <circle cx="278" cy="150" r="19" fill="#30263B" />
+
+      <path
+        d="M56 127 C92 103 111 115 137 130"
+        stroke="#C7A3E4"
+        stroke-width="2"
+        stroke-dasharray="4 6"
+        fill="none"
+      />
+
+      <path
+        d="M224 85 C251 70 279 79 300 98"
+        stroke="#C7A3E4"
+        stroke-width="2"
+        stroke-dasharray="4 6"
+        fill="none"
+      />
+
+
+      <ellipse
+        cx="175"
+        cy="190"
+        rx="112"
+        ry="9"
+        fill="#60496D"
+        opacity="0.55"
+      />
+
+
+      <rect
+        x="90"
+        y="85"
+        width="165"
+        height="104"
+        rx="19"
+        fill="#B77E9C"
+        opacity="0.25"
+      />
+
+
+      <rect
+        x="86"
+        y="78"
+        width="165"
+        height="104"
+        rx="18"
+        fill="url(#envelope)"
+      />
+
+      <path
+        d="M88 92 L168 146 Q172 149 177 146
+           L249 92"
+        fill="none"
+        stroke="#60496D"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
+
+      <path
+        d="M88 174 L143 129"
+        fill="none"
+        stroke="#B77E9C"
+        stroke-width="2"
+      />
+
+      <path
+        d="M249 174 L197 129"
+        fill="none"
+        stroke="#B77E9C"
+        stroke-width="2"
+      />
+
+
+      <rect
+        x="110"
+        y="40"
+        width="124"
+        height="79"
+        rx="14"
+        fill="#60496D"
+        opacity="0.45"
+      />
+
+      <rect
+        x="106"
+        y="35"
+        width="124"
+        height="79"
+        rx="14"
+        fill="#3C2E48"
+      />
+
+      <rect
+        x="123"
+        y="51"
+        width="45"
+        height="5"
+        rx="2.5"
+        fill="#60496D"
+      />
+
+      <rect
+        x="123"
+        y="63"
+        width="65"
+        height="4"
+        rx="2"
+        fill="#30263B"
+      />
+
+
+      <g fill="#88609E">
+        <circle cx="127" cy="88" r="4.5" />
+        <circle cx="144" cy="88" r="4.5" />
+        <circle cx="161" cy="88" r="4.5" />
+        <circle cx="178" cy="88" r="4.5" />
+        <circle cx="195" cy="88" r="4.5" />
+        <circle cx="212" cy="88" r="4.5" />
+      </g>
+
+
+      <circle
+        cx="252"
+        cy="64"
+        r="34"
+        fill="#3C2E48"
+      />
+
+      <path
+        d="M252 39 L273 47 V65
+           C273 80 264 89 252 95
+           C240 89 231 80 231 65 V47Z"
+        fill="url(#shield)"
+      />
+
+      <path
+        d="M242 64 L250 72 L264 56"
+        stroke="#C7A3E4"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+
+
+      <g transform="translate(73 118)">
+        <ellipse cx="0" cy="-10" rx="5" ry="10" fill="#60496D" />
+        <ellipse cx="10" cy="0" rx="10" ry="5" fill="#60496D" />
+        <ellipse cx="0" cy="10" rx="5" ry="10" fill="#60496D" />
+        <ellipse cx="-10" cy="0" rx="10" ry="5" fill="#60496D" />
+        <circle cx="0" cy="0" r="5" fill="#30263B" />
+      </g>
+
+
+      <g
+        stroke="#B77E9C"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M284 125 V139 M277 132 H291" />
+        <path d="M63 52 V64 M57 58 H69" />
+      </g>
+
+      <circle cx="283" cy="160" r="3" fill="#60496D" />
+      <circle cx="95" cy="35" r="3" fill="#60496D" />
+    </svg>

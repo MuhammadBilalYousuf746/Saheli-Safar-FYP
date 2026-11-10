@@ -1,0 +1,73 @@
+﻿/* Small, scoped treatments for About and Passenger; native preview screens stay intact. */
+.about-minimal-inner { max-width: 70rem; margin-inline: auto; }
+.about-minimal-grid { display: grid; gap: 2rem; align-items: center; }
+.about-minimal-title { margin-top: .9rem; max-width: 29rem; color: var(--color-ink); font: 700 clamp(1.65rem, 2.7vw, 2.6rem)/1.16 var(--font-display); letter-spacing: -.035em; }
+.about-minimal-copy { display: grid; gap: .85rem; max-width: 36rem; margin-top: 1.2rem; color: var(--color-ink-2); font-size: .95rem; line-height: 1.75; }
+.about-route-art { width: min(100%, 16rem); height: auto; margin-top: 1rem; overflow: visible; }
+.about-route-art path { fill: none; stroke: var(--color-brand); stroke-width: 2; stroke-dasharray: 5 7; opacity: .3; }
+.about-route-art circle { fill: var(--color-coral); stroke: var(--color-ivory); stroke-width: 3; }
+.reveal[data-visible='true'] .about-route-line { animation: about-route-draw 1.5s var(--ease-calm) both; }
+.about-minimal-values { margin: 0; padding: 0; list-style: none; }
+.about-minimal-value { display: flex; align-items: flex-start; gap: .85rem; padding: 1.15rem 0; border-bottom: 1px solid var(--color-line); }
+.about-minimal-value:first-child { padding-top: 0; }
+.about-minimal-value:last-child { border-bottom: 0; padding-bottom: 0; }
+.about-minimal-icon { display: inline-flex; align-items: center; justify-content: center; width: 2.35rem; height: 2.35rem; flex-shrink: 0; border-radius: .75rem; background: var(--color-brand-mist); color: var(--color-brand); transition: background-color 250ms, color 250ms; }
+.about-minimal-value h3 { margin-top: .1rem; font-size: .95rem; font-weight: 700; color: var(--color-ink); }
+.about-minimal-value p { margin-top: .35rem; color: var(--color-ink-2); font-size: .85rem; line-height: 1.6; max-width: 22rem; }
+.about-city-note { display: flex; align-items: center; flex-wrap: wrap; gap: .85rem; margin-top: 2rem; padding: 1.1rem 0; border-top: 1px solid var(--color-line); }
+.about-city-pin { color: var(--color-brand); flex-shrink: 0; }
+.about-city-note > div { flex: 1 1 15rem; }
+.about-city-note h2 { font-size: .85rem; font-weight: 700; color: var(--color-ink); }
+.about-city-note p { margin-top: .3rem; color: var(--color-ink-3); font-size: .75rem; line-height: 1.6; }
+.about-development-badge { padding: .35rem .6rem; border: 1px solid var(--color-line); border-radius: 2rem; color: var(--color-ink-2); font-size: .65rem; white-space: nowrap; }
+@media (min-width: 900px) { .about-minimal-grid { grid-template-columns: 1.2fr 1fr; gap: 4rem; } .about-minimal-values { border-left: 1px solid var(--color-line); padding-left: 2rem; } }
+@media (hover: hover) { .about-minimal-value:hover .about-minimal-icon { background: var(--color-brand); color: var(--color-on-brand); } }
+@media (prefers-reduced-motion: reduce) { .about-minimal-icon { transition: none; } }
+.passenger-showcase { width: 100%; max-width: 30rem; margin-inline: auto; }
+.passenger-showcase-stage { position: relative; aspect-ratio: 1 / 1.12; isolation: isolate; }
+.passenger-showcase-halo { position: absolute; inset: 11% 3% 4%; border-radius: 45% 45% 2rem 2rem; background: radial-gradient(ellipse at 50% 40%, var(--color-ivory-3), var(--color-ivory-2) 70%); border: 1px solid var(--color-line); }
+.passenger-showcase-orbit { position: absolute; inset: 5% 0 12%; border: 1px dashed var(--color-line); border-radius: 50%; transform: rotate(-18deg); }
+.passenger-preview-front { position: absolute; top: 2%; left: 26%; width: 48%; z-index: 3; animation: passenger-preview-enter 450ms var(--ease-calm) both; }
+.passenger-preview-side { position: absolute; top: 16%; width: 33%; opacity: .7; filter: saturate(.8); transition: opacity 350ms, transform 350ms; }
+.passenger-preview-left { left: 1%; transform: rotate(-9deg); }
+.passenger-preview-right { right: 1%; transform: rotate(9deg); }
+.passenger-preview-label { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 4; display: flex; align-items: center; gap: .5rem; padding: .65rem 1rem; border: 1px solid var(--color-line); border-radius: 2rem; color: var(--color-brand); background: var(--color-ivory); box-shadow: var(--shadow-soft); white-space: nowrap; font-size: .75rem; font-weight: 700; }
+.passenger-preview-label > span { width: .4rem; height: .4rem; border-radius: 50%; background: var(--color-coral-ink); }
+.passenger-preview-picker { display: flex; justify-content: center; gap: .25rem; width: fit-content; margin: .9rem auto .6rem; padding: .3rem; border: 1px solid var(--color-line); border-radius: 1.25rem; background: var(--color-ivory-2); }
+.passenger-preview-option { display: inline-flex; flex: 0 0 44px; justify-content: center; align-items: center; gap: .45rem; min-height: 44px; width: 44px; padding: .5rem; border-radius: .9rem; color: var(--color-ink-2); font-size: .72rem; font-weight: 600; cursor: pointer; transition: color 200ms, background-color 200ms, box-shadow 200ms; }
+.passenger-preview-option.is-selected { color: var(--color-on-brand); background: var(--color-brand); box-shadow: var(--shadow-soft); }
+.passenger-benefit { transition: color 250ms; }
+@media (hover: hover) {
+  .passenger-showcase:hover .passenger-preview-side { opacity: .95; }
+  .passenger-showcase:hover .passenger-preview-left { transform: translateX(-3%) rotate(-12deg); }
+  .passenger-showcase:hover .passenger-preview-right { transform: translateX(3%) rotate(12deg); }
+  .passenger-preview-option:not(.is-selected):hover { background: var(--color-brand-mist); color: var(--color-brand); }
+}
+@media (max-width: 639px) {
+  .passenger-showcase { max-width: 22rem; }
+  .passenger-showcase-stage { aspect-ratio: 4 / 5; }
+  .passenger-preview-front { width: 56%; left: 22%; top: 0; }
+  .passenger-preview-side { top: 18%; width: 29%; opacity: .45; }
+  .passenger-preview-label { font-size: .7rem; padding: .5rem .8rem; }
+}
+@keyframes passenger-preview-enter { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes about-route-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .about-route-line, .passenger-preview-front { animation: none !important; }
+  .passenger-preview-left, .passenger-preview-right { transform: none !important; }
+}
+
+/* Background artwork stays out of layout flow and never intercepts interaction. */
+.about-page { position: relative; isolation: isolate; overflow: hidden; }
+.about-city-backdrop { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.about-city-map-canvas { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
+.about-city-base-map, .about-city-pins { position: absolute; width: 100%; height: 100%; inset: 0; object-fit: contain; }
+.about-city-base-map { opacity: .055; }
+.about-city-pins { opacity: .2; }
+.about-city-pins text { paint-order: stroke fill; stroke: var(--color-ivory); stroke-width: 3px; stroke-linejoin: round; }
+.about-pin-halo { fill: var(--color-coral); opacity: .3; transform-box: fill-box; transform-origin: center; animation: about-city-pin 4s ease-out infinite; }
+@keyframes about-city-pin { 0%, 100% { transform: scale(.75); opacity: .2; } 50% { transform: scale(1.4); opacity: .55; } }
+@media (max-width: 899px) { .about-city-map-canvas { width: 100%; left: 0; } .about-city-base-map { opacity: .045; } .about-city-pins { opacity: .16; } }
+@media (prefers-reduced-motion: reduce) { .about-pin-halo { animation: none; } }
+
+.about-page .container-page { padding-inline: clamp(1.5rem, 5vw, 5rem); }

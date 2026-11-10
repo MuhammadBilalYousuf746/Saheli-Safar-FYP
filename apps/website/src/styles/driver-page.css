@@ -1,0 +1,49 @@
+﻿/* Sky Drive accents belong to the Driver page, not the shared header or other pages. */
+.driver-page-theme {
+  --color-brand: #2f6f9d;
+  --color-brand-deep: #19324a;
+  --color-brand-soft: #23577e;
+  --color-brand-mist: #eaf3fa;
+  --color-ivory: #f5f9fd;
+  --color-ivory-2: #eaf3fa;
+  --color-ivory-3: #d6e5f0;
+  --color-coral: #ffcb70;
+  --color-coral-hover: #f2b952;
+  --color-coral-light: #ffdc9f;
+  --color-coral-ink: #23577e;
+  --color-ink: #19324a;
+  --color-ink-2: #405870;
+  --color-ink-3: #52667a;
+  --color-on-brand: #f5f9fd;
+  --color-on-brand-2: #dceaf6;
+  --color-on-brand-3: #bdd4e7;
+  --color-line: #ccdeec;
+  --color-line-brand: #7ba4c3;
+  --color-soon: #835a14;
+  --shadow-lift: 0 2px 4px rgb(25 50 74 / .06), 0 24px 48px -24px rgb(47 111 157 / .3);
+  --shadow-phone: 0 40px 70px -35px rgb(25 50 74 / .45);
+  background: var(--color-ivory-2);
+}
+
+.driver-page-theme .page-section {
+  padding-top: clamp(.75rem, 1.5vw, 1.25rem);
+  padding-bottom: 2rem;
+}
+
+/* Driver mockup only: preserve the page grid, spacing and original app screen. */
+.driver-mockup-panel { isolation: isolate; }
+.driver-mockup-glow { position: absolute; inset: 8% -15% 20%; background: radial-gradient(ellipse, rgb(245 249 253 / .18), transparent 65%); pointer-events: none; }
+.driver-mockup-device { transform: rotate(-3deg); transform-origin: 50% 65%; transition: transform 450ms var(--ease-calm); }
+.driver-device-frame > div { box-shadow: 0 0 0 1px #86b5d7, 0 0 0 4px rgb(245 249 253 / .14), 14px 22px 35px -16px rgb(25 50 74 / .6); }
+.driver-mockup-tag { position: absolute; bottom: 1rem; left: 1rem; z-index: 3; display: flex; align-items: center; gap: .6rem; padding: .55rem .75rem; border: 1px solid #ccdeec; border-radius: .85rem; background: #f5f9fd; color: #19324a; box-shadow: 0 8px 20px -10px rgb(25 50 74 / .4); }
+.driver-mockup-tag > span { display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: .65rem; background: #ffcb70; }
+.driver-mockup-tag strong { display: block; font-size: .7rem; font-weight: 700; }
+.driver-mockup-tag small { display: block; margin-top: .1rem; font-size: .6rem; color: #52667a; }
+@media (hover: hover) { .driver-mockup-panel:hover .driver-mockup-device { transform: rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .driver-mockup-device { transition: none; transform: none; } }
+
+.driver-mockup-scene { position: relative; width: 100%; max-width: 26rem; margin-inline: auto; padding-top: 5rem; }
+.driver-uncle-mascot { position: absolute; top: -1rem; right: 8%; z-index: 4; width: 9rem; height: auto; overflow: visible; pointer-events: none; filter: drop-shadow(0 4px 3px rgb(25 50 74 / .1)); }
+.driver-uncle-eyes { transform-box: fill-box; transform-origin: center; animation: driver-uncle-blink 6s linear infinite; }
+@keyframes driver-uncle-blink { 0%, 93%, 98%, 100% { transform: scaleY(1); } 95%, 96% { transform: scaleY(.08); } }
+@media (prefers-reduced-motion: reduce) { .driver-uncle-eyes { animation: none; } }

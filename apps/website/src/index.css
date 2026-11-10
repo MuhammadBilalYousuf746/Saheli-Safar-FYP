@@ -1,0 +1,183 @@
+@import "tailwindcss";
+@import "./styles/theme.css";
+@import "./styles/driver-page.css";
+@import "./styles/page-polish.css";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem; /* keeps anchored headings clear of the sticky header */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ivory font-sans text-ink antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+    letter-spacing: -0.025em;
+  }
+
+  ::selection {
+    @apply bg-coral text-brand-deep;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--color-brand);
+    box-shadow: 0 0 0 5px var(--color-ivory);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+}
+
+@layer components {
+  .showcase-surface {
+    background: radial-gradient(ellipse at 75% 0%, rgb(157 133 202 / .16), transparent 65%),
+      linear-gradient(145deg, #40345f, #302747 70%);
+  }
+
+  /* Centered content column shared by every section */
+  .container-page {
+    @apply mx-auto w-full max-w-[88rem] px-5 sm:px-6 lg:px-10 xl:px-12;
+  }
+
+  /* Vertical rhythm shared by every section */
+  .section {
+    padding-block: clamp(2.5rem, 4vw, 4rem);
+  }
+
+  .section-tight {
+    padding-block: clamp(2rem, 3vw, 3rem);
+  }
+
+  /* Standalone pages start close to the header instead of using marketing-section spacing. */
+  .page-section {
+    padding-top: clamp(1.5rem, 2.5vw, 2.5rem);
+    padding-bottom: clamp(2.5rem, 4vw, 4rem);
+  }
+
+  /* Small uppercase label above headings */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.8125rem] font-bold tracking-[0.14em] uppercase;
+  }
+}
+
+@layer utilities {
+  /* Faint route grid used as a layered background texture */
+  .bg-route-grid {
+    background-image:
+      linear-gradient(to right, rgb(53 38 65 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(53 38 65 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .bg-route-grid-dark {
+    background-image:
+      linear-gradient(to right, rgb(245 240 250 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(245 240 250 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+}
+
+/* ---------- Motion ---------- */
+
+/* Scroll reveal: fade and lift, driven by the Reveal component */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 800ms var(--ease-calm),
+    transform 800ms var(--ease-calm);
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero entrance on first load */
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.enter {
+  animation: enter-up 900ms var(--ease-calm) both;
+}
+
+/* Stagger feature chips like quiet notification cards, without announcing alerts. */
+@keyframes hero-feature-pop {
+  0%, 45%, 100% { opacity: 0; transform: translateY(12px) scale(.94); }
+  5%, 37% { opacity: 1; transform: translateY(0) scale(1); }
+  41% { opacity: 0; transform: translateY(-8px) scale(.98); }
+}
+
+.hero-feature-chip {
+  opacity: 0;
+  pointer-events: none;
+  animation: hero-feature-pop 12s var(--ease-calm) infinite both;
+}
+
+/* Route line: dashes travel slowly along the path */
+@keyframes route-flow {
+  to {
+    stroke-dashoffset: -120;
+  }
+}
+
+.route-flow {
+  animation: route-flow 6s linear infinite;
+}
+
+/* Gentle float for device mockups */
+@keyframes float {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-slow {
+  animation: float 7s ease-in-out infinite;
+}
+
+.float-slower {
+  animation: float 9s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal,
+  .enter,
+  .hero-feature-chip {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+
+  .route-flow,
+  .float-slow,
+  .float-slower {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

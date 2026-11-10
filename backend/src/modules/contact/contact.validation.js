@@ -1,36 +1,19 @@
-
 import { z } from "zod";
 
-import { CONTACT_TOPICS } from "../../utils/constants.js";
-import {
-  emailSchema,
-  fullNameSchema,
-  phoneSchema,
-} from "../auth/auth.validation.js";
+const headerText = (max) => z.string().trim().min(1).max(max).refine(
+  value => !/[\x00-\x1f\x7f]/.test(value),
+  "Invalid control characters.",
+);
 
-// POST /api/contact
-export const contactMessageSchema = z
-  .object({
-    fullName: fullNameSchema,
-    email: emailSchema,
-
-    // Optional. Empty string is treated as missing.
-    phone: phoneSchema
-      .optional()
-      .or(z.literal(""))
-      .transform((phone) => phone || undefined),
-
-    topic: z.enum(CONTACT_TOPICS, {
-      message: "Please choose a topic.",
-    }),
-
-    message: z
-      .string()
-      .trim()
-      .min(10, "Message must be at least 10 characters.")
-      .max(2000, "Message must not exceed 2000 characters."),
-
-    // Honeypot: hidden on the website, bots fill it in.
-    website: z.string().max(200).optional(),
-  })
-  .strict();
+export const contactMessageSchema = z.object({
+  name: headerText(80),
+  email: headerText(254).pipe(z.email()),
+  phone: headerText(40).refine(value => {
+    const digits = value.replace(/\D/g, "");
+    return /^\+?[\d\s()-]+$/.test(value) && digits.length >= 10 && digits.length <= 15;
+  }, "Please enter a valid phone number (10 to 15 digits)."),
+  message: z.string().trim().min(10).max(2000).refine(
+    value => !/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(value),
+    "Invalid control characters.",
+  ),
+}).strict();

@@ -1,0 +1,6 @@
+<!-- TODO: placeholder mark. Replace with the original Saheli Safar logo. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#352641"/>
+  <path d="M43 19.5c-3-2.6-6.8-3.7-10.6-3.7-6.2 0-10.4 3.2-10.4 8.1 0 11.4 22 6.1 22 17.4 0 5.1-4.6 8.4-11 8.4-4.9 0-9-1.8-12-4.9" fill="none" stroke="#F5F0FA" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="45.5" cy="18" r="4.5" fill="#F4BC68"/>
+</svg>

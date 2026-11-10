@@ -1,0 +1,72 @@
+/*
+  Saheli Safar public website: the single source of design tokens.
+  Three-color identity: deep plum #352641, pale lavender #F5F0FA, amber #F4BC68.
+  Use mist for surfaces (60%), indigo for structure (30%), apricot for actions (10%).
+  Supporting tokens are tonal variations of these three colors.
+
+  Tailwind v4 turns each token into utilities, e.g.
+  --color-brand -> bg-brand / text-brand, --color-ivory-2 -> bg-ivory-2.
+*/
+@theme {
+  /* Primary: Deep Plum */
+  --color-brand: #352641;
+  --color-brand-deep: #231A2D;
+  --color-brand-soft: #513C63;
+  --color-brand-mist: #E9DFF1;
+
+  /* Secondary: Pale Lavender */
+  --color-ivory: #F5F0FA;
+  --color-ivory-2: #EDE5F5;
+  --color-ivory-3: #DFD1EB;
+
+  /* Accent: Warm Amber (primary buttons and small highlights) */
+  --color-coral: #F4BC68;
+  --color-coral-hover: #E7A94E;
+  --color-coral-light: #FFD597; /* apricot text on plum */
+  --color-coral-ink: #80501B; /* dark apricot text on lavender */
+
+  /* Text on lavender */
+  --color-ink: #2D2138;
+  --color-ink-2: #594B65;
+  --color-ink-3: #71617D;
+
+  /* Text on plum */
+  --color-on-brand: #F5F0FA;
+  --color-on-brand-2: #DED1E8;
+  --color-on-brand-3: #BEABCD;
+
+  /* Lines */
+  --color-line: #DDD0E8;
+  --color-line-brand: #685276;
+
+  /* Status */
+  --color-live: #513C63;
+  --color-soon: #80501B;
+
+  /* Type */
+  --font-display: "Sora", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+
+  --text-display: clamp(2.4rem, 1.45rem + 3.6vw, 4.5rem);
+  --text-display--line-height: 1.08;
+  --text-h1: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
+  --text-h1--line-height: 1.12;
+  --text-h2: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  --text-h2--line-height: 1.18;
+  --text-h3: clamp(1.125rem, 1rem + 0.35vw, 1.3rem);
+  --text-h3--line-height: 1.3;
+  --text-lead: clamp(1rem, 0.98rem + 0.2vw, 1.125rem);
+  --text-lead--line-height: 1.65;
+
+  /* Radii */
+  --radius-card: 1.25rem;
+  --radius-panel: 2rem;
+
+  /* Shadows: soft, warm, controlled depth */
+  --shadow-soft: 0 1px 2px rgb(53 38 65 / 0.06), 0 12px 32px -12px rgb(53 38 65 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(53 38 65 / 0.06), 0 30px 60px -24px rgb(53 38 65 / 0.35);
+  --shadow-phone: 0 50px 90px -40px rgb(35 26 45 / 0.55), 0 18px 36px -18px rgb(35 26 45 / 0.35);
+
+  /* Motion */
+  --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+}

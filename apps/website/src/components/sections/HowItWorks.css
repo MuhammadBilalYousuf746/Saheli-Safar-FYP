@@ -1,0 +1,16 @@
+﻿/* Automatic illustrative sequence; actual availability labels remain unchanged. */
+.process-progress { transition: width 900ms var(--ease-calm); }
+.process-mobile-progress { position: absolute; inset: 0; background: var(--color-coral); transform-origin: top; transition: transform 900ms var(--ease-calm); }
+.process-step-marker { transition: background-color 400ms, color 400ms, border-color 400ms, box-shadow 400ms; }
+.process-step-content { transition: opacity 400ms; }
+[data-process-state='current'] .process-step-marker {
+  color: var(--color-brand-deep); background: var(--color-coral); border-color: var(--color-coral-ink);
+  box-shadow: 0 0 0 8px var(--color-ivory), 0 0 0 11px var(--color-coral);
+  animation: process-step-pulse 1800ms ease-out infinite;
+}
+[data-process-state='passed'] .process-step-marker { box-shadow: 0 0 0 8px var(--color-ivory), 0 0 0 10px var(--color-line); }
+[data-process-state='waiting'] .process-step-content { opacity: .75; }
+@keyframes process-step-pulse { 0%, 100% { transform: scale(1); } 45% { transform: scale(1.07); } }
+@media (prefers-reduced-motion: reduce) {
+  .process-progress, .process-mobile-progress, .process-step-marker, .process-step-content { animation: none !important; transition: none !important; }
+}

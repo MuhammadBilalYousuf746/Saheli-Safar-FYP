@@ -44,6 +44,9 @@ app.use(
 // 2. REQUEST BODY PARSING
 // ========================================
 
+// Contact requests have an isolated smaller body limit.
+app.use("/api/contact", createApiLimiter(), contactRoutes);
+
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: false }));
 
@@ -90,7 +93,7 @@ app.use("/api/driver", driverRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Public Website
-app.use("/api/contact", contactRoutes);
+// Contact is mounted before shared body parsing.
 
 // ========================================
 // 7. 404 HANDLER
