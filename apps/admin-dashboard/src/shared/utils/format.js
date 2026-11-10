@@ -26,15 +26,3 @@ export const formatPhone = (phone) =>
 
 export const capitalize = (text) =>
   text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
-
-export const formatVehicle = (vehicle) =>
-  vehicle
-    ? `${vehicle.make} ${vehicle.model} · ${vehicle.plateNumber}`
-    : "—";
-
-export const initials = (name) =>
-  (name || "?")
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part.charAt(0).toUpperCase())
-    .join("");

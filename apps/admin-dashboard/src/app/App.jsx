@@ -17,10 +17,8 @@ import SettingsAdminPage from "../features/settings/pages/SettingsAdminPage";
 import ForgotPasswordPage from "../features/auth/pages/ForgotPasswordPage";
 import ResetPasswordPage from "../features/auth/pages/ResetPasswordPage";
 import VerifyAdminEmailPage from "../features/auth/pages/VerifyAdminEmailPage";
-import { ThemeProvider } from "../shared/context/ThemeContext";
 
 const App = () => (
-  <ThemeProvider>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -51,7 +49,6 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </AuthProvider>
-  </ThemeProvider>
 );
 
 export default App;
